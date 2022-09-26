@@ -35,4 +35,4 @@ yarn-error.log*
 .vercel
 
 # changelog
-CHANGELOG.md
+README.md

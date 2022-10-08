@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import useScrollPosition from '@/hooks/useScrollPosition';
+
 import UnstyledLink from '@/components/links/UnstyledLink';
 
 import UnderlineLink from '../links/UnderlineLink';
@@ -12,9 +14,14 @@ const links = [
 ];
 
 export default function Header() {
+  const scrollPosition = useScrollPosition();
   return (
-    <header className='sticky top-0 z-50'>
-      <div className='layout flex h-14 items-center justify-between'>
+    <header
+      className={`sticky top-0 z-50 bg-white transition-all duration-200 ${
+        scrollPosition > 0 ? 'bg-opacity-100' : 'bg-opacity-0'
+      }`}
+    >
+      <div className='layout flex h-[150px] items-center justify-between'>
         <UnstyledLink
           href='/'
           className='text-xl font-bold hover:text-gray-600 '

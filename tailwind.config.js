@@ -10,6 +10,7 @@ module.exports = {
         primary: ['Poppins', ...fontFamily.sans],
       },
       colors: {
+        green: '#122620',
         primary: {
           // Customize it on globals.css :root
           50: 'rgb(var(--tw-color-primary-50) / <alpha-value>)',

@@ -8,9 +8,7 @@ module.exports = {
 
   // Uncoment to add domain whitelist
   images: {
-    domains: [
-      'i.ibb.co',
-    ],
+    domains: ['i.ibb.co'],
   },
 
   // SVGR

@@ -7,7 +7,7 @@ import UnstyledLink from '@/components/links/UnstyledLink';
 import UnderlineLink from '../links/UnderlineLink';
 
 const links = [
-  { href: '/', label: 'Produk' },
+  { href: '/products', label: 'Produk' },
   { href: '/', label: 'Keranjang' },
   { href: '/', label: 'Riwayat' },
   { href: '/', label: 'Toko Kami' },

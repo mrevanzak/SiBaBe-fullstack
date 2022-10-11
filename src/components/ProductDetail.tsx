@@ -10,7 +10,7 @@ import NextImage from '@/components/NextImage';
 import Separator from '@/components/Separator';
 import { Product } from '@/components/types';
 
-import thousandSeparator from '@/util/ThousandSeparator';
+import thousandSeparator from '@/util/thousandSeparator';
 
 type ProductDetailProps = {
   product: Product;

@@ -8,7 +8,7 @@ import ProductDetail from '@/components/ProductDetail';
 import Seo from '@/components/Seo';
 import { Product } from '@/components/types';
 
-import thousandSeparator from '@/util/ThousandSeparator';
+import thousandSeparator from '@/util/thousandSeparator';
 
 import { ProductMock } from '../data';
 

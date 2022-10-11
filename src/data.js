@@ -107,7 +107,8 @@ export const ProductMock = [
       {
         id: '3',
         name: 'Puput Jessica',
-        description: 'Merugi banget bagi kalian kalo makan ini pas adem, sumpah coklatnya melted abiss!',
+        description:
+          'Merugi banget bagi kalian kalo makan ini pas adem, sumpah coklatnya melted abiss!',
         rating: 5,
       },
     ],

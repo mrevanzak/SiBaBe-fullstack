@@ -1,50 +1,24 @@
-import { Modal } from '@mantine/core';
 import * as React from 'react';
 import { FiShoppingCart } from 'react-icons/fi';
 
 import Layout from '@/components/layout/Layout';
 import NextImage from '@/components/NextImage';
-import ProductDetail from '@/components/ProductDetail';
 import Seo from '@/components/Seo';
-import { Product } from '@/components/types';
-
-import thousandSeparator from '@/util/ThousandSeparator';
 
 import { ProductMock } from '../data';
 
 export default function ProductPage() {
-  const [opened, setOpened] = React.useState(false);
-  const [selectedProduct, setSelectedProduct] =
-    React.useState<Product | null>();
-
   return (
     <Layout>
       {/* <Seo templateTitle='Home' /> */}
       <Seo />
 
-      <Modal
-        opened={opened}
-        onClose={() => setOpened(false)}
-        centered
-        withCloseButton={false}
-        padding={0}
-        radius={50}
-        size={982}
-      >
-        {selectedProduct && (
-          <ProductDetail product={selectedProduct} setOpened={setOpened} />
-        )}
-      </Modal>
       <main>
         <div className='layout flex max-w-none flex-row flex-wrap items-center justify-center gap-12 py-12'>
           {ProductMock.map((product) => (
             <div
               key={product.name}
-              className='h-56 w-64 cursor-pointer overflow-hidden rounded-[30px] bg-grey'
-              onClick={() => {
-                setOpened(true);
-                setSelectedProduct(product);
-              }}
+              className='h-56 w-64 overflow-hidden rounded-[30px]  bg-grey'
             >
               <NextImage
                 useSkeleton
@@ -57,9 +31,7 @@ export default function ProductPage() {
               <div className='flex h-16 items-center justify-between px-5 py-3'>
                 <div>
                   <p className='text-xs'>{product.name}</p>
-                  <p className='text-base font-extrabold'>
-                    Rp {thousandSeparator(product.price)}
-                  </p>
+                  <p className='text-base font-extrabold'>{product.price}</p>
                 </div>
                 <FiShoppingCart className='text-2xl' />
               </div>

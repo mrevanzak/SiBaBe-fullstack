@@ -8,8 +8,8 @@ import UnderlineLink from '../links/UnderlineLink';
 
 const links = [
   { href: '/products', label: 'Produk' },
-  { href: '/', label: 'Keranjang' },
-  { href: '/', label: 'Riwayat' },
+  { href: '/cart', label: 'Keranjang' },
+  { href: '/history', label: 'Riwayat' },
   { href: '/', label: 'Toko Kami' },
 ];
 

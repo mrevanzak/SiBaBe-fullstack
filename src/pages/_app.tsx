@@ -1,8 +1,7 @@
+import { MantineProvider } from '@mantine/core';
 import { AppProps } from 'next/app';
 
 import '@/styles/globals.css';
-// !STARTERCONF This is for demo purposes, remove @/styles/colors.css import immediately
-import '@/styles/colors.css';
 
 /**
  * !STARTERCONF info
@@ -10,7 +9,18 @@ import '@/styles/colors.css';
  */
 
 function MyApp({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />;
+  return (
+    <MantineProvider
+      withGlobalStyles
+      withNormalizeCSS
+      theme={{
+        /** Put your mantine theme override here */
+        colorScheme: 'light',
+      }}
+    >
+      <Component {...pageProps} />)
+    </MantineProvider>
+  );
 }
 
 export default MyApp;

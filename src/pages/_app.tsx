@@ -18,7 +18,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         colorScheme: 'light',
       }}
     >
-      <Component {...pageProps} />)
+      <Component {...pageProps} />
     </MantineProvider>
   );
 }

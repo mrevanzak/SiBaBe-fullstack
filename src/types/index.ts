@@ -12,3 +12,11 @@ export type Product = {
   image: string;
   reviews: Review[];
 };
+
+export type History = {
+  id: string;
+  date: string;
+  total: number;
+  status: string;
+  items: Product[] & { quantity: number }[];
+};

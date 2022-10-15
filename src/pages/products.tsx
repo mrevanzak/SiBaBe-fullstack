@@ -6,11 +6,12 @@ import Layout from '@/components/layout/Layout';
 import NextImage from '@/components/NextImage';
 import ProductDetail from '@/components/ProductDetail';
 import Seo from '@/components/Seo';
-import { Product } from '@/components/types';
 
 import thousandSeparator from '@/util/thousandSeparator';
 
 import { ProductMock } from '../data';
+
+import { Product } from '@/types';
 
 export default function ProductPage() {
   const [opened, setOpened] = React.useState(false);
@@ -36,7 +37,7 @@ export default function ProductPage() {
         )}
       </Modal>
       <main>
-        <div className='layout flex max-w-none flex-row flex-wrap items-center justify-center gap-12 py-12'>
+        <div className='layout flex max-w-none flex-row flex-wrap items-center justify-center gap-12 py-12 font-secondary'>
           {ProductMock.map((product) => (
             <div
               key={product.name}
@@ -55,9 +56,9 @@ export default function ProductPage() {
                 className='w-64'
               />
               <div className='flex h-16 items-center justify-between px-5 py-3'>
-                <div>
-                  <p className='text-xs'>{product.name}</p>
-                  <p className='text-base font-extrabold'>
+                <div className=''>
+                  <p className='font-secondary text-xs'>{product.name}</p>
+                  <p className='font-secondary text-base font-extrabold'>
                     Rp {thousandSeparator(product.price)}
                   </p>
                 </div>

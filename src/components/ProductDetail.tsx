@@ -8,9 +8,10 @@ import {
 
 import NextImage from '@/components/NextImage';
 import Separator from '@/components/Separator';
-import { Product } from '@/components/types';
 
 import thousandSeparator from '@/util/thousandSeparator';
+
+import { Product } from '@/types';
 
 type ProductDetailProps = {
   product: Product;
@@ -32,12 +33,12 @@ export default function ProductDetail({
           height={320}
         />
         <div className='ml-14 mt-7'>
-          <p className='text-2xl'>{product.name}</p>
-          <p className='text-4xl font-bold'>
+          <p className='font-secondary text-2xl'>{product.name}</p>
+          <p className='font-secondary text-4xl font-bold'>
             Rp {thousandSeparator(product.price)}
           </p>
           <Separator width={400} color='#D6AD60' className='my-8' />
-          <p>{product.description}</p>
+          <p className='font-secondary'>{product.description}</p>
         </div>
       </div>
       <div className='mr-14 mt-16 w-full'>
@@ -45,14 +46,14 @@ export default function ProductDetail({
           className='absolute top-7 right-7 cursor-pointer text-4xl'
           onClick={() => setOpened(false)}
         />
-        <p>Rating dan Ulasan</p>
+        <p className='font-secondary'>Rating dan Ulasan</p>
         <Separator width={136} color='#D6AD60' />
         {product.reviews.map((review, i) => (
           <div key={review.id} className='my-7'>
             <div className='mb-4 flex justify-between'>
               <div className='flex items-center gap-3'>
                 <RiUser3Line className='text-2xl' />
-                <p className='ml-2 text-sm'>{review.name}</p>
+                <p className='ml-2 font-secondary text-sm'>{review.name}</p>
               </div>
               <div className='flex items-center'>
                 {[...Array(review.rating)].map((_, i) => (
@@ -63,7 +64,7 @@ export default function ProductDetail({
                 ))}
               </div>
             </div>
-            <p className='text-xs'>{review.description}</p>
+            <p className='font-secondary text-xs'>{review.description}</p>
             {i !== product.reviews.length - 1 && (
               <Separator width='100%' color='#B3B3B3' className='my-6' />
             )}

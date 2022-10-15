@@ -17,7 +17,7 @@ export default function ProductPage() {
       <Seo />
 
       <main>
-        <div className='layout mb-12 flex flex-col'>
+        <div className='layout min-h-main mb-12 flex flex-col'>
           <p className='text-xl font-bold'>Keranjang</p>
           <Separator
             width='100%'
@@ -39,13 +39,17 @@ export default function ProductPage() {
           ))}
           <div className='mt-9 flex items-center justify-end gap-7'>
             <div className='text-end'>
-              <p className='text-sm font-semibold'>Total Harga</p>
-              <p className='text-2xl font-bold'>
+              <p className='font-secondary text-sm font-semibold'>
+                Total Harga
+              </p>
+              <p className='font-secondary text-2xl font-bold'>
                 Rp {thousandSeparator(40000)}
               </p>
             </div>
             <div>
-              <Button className='rounded-3xl bg-brown py-6 px-28'>BELI</Button>
+              <Button className='rounded-3xl bg-brown py-6 px-28 font-secondary'>
+                BELI
+              </Button>
             </div>
           </div>
         </div>

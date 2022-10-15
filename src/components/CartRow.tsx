@@ -2,15 +2,16 @@ import * as React from 'react';
 import { AiOutlineMinusCircle, AiOutlinePlusCircle } from 'react-icons/ai';
 
 import NextImage from '@/components/NextImage';
-import { Product } from '@/components/types';
 
 import thousandSeparator from '@/util/thousandSeparator';
 
-type ProductDetailProps = {
+import { Product } from '@/types';
+
+type CartRowProps = {
   product: Product;
 };
 
-export default function CartRow({ product }: ProductDetailProps) {
+export default function CartRow({ product }: CartRowProps) {
   return (
     <div className='my-8 flex'>
       <div className='flex w-1/2'>
@@ -25,8 +26,8 @@ export default function CartRow({ product }: ProductDetailProps) {
           />
         </div>
         <div className='ml-9 flex flex-col justify-center'>
-          <p className='text-xs'>{product.name}</p>
-          <p className='font-extrabold'>
+          <p className='font-secondary text-xs'>{product.name}</p>
+          <p className='font-secondary font-extrabold'>
             Rp {thousandSeparator(product.price)}
           </p>
         </div>
@@ -35,13 +36,15 @@ export default function CartRow({ product }: ProductDetailProps) {
         <button className='text-2xl'>
           <AiOutlineMinusCircle />
         </button>
-        <p className='mx-8 font-extrabold'>2</p>
+        <p className='mx-8 font-secondary font-extrabold'>2</p>
         <button className='text-2xl'>
           <AiOutlinePlusCircle />
         </button>
       </div>
       <div className='flex w-1/4 items-center justify-center'>
-        <p className='font-bold'>Rp {thousandSeparator(product.price)}</p>
+        <p className='font-secondary font-bold'>
+          Rp {thousandSeparator(product.price)}
+        </p>
       </div>
     </div>
   );

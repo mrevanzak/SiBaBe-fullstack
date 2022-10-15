@@ -184,3 +184,113 @@ export const ProductMock = [
     ],
   },
 ];
+
+
+export const HistoryMock = [
+  {
+    id: '0106342',
+    date: '2020-10-01',
+    total: 100000,
+    status: 'success',
+    items: [
+      {
+        name: 'Croissant Bread',
+        price: 12000,
+        image: 'https://i.ibb.co/rp3CKm1/image-1-1.png',
+        description: 'lorem ipsum dolor sit amet',
+        quantity: 2,
+        reviews: [
+          {
+            id: '1',
+            name: 'John Doe',
+            description: 'lorem ipsum dolor sit amet',
+            rating: 4,
+          },
+        ],
+      },
+      {
+        name: 'Chocolate Brownies',
+        price: 15000,
+        image: 'https://i.ibb.co/jGFqHWY/image-1-6.png',
+        description: 'lorem ipsum dolor sit amet',
+        quantity: 1,
+        reviews: [
+          {
+            id: '1',
+            name: 'Arief Bahrudin',
+            description:
+              'Brownisnya enak, coklatnya kerasa banget, dalemnya melted kalo masih panas, gak ngecewain deh',
+            rating: 5,
+          },
+          {
+            id: '2',
+            name: 'Fakhri Hamzah',
+            description:
+              'Mungkin bagi pecinta manis, ini pilihan terbaik buat mereka, tapi karna gw #timasin jadi ya so - so lah',
+            rating: 4,
+          },
+          {
+            id: '3',
+            name: 'Puput Jessica',
+            description:
+              'Merugi banget bagi kalian kalo makan ini pas adem, sumpah coklatnya melted abiss!',
+            rating: 5,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: '0106343',
+    date: '2020-10-02',
+    total: 100000,
+    status: 'success',
+    items: [
+      {
+        name: 'Croissant Bread',
+        price: 12000,
+        image: 'https://i.ibb.co/rp3CKm1/image-1-1.png',
+        description: 'lorem ipsum dolor sit amet',
+        quantity: 2,
+        reviews: [
+          {
+            id: '1',
+            name: 'John Doe',
+            description: 'lorem ipsum dolor sit amet',
+            rating: 4,
+          },
+        ],
+      },
+      {
+        name: 'Chocolate Brownies',
+        price: 15000,
+        image: 'https://i.ibb.co/jGFqHWY/image-1-6.png',
+        description: 'lorem ipsum dolor sit amet',
+        quantity: 1,
+        reviews: [
+          {
+            id: '1',
+            name: 'Arief Bahrudin',
+            description:
+              'Brownisnya enak, coklatnya kerasa banget, dalemnya melted kalo masih panas, gak ngecewain deh',
+            rating: 5,
+          },
+          {
+            id: '2',
+            name: 'Fakhri Hamzah',
+            description:
+              'Mungkin bagi pecinta manis, ini pilihan terbaik buat mereka, tapi karna gw #timasin jadi ya so - so lah',
+            rating: 4,
+          },
+          {
+            id: '3',
+            name: 'Puput Jessica',
+            description:
+              'Merugi banget bagi kalian kalo makan ini pas adem, sumpah coklatnya melted abiss!',
+            rating: 5,
+          },
+        ],
+      },
+    ],
+  },
+];

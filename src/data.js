@@ -185,7 +185,6 @@ export const ProductMock = [
   },
 ];
 
-
 export const HistoryMock = [
   {
     id: '0106342',

@@ -34,7 +34,7 @@ export default function HomePage() {
             <p className='pt-4'>Coba dan rasakan pelayanan terbaik dari kami</p>
             <p>Daftar sekarang gratis</p>
             <div className='flex gap-4 pt-6'>
-              <ButtonLink href='' className='rounded-2xl py-4 px-20'>
+              <ButtonLink href='' className='rounded-2xl bg-brown py-4 px-20'>
                 Daftar
               </ButtonLink>
               <ButtonLink

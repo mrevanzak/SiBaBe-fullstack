@@ -1,6 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { createWrapper } from 'next-redux-wrapper';
-import { Dispatch } from 'react';
 import type { Middleware } from 'redux';
 import thunk from 'redux-thunk';
 
@@ -101,5 +100,5 @@ export const wrapper = createWrapper<AppStore>(setupStore, { debug: true });
 
 // FIXME: remove type any in the future
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type AppDispatch = AppStore['dispatch'] | Dispatch<any>;
+export type AppDispatch = AppStore['dispatch'] & ((action: any) => any);
 export type { RootState } from './reducers';

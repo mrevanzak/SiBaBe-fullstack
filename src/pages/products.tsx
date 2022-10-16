@@ -48,7 +48,7 @@ export default function ProductPage() {
           {!loading &&
             products.map((product) => (
               <div
-                key={product.name}
+                key={product.id}
                 className='h-56 w-64 cursor-pointer overflow-hidden rounded-[30px] bg-grey transition-all duration-200 hover:scale-95'
                 onClick={() => {
                   setOpened(true);

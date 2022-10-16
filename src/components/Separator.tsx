@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 type SeparatorProps = {
-  width: number | string;
+  width?: number | string;
   color: string;
   className?: string;
   height?: number;

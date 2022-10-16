@@ -23,15 +23,7 @@ export default function HistoryPage() {
             className='mt-8'
           />
           {HistoryMock.map((history) => (
-            <>
-              <HistoryRow key={history.id} history={history} />
-              <Separator
-                width='90%'
-                height={2}
-                color='#D9D9D9BF'
-                className='mx-auto'
-              />
-            </>
+            <HistoryRow key={history.id} history={history} />
           ))}
         </div>
       </main>

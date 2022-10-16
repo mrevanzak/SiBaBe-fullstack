@@ -29,4 +29,9 @@ module.exports = {
 
     return config;
   },
+
+  publicRuntimeConfig: {
+    APP_ENV: process.env.APP_ENV,
+    BACKEND_URL: process.env.BACKEND_URL,
+  },
 };

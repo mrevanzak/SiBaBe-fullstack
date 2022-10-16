@@ -41,7 +41,7 @@ export default function ProductPage() {
           {ProductMock.map((product) => (
             <div
               key={product.name}
-              className='h-56 w-64 cursor-pointer overflow-hidden rounded-[30px] bg-grey'
+              className='h-56 w-64 cursor-pointer overflow-hidden rounded-[30px] bg-grey transition-all duration-200 hover:scale-95'
               onClick={() => {
                 setOpened(true);
                 setSelectedProduct(product);

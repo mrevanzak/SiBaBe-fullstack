@@ -9,6 +9,13 @@ export const addToCart = (product: Product) => (dispatch: AppDispatch) => {
   });
 };
 
+export const removeFromCart = (product: Product) => (dispatch: AppDispatch) => {
+  dispatch({
+    type: 'CART_REMOVE_ITEM',
+    payload: product,
+  });
+};
+
 export const addQuantity =
   (product: ProductWithQuantity) => (dispatch: AppDispatch) => {
     dispatch({
@@ -31,10 +38,7 @@ export const minusQuantity =
         },
       });
     }
-    dispatch({
-      type: 'CART_REMOVE_ITEM',
-      payload: product,
-    });
+    removeFromCart(product);
   };
 
 export const setTotal = (total: number) => (dispatch: AppDispatch) => {

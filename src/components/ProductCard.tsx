@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { FiShoppingCart, FiXCircle } from 'react-icons/fi';
 
-import { useAppDispatch } from '@/hooks/redux';
+import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 
 import NextImage from '@/components/NextImage';
 
@@ -21,8 +21,13 @@ export default function ProductCard({
   setOpened,
   setSelectedProduct,
 }: ProductCardProps) {
+  const { cart } = useAppSelector(({ cart }) => cart);
   const dispatch = useAppDispatch();
-  const [added, setAdded] = React.useState(false);
+
+  const isInCart = (id: string) => {
+    return !!cart.items[id];
+  };
+
   return (
     <div
       className='h-56 w-64 cursor-pointer overflow-hidden rounded-[30px] bg-grey transition-all duration-200 hover:scale-95'
@@ -46,12 +51,11 @@ export default function ProductCard({
             Rp {thousandSeparator(product.price)}
           </p>
         </div>
-        {added ? (
+        {isInCart(product.id) ? (
           <FiXCircle
             className='text-2xl transition-all duration-200 hover:text-primary-50'
             onClick={(e) => {
               e.stopPropagation();
-              setAdded(!added);
               dispatch(removeFromCart(product));
             }}
           />
@@ -60,7 +64,6 @@ export default function ProductCard({
             className='text-2xl transition-all duration-200 hover:text-primary-50'
             onClick={(e) => {
               e.stopPropagation();
-              setAdded(!added);
               dispatch(addToCart(product));
             }}
           />

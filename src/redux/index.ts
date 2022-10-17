@@ -96,7 +96,7 @@ export const setupStore = () => {
 export type AppStore = ReturnType<typeof setupStore>;
 export type AppState = ReturnType<AppStore['getState']>;
 
-export const wrapper = createWrapper<AppStore>(setupStore, { debug: true });
+export const wrapper = createWrapper<AppStore>(setupStore, { debug: false });
 
 // FIXME: remove type any in the future
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -38,7 +38,10 @@ export const minusQuantity =
         },
       });
     }
-    removeFromCart(product);
+    dispatch({
+      type: 'CART_REMOVE_ITEM',
+      payload: product,
+    });
   };
 
 export const setTotal = (total: number) => (dispatch: AppDispatch) => {

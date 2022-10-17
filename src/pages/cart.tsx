@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { ProductMock } from '@/data';
+import { useAppSelector } from '@/hooks/redux';
 
 import Button from '@/components/buttons/Button';
 import CartRow from '@/components/CartRow';
@@ -10,7 +10,9 @@ import Separator from '@/components/Separator';
 
 import thousandSeparator from '@/util/thousandSeparator';
 
-export default function ProductPage() {
+export default function CartPage() {
+  const { cart } = useAppSelector(({ cart }) => cart);
+
   return (
     <Layout>
       {/* <Seo templateTitle='Home' /> */}
@@ -31,19 +33,20 @@ export default function ProductPage() {
             <div className='w-1/4 text-center'>Jumlah</div>
           </div>
           <Separator width='100%' color='#D6AD60BF' />
-          {ProductMock.filter((_, i) => i < 3).map((product) => (
-            <>
-              <CartRow key={product.name} product={product} />
-              <Separator width='100%' color='#D6AD60BF' />
-            </>
-          ))}
+          {cart &&
+            Object.values(cart.items).map((product) => (
+              <>
+                <CartRow key={product.name} product={product} />
+                <Separator width='100%' color='#D6AD60BF' />
+              </>
+            ))}
           <div className='mt-9 flex items-center justify-end gap-7'>
             <div className='text-end'>
               <p className='font-secondary text-sm font-semibold'>
                 Total Harga
               </p>
               <p className='font-secondary text-2xl font-bold'>
-                Rp {thousandSeparator(40000)}
+                Rp {thousandSeparator(cart.total)}
               </p>
             </div>
             <div>

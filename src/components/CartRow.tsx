@@ -1,17 +1,28 @@
 import * as React from 'react';
 import { AiOutlineMinusCircle, AiOutlinePlusCircle } from 'react-icons/ai';
 
+import { useAppDispatch } from '@/hooks/redux';
+
 import NextImage from '@/components/NextImage';
 
+import { addQuantity, minusQuantity } from '@/redux/actions/Cart';
 import thousandSeparator from '@/util/thousandSeparator';
 
-import { Product } from '@/types';
+import { ProductWithQuantity } from '@/types';
 
 type CartRowProps = {
-  product: Product;
+  product: ProductWithQuantity;
 };
 
 export default function CartRow({ product }: CartRowProps) {
+  const dispatch = useAppDispatch();
+  const onAddQuantity = () => {
+    dispatch(addQuantity(product));
+  };
+  const onMinusQuantity = () => {
+    dispatch(minusQuantity(product));
+  };
+
   return (
     <div className='my-8 flex'>
       <div className='flex w-1/2'>
@@ -33,17 +44,17 @@ export default function CartRow({ product }: CartRowProps) {
         </div>
       </div>
       <div className='flex w-1/4 items-center justify-center'>
-        <button className='text-2xl'>
+        <button className='text-2xl' onClick={onMinusQuantity}>
           <AiOutlineMinusCircle />
         </button>
-        <p className='mx-8 font-secondary font-extrabold'>2</p>
-        <button className='text-2xl'>
+        <p className='mx-8 font-secondary font-extrabold'>{product.quantity}</p>
+        <button className='text-2xl' onClick={onAddQuantity}>
           <AiOutlinePlusCircle />
         </button>
       </div>
       <div className='flex w-1/4 items-center justify-center'>
         <p className='font-secondary font-bold'>
-          Rp {thousandSeparator(product.price)}
+          Rp {thousandSeparator(product.price * product.quantity)}
         </p>
       </div>
     </div>

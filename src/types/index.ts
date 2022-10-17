@@ -1,3 +1,7 @@
+export type ListOfObject<T> = {
+  [key: string]: T;
+};
+
 export type Review = {
   id: string;
   name: string;
@@ -19,5 +23,13 @@ export type History = {
   date: string;
   total: number;
   status: string;
-  items: Product[] & { quantity: number }[];
+  items: ProductWithQuantity[];
+};
+
+export type ProductWithQuantity = Product & { quantity: number };
+
+export type Cart = {
+  id: string;
+  items: ListOfObject<ProductWithQuantity>;
+  total: number;
 };

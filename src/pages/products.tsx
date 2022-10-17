@@ -9,6 +9,7 @@ import NextImage from '@/components/NextImage';
 import ProductDetail from '@/components/ProductDetail';
 import Seo from '@/components/Seo';
 
+import { addToCart } from '@/redux/actions/Cart';
 import { getProducts } from '@/redux/actions/Products';
 import thousandSeparator from '@/util/thousandSeparator';
 
@@ -70,7 +71,13 @@ export default function ProductPage() {
                       Rp {thousandSeparator(product.price)}
                     </p>
                   </div>
-                  <FiShoppingCart className='text-2xl' />
+                  <FiShoppingCart
+                    className='text-2xl duration-200 after:transition-all hover:text-primary-50'
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      dispatch(addToCart(product));
+                    }}
+                  />
                 </div>
               </div>
             ))}

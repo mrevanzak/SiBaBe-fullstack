@@ -25,7 +25,7 @@ export default function HomePage() {
       <Seo />
 
       <main>
-        <div className='layout flex flex-row items-center py-12'>
+        <div className='layout min-h-main my-6 flex flex-row items-center'>
           <div className=''>
             <p className='text-base font-semibold'>Halo, Selamat Datang!</p>
             <h1 className='pt-3 text-5xl font-extrabold leading-tight'>

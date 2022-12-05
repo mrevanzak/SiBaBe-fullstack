@@ -18,7 +18,6 @@ const apiMiddleware: Middleware =
     }
 
     const {
-      dataChecker,
       meta,
       url,
       method,
@@ -29,10 +28,6 @@ const apiMiddleware: Middleware =
       upload,
     } = action;
 
-    if (!dataChecker()) {
-      return;
-    }
-
     // Adds support to POST and PUT requests with data
     const dataOrParams = ['GET'].includes(method) ? 'params' : 'data';
 
@@ -40,11 +35,7 @@ const apiMiddleware: Middleware =
     dispatch({ type: actionStart, meta });
     if (method === 'POST' && upload) {
       httpClient
-        .post(url, upload, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        })
+        .post(url, upload)
         .then((payload) => {
           dispatch({ type: actionSuccess, meta, payload: payload.data });
         })

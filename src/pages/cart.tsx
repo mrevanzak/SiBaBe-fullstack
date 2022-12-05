@@ -4,13 +4,15 @@ import { useAppSelector } from '@/hooks/redux';
 
 import Button from '@/components/buttons/Button';
 import CartRow from '@/components/CartRow';
+import withAuth from '@/components/hoc/withAuth';
 import Layout from '@/components/layout/Layout';
 import Seo from '@/components/Seo';
 import Separator from '@/components/Separator';
 
 import thousandSeparator from '@/util/thousandSeparator';
 
-export default function CartPage() {
+export default withAuth(CartPage, 'all');
+function CartPage() {
   const { cart } = useAppSelector(({ cart }) => cart);
 
   return (

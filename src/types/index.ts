@@ -33,3 +33,9 @@ export type Cart = {
   items: ListOfObject<ProductWithQuantity>;
   total: number;
 };
+
+export type User = {
+  username: string;
+  nama: string;
+  token: string;
+};

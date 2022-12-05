@@ -3,11 +3,13 @@ import * as React from 'react';
 import { HistoryMock } from '@/data';
 
 import HistoryRow from '@/components/HistoryRow';
+import withAuth from '@/components/hoc/withAuth';
 import Layout from '@/components/layout/Layout';
 import Seo from '@/components/Seo';
 import Separator from '@/components/Separator';
 
-export default function HistoryPage() {
+export default withAuth(HistoryPage, 'all');
+function HistoryPage() {
   return (
     <Layout>
       {/* <Seo templateTitle='Home' /> */}

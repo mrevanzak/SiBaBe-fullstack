@@ -1,5 +1,7 @@
+import { useRouter } from 'next/router';
 import * as React from 'react';
 
+import withAuth from '@/components/hoc/withAuth';
 import Layout from '@/components/layout/Layout';
 import ButtonLink from '@/components/links/ButtonLink';
 import Seo from '@/components/Seo';
@@ -18,7 +20,10 @@ import Logo from '~/svg/pancake.svg';
 // Before you begin editing, follow all comments with `STARTERCONF`,
 // to customize the default configuration.
 
-export default function HomePage() {
+export default withAuth(HomePage, 'optional');
+function HomePage() {
+  const router = useRouter();
+
   return (
     <Layout>
       {/* <Seo templateTitle='Home' /> */}
@@ -34,13 +39,18 @@ export default function HomePage() {
             <p className='pt-4'>Coba dan rasakan pelayanan terbaik dari kami</p>
             <p>Daftar sekarang gratis</p>
             <div className='flex gap-4 pt-6'>
-              <ButtonLink href='' className='rounded-2xl bg-brown py-4 px-20'>
+              <ButtonLink
+                href=''
+                className='rounded-2xl bg-brown py-4 px-20'
+                onClick={() => router.push('auth/register')}
+              >
                 Daftar
               </ButtonLink>
               <ButtonLink
                 href=''
                 variant='outline'
                 className='rounded-2xl py-4 px-20'
+                onClick={() => router.push('/auth/login')}
               >
                 Login
               </ButtonLink>

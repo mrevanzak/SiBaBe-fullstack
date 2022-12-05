@@ -3,6 +3,7 @@ import * as React from 'react';
 
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 
+import withAuth from '@/components/hoc/withAuth';
 import Layout from '@/components/layout/Layout';
 import ProductCard from '@/components/ProductCard';
 import ProductDetail from '@/components/ProductDetail';
@@ -12,7 +13,8 @@ import { getProducts } from '@/redux/actions/Products';
 
 import { Product } from '@/types';
 
-export default function ProductPage() {
+export default withAuth(ProductPage, 'optional');
+function ProductPage() {
   const { products, loading } = useAppSelector(({ products }) => products);
   const dispatch = useAppDispatch();
   const [opened, setOpened] = React.useState(false);

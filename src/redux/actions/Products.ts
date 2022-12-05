@@ -8,6 +8,5 @@ export const getProducts = () => (dispatch: AppDispatch) => {
     actionSuccess: 'PRODUCTS_FETCH_SUCCESS',
     actionError: 'PRODUCTS_FETCH_ERROR',
     type: 'API',
-    dataChecker: () => true,
   });
 };

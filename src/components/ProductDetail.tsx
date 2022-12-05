@@ -24,7 +24,7 @@ export default function ProductDetail({
 }: ProductDetailProps) {
   return (
     <div className='mb-8 flex flex-row gap-24 overflow-hidden rounded-[50px]'>
-      <div>
+      <div className='flex-1'>
         <NextImage
           useSkeleton
           src={product.image}
@@ -48,28 +48,29 @@ export default function ProductDetail({
         />
         <p className='font-secondary'>Rating dan Ulasan</p>
         <Separator width={136} color='#D6AD60' />
-        {product.reviews.map((review, i) => (
-          <div key={review.id} className='my-7'>
-            <div className='mb-4 flex justify-between'>
-              <div className='flex items-center gap-3'>
-                <RiUser3Line className='text-2xl' />
-                <p className='ml-2 font-secondary text-sm'>{review.name}</p>
+        {product.reviews &&
+          product.reviews.map((review, i) => (
+            <div key={review.id} className='my-7'>
+              <div className='mb-4 flex justify-between'>
+                <div className='flex items-center gap-3'>
+                  <RiUser3Line className='text-2xl' />
+                  <p className='ml-2 font-secondary text-sm'>{review.name}</p>
+                </div>
+                <div className='flex items-center'>
+                  {[...Array(review.rating)].map((_, i) => (
+                    <RiStarSFill key={i} className='' />
+                  ))}
+                  {[...Array(5 - review.rating)].map((_, i) => (
+                    <RiStarSLine key={i} className='' />
+                  ))}
+                </div>
               </div>
-              <div className='flex items-center'>
-                {[...Array(review.rating)].map((_, i) => (
-                  <RiStarSFill key={i} className='' />
-                ))}
-                {[...Array(5 - review.rating)].map((_, i) => (
-                  <RiStarSLine key={i} className='' />
-                ))}
-              </div>
+              <p className='font-secondary text-xs'>{review.description}</p>
+              {i !== product.reviews.length - 1 && (
+                <Separator width='100%' color='#B3B3B3' className='my-6' />
+              )}
             </div>
-            <p className='font-secondary text-xs'>{review.description}</p>
-            {i !== product.reviews.length - 1 && (
-              <Separator width='100%' color='#B3B3B3' className='my-6' />
-            )}
-          </div>
-        ))}
+          ))}
       </div>
     </div>
   );

@@ -17,9 +17,40 @@ export const login =
     });
   };
 
-export const setTotal = () => (dispatch: AppDispatch) => {
+export const logout = () => (dispatch: AppDispatch) => {
   dispatch({
     type: 'USER_LOGOUT',
     payload: {},
   });
 };
+
+export const register =
+  (
+    username: string,
+    password: string,
+    name: string,
+    age: string,
+    email: string,
+    phone: string,
+    address: string
+  ) =>
+  (dispatch: AppDispatch) => {
+    dispatch({
+      url: '/register',
+      method: 'POST',
+      meta: { username, password, name, age, email, phone, address },
+      actionStart: 'USER_REGISTER',
+      actionSuccess: 'USER_REGISTER_SUCCESS',
+      actionError: 'USER_REGISTER_ERROR',
+      type: 'API',
+      data: {
+        username,
+        password,
+        name,
+        age,
+        email,
+        phone,
+        address,
+      },
+    });
+  };

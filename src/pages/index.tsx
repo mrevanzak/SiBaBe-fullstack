@@ -1,6 +1,8 @@
 import { useRouter } from 'next/router';
 import * as React from 'react';
 
+import { useAppSelector } from '@/hooks/redux';
+
 import withAuth from '@/components/hoc/withAuth';
 import Layout from '@/components/layout/Layout';
 import ButtonLink from '@/components/links/ButtonLink';
@@ -23,6 +25,7 @@ import Logo from '~/svg/pancake.svg';
 export default withAuth(HomePage, 'optional');
 function HomePage() {
   const router = useRouter();
+  const { user } = useAppSelector(({ user }) => user);
 
   return (
     <Layout>
@@ -32,7 +35,9 @@ function HomePage() {
       <main>
         <div className='layout min-h-main my-6 flex flex-row items-center'>
           <div className=''>
-            <p className='text-base font-semibold'>Halo, Selamat Datang!</p>
+            <p className='text-base font-semibold'>
+              Halo, Selamat Datang! {user?.nama}
+            </p>
             <h1 className='pt-3 text-5xl font-extrabold leading-tight'>
               Dapatkan Roti Premium Terlezat Buatan Kami
             </h1>

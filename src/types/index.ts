@@ -10,28 +10,29 @@ export type Review = {
 };
 
 export type Product = {
-  id: string;
+  id: number;
   name: string;
   price: number;
   description: string;
   image: string;
+  stok: number;
   reviews: Review[];
 };
 
-export type History = {
-  id: string;
-  date: string;
-  total: number;
-  status: string;
-  items: ProductWithQuantity[];
+export type Cart = {
+  cartId: number;
+  productId: number;
+  quantity: number;
+  totalPrice: number;
+  product: Product;
 };
 
-export type ProductWithQuantity = Product & { quantity: number };
-
-export type Cart = {
+export type UserCart = {
   id: string;
-  items: ListOfObject<ProductWithQuantity>;
-  total: number;
+  username: string;
+  totalQty: number;
+  product: Cart[];
+  totalPrice: number;
 };
 
 export type User = {

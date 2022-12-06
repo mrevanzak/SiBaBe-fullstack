@@ -54,10 +54,19 @@ export default function withAuth<T extends WithAuthProps = WithAuthProps>(
     React.useEffect(() => {
       if (!loading) {
         if (user) {
+          if (routeRole === 'all') {
+            httpClient.interceptors.response.use(
+              (response) => response,
+              (error) => {
+                if (error.response.status === 401) {
+                  router.push(LOGIN_ROUTE);
+                }
+                return Promise.reject(error);
+              }
+            );
+          }
           // Prevent authenticated user from accessing auth or other role pages
           if (routeRole === 'auth') {
-            httpClient.defaults.headers.Authorization = `Bearer ${user.token}`;
-            httpClient.defaults.baseURL = API_URL + '/jwt';
             if (query?.redirect) {
               router.replace(query.redirect as string);
             } else {

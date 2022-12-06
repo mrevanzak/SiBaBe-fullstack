@@ -28,17 +28,17 @@ export const register =
   (
     username: string,
     password: string,
-    name: string,
-    age: string,
+    nama: string,
+    umur: number,
     email: string,
-    phone: string,
-    address: string
+    telp: string,
+    alamat: string
   ) =>
   (dispatch: AppDispatch) => {
     dispatch({
       url: '/register',
       method: 'POST',
-      meta: { username, password, name, age, email, phone, address },
+      meta: { username, password, nama, umur, email, telp, alamat },
       actionStart: 'USER_REGISTER',
       actionSuccess: 'USER_REGISTER_SUCCESS',
       actionError: 'USER_REGISTER_ERROR',
@@ -46,11 +46,11 @@ export const register =
       data: {
         username,
         password,
-        name,
-        age,
+        nama,
+        umur,
         email,
-        phone,
-        address,
+        telp,
+        alamat,
       },
     });
   };

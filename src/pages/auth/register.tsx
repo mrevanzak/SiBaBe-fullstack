@@ -36,7 +36,9 @@ function LoginPage() {
     const address = addressRef.current?.value;
 
     if (username && password && name && age && email && phone && address) {
-      dispatch(register(username, password, name, age, email, phone, address));
+      dispatch(
+        register(username, password, name, Number(age), email, phone, address)
+      );
     }
 
     router.push('/auth/login');

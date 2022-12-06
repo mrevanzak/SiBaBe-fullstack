@@ -32,6 +32,7 @@
     "react-icons": "^4.4.0",
     "react-redux": "^8.0.4",
     "redux": "^4.2.0",
+    "redux-persist": "^6.0.0",
     "redux-saga": "^1.2.1",
     "tailwind-merge": "^1.6.0"
   },
@@ -44,6 +45,7 @@
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@types/react": "^18.0.21",
+    "@types/redux-persist": "^4.3.1",
     "@typescript-eslint/eslint-plugin": "^5.38.0",
     "@typescript-eslint/parser": "^5.38.0",
     "autoprefixer": "^10.4.12",

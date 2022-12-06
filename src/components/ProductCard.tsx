@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { FiShoppingCart, FiXCircle } from 'react-icons/fi';
+import { FiShoppingCart } from 'react-icons/fi';
 
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 
 import NextImage from '@/components/NextImage';
 
-import { addToCart, removeFromCart } from '@/redux/actions/Cart';
+import { addToCart } from '@/redux/actions/Cart';
 import thousandSeparator from '@/util/thousandSeparator';
 
 import { Product } from '@/types';
@@ -21,12 +21,13 @@ export default function ProductCard({
   setOpened,
   setSelectedProduct,
 }: ProductCardProps) {
-  const { cart } = useAppSelector(({ cart }) => cart);
+  // const { cart } = useAppSelector(({ cart }) => cart);
+  const { user } = useAppSelector(({ user }) => user);
   const dispatch = useAppDispatch();
 
-  const isInCart = (id: string) => {
-    return !!cart.items[id];
-  };
+  // const isInCart = (id: number) => {
+  //   return cart?.product?.find((item) => item.productId === id);
+  // };
 
   return (
     <div
@@ -51,12 +52,12 @@ export default function ProductCard({
             Rp {thousandSeparator(product.price)}
           </p>
         </div>
-        {isInCart(product.id) ? (
+        {/* {isInCart(product.id) ? (
           <FiXCircle
             className='text-2xl transition-all duration-200 hover:text-primary-50'
             onClick={(e) => {
               e.stopPropagation();
-              dispatch(removeFromCart(product));
+              // dispatch(removeFromCart(product));
             }}
           />
         ) : (
@@ -64,7 +65,16 @@ export default function ProductCard({
             className='text-2xl transition-all duration-200 hover:text-primary-50'
             onClick={(e) => {
               e.stopPropagation();
-              dispatch(addToCart(product));
+              dispatch(addToCart(product.id));
+            }}
+          />
+        )} */}
+        {user && (
+          <FiShoppingCart
+            className='text-2xl transition-all duration-200 hover:text-primary-50'
+            onClick={(e) => {
+              e.stopPropagation();
+              dispatch(addToCart(product.id));
             }}
           />
         )}

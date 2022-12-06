@@ -1,9 +1,10 @@
 import { MantineProvider } from '@mantine/core';
 import { AppProps } from 'next/app';
+import { PersistGate } from 'redux-persist/integration/react';
 
 import '@/styles/globals.css';
 
-import { wrapper } from '@/redux';
+import { persistor, wrapper } from '@/redux';
 
 /**
  * !STARTERCONF info
@@ -20,7 +21,9 @@ function MyApp({ Component, pageProps }: AppProps) {
         colorScheme: 'light',
       }}
     >
-      <Component {...pageProps} />
+      <PersistGate loading={null} persistor={persistor}>
+        <Component {...pageProps} />
+      </PersistGate>
     </MantineProvider>
   );
 }

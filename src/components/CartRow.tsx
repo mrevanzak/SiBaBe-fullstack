@@ -8,19 +8,20 @@ import NextImage from '@/components/NextImage';
 import { addQuantity, minusQuantity } from '@/redux/actions/Cart';
 import thousandSeparator from '@/util/thousandSeparator';
 
-import { ProductWithQuantity } from '@/types';
+import { Cart } from '@/types';
 
 type CartRowProps = {
-  product: ProductWithQuantity;
+  product: Cart;
 };
 
 export default function CartRow({ product }: CartRowProps) {
   const dispatch = useAppDispatch();
+
   const onAddQuantity = () => {
-    dispatch(addQuantity(product));
+    dispatch(addQuantity(product.productId));
   };
   const onMinusQuantity = () => {
-    dispatch(minusQuantity(product));
+    dispatch(minusQuantity(product.productId));
   };
 
   return (
@@ -29,17 +30,17 @@ export default function CartRow({ product }: CartRowProps) {
         <div className='w-[110px] overflow-hidden rounded-l-3xl'>
           <NextImage
             useSkeleton
-            src={product.image}
-            alt={product.name}
+            src={product.product.image}
+            alt={product.product.name}
             width={165}
             height={111}
             className='ml-[-30px]'
           />
         </div>
         <div className='ml-9 flex flex-col justify-center'>
-          <p className='font-secondary text-xs'>{product.name}</p>
+          <p className='font-secondary text-xs'>{product.product.name}</p>
           <p className='font-secondary font-extrabold'>
-            Rp {thousandSeparator(product.price)}
+            Rp {thousandSeparator(product.product.price)}
           </p>
         </div>
       </div>
@@ -54,7 +55,7 @@ export default function CartRow({ product }: CartRowProps) {
       </div>
       <div className='flex w-1/4 items-center justify-center'>
         <p className='font-secondary font-bold'>
-          Rp {thousandSeparator(product.price * product.quantity)}
+          Rp {thousandSeparator(product.totalPrice)}
         </p>
       </div>
     </div>

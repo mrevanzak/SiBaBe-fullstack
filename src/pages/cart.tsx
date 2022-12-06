@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { useAppSelector } from '@/hooks/redux';
+import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 
 import Button from '@/components/buttons/Button';
 import CartRow from '@/components/CartRow';
@@ -9,11 +9,17 @@ import Layout from '@/components/layout/Layout';
 import Seo from '@/components/Seo';
 import Separator from '@/components/Separator';
 
+import { fetchCart } from '@/redux/actions/Cart';
 import thousandSeparator from '@/util/thousandSeparator';
 
 export default withAuth(CartPage, 'all');
 function CartPage() {
   const { cart } = useAppSelector(({ cart }) => cart);
+  const dispatch = useAppDispatch();
+
+  React.useEffect(() => {
+    dispatch(fetchCart());
+  }, []);
 
   return (
     <Layout>
@@ -36,11 +42,12 @@ function CartPage() {
           </div>
           <Separator width='100%' color='#D6AD60BF' />
           {cart &&
-            Object.values(cart.items).map((product) => (
-              <>
-                <CartRow key={product.name} product={product} />
+            Object.keys(cart).length > 0 &&
+            cart.product.map((product) => (
+              <div key={product.productId}>
+                <CartRow product={product} />
                 <Separator width='100%' color='#D6AD60BF' />
-              </>
+              </div>
             ))}
           <div className='mt-9 flex items-center justify-end gap-7'>
             <div className='text-end'>
@@ -48,7 +55,7 @@ function CartPage() {
                 Total Harga
               </p>
               <p className='font-secondary text-2xl font-bold'>
-                Rp {thousandSeparator(cart.total)}
+                Rp {thousandSeparator(cart?.totalPrice || 0)}
               </p>
             </div>
             <div>

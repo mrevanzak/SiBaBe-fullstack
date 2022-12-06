@@ -21,7 +21,6 @@ const ProductReducer = (state = initialState, action: AnyAction) => {
         loading: { $set: true },
       });
     case 'USER_LOGIN_SUCCESS':
-      localStorage.setItem('token', action.payload.data.token);
       return update(state, {
         user: { $set: action.payload.data },
         loading: { $set: false },

@@ -1,6 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { createWrapper } from 'next-redux-wrapper';
 import type { Middleware } from 'redux';
+import { persistReducer, persistStore } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
 import thunk from 'redux-thunk';
 
 import { httpClient } from '@/pages/api/products';
@@ -76,18 +78,26 @@ const apiMiddleware: Middleware =
     }
   };
 
-export const setupStore = () => {
-  return configureStore({
-    reducer: rootReducer,
-    middleware: [thunk, apiMiddleware],
-    devTools: process.env.APP_ENV !== 'production',
-  });
+const persistConfig = {
+  key: 'root',
+  storage,
 };
+
+const persistedRootReducer = persistReducer(persistConfig, rootReducer);
+
+const store = configureStore({
+  reducer: persistedRootReducer,
+  middleware: [thunk, apiMiddleware],
+  devTools: process.env.APP_ENV !== 'production',
+});
+
+export const setupStore = () => store;
 
 export type AppStore = ReturnType<typeof setupStore>;
 export type AppState = ReturnType<AppStore['getState']>;
 
 export const wrapper = createWrapper<AppStore>(setupStore, { debug: false });
+export const persistor = persistStore(store);
 
 // FIXME: remove type any in the future
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

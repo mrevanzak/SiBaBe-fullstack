@@ -1,77 +1,62 @@
+import { AxiosError } from 'axios';
 import update from 'immutability-helper';
 import { AnyAction } from 'redux';
 
-import { Cart } from '@/types';
+import { UserCart } from '@/types';
 
 type CartState = {
-  cart: Cart;
+  cart?: UserCart;
   loading: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  error?: any;
+  error?: AxiosError;
 };
 
 const initialState = {
-  cart: {
-    id: '123',
-    items: {},
-    total: 0,
-  },
   loading: false,
 } as CartState;
 
 const CartReducer = (state = initialState, action: AnyAction) => {
   switch (action.type) {
-    case 'CART_ADD_ITEM':
+    case 'FETCH_CART':
       return update(state, {
-        cart: {
-          items: {
-            $merge: {
-              [action.payload.id]: { ...action.payload, quantity: 1 },
-            },
-          },
-          total: {
-            $set: state.cart.total + action.payload.price,
-          },
-        },
+        loading: { $set: true },
       });
-    case 'CART_REMOVE_ITEM':
+    case 'FETCH_CART_SUCCESS':
       return update(state, {
-        cart: {
-          items: {
-            $unset: [action.payload.id],
-          },
-          total: {
-            $set: state.cart.total - action.payload.price,
-          },
-        },
+        cart: { $set: action.payload.data },
+        loading: { $set: false },
       });
-    case 'CART_UPDATE_ITEM':
+    case 'FETCH_CART_ERROR':
       return update(state, {
-        cart: {
-          items: {
-            [action.payload.id]: {
-              quantity: {
-                $set: action.payload.quantity,
-              },
-            },
-          },
-          total: {
-            $set:
-              state.cart.total -
-              state.cart.items[action.payload.id].price *
-                state.cart.items[action.payload.id].quantity +
-              state.cart.items[action.payload.id].price *
-                action.payload.quantity,
-          },
-        },
+        loading: { $set: false },
+        error: { $set: action.payload.error },
       });
-    case 'CART_SET_TOTAL':
+    case 'ADD_QUANTITY':
       return update(state, {
-        cart: {
-          total: {
-            $set: action.payload,
-          },
-        },
+        loading: { $set: true },
+      });
+    case 'ADD_QUANTITY_SUCCESS':
+      return update(state, {
+        cart: { $set: action.payload.data },
+        loading: { $set: false },
+      });
+    case 'ADD_QUANTITY_ERROR':
+      return update(state, {
+        loading: { $set: false },
+        error: { $set: action.payload.error },
+      });
+    case 'MINUS_QUANTITY':
+      return update(state, {
+        loading: { $set: true },
+      });
+    case 'MINUS_QUANTITY_SUCCESS':
+      return update(state, {
+        cart: { $set: action.payload.data },
+        loading: { $set: false },
+      });
+    case 'MINUS_QUANTITY_ERROR':
+      return update(state, {
+        loading: { $set: false },
+        error: { $set: action.payload.error },
       });
     default:
       return state;

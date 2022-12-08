@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import * as React from 'react';
 
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
@@ -16,6 +17,7 @@ export default withAuth(CartPage, 'all');
 function CartPage() {
   const { cart } = useAppSelector(({ cart }) => cart);
   const dispatch = useAppDispatch();
+  const router = useRouter();
 
   React.useEffect(() => {
     dispatch(fetchCart());
@@ -42,7 +44,7 @@ function CartPage() {
           </div>
           <Separator width='100%' color='#D6AD60BF' />
           {cart &&
-            Object.keys(cart).length > 0 &&
+            cart.product &&
             cart.product.map((product) => (
               <div key={product.productId}>
                 <CartRow product={product} />
@@ -59,7 +61,10 @@ function CartPage() {
               </p>
             </div>
             <div>
-              <Button className='rounded-3xl bg-brown py-6 px-28 font-secondary'>
+              <Button
+                className='rounded-3xl bg-brown py-6 px-28 font-secondary'
+                onClick={() => router.push('/order')}
+              >
                 BELI
               </Button>
             </div>

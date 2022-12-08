@@ -2,9 +2,10 @@ import { useRouter } from 'next/router';
 import * as React from 'react';
 import { ImSpinner8 } from 'react-icons/im';
 
-import { useAppSelector } from '@/hooks/redux';
+import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 
 import { API_URL, httpClient } from '@/pages/api/products';
+import { logout } from '@/redux/actions/User';
 
 import { User } from '@/types';
 
@@ -45,6 +46,7 @@ export default function withAuth<T extends WithAuthProps = WithAuthProps>(
 ) {
   const ComponentWithAuth = (props: Omit<T, keyof WithAuthProps>) => {
     const router = useRouter();
+    const dispatch = useAppDispatch();
     const { query } = router;
 
     //#region  //*=========== STORE ===========
@@ -59,6 +61,7 @@ export default function withAuth<T extends WithAuthProps = WithAuthProps>(
               (response) => response,
               (error) => {
                 if (error.response.status === 401) {
+                  dispatch(logout());
                   router.push(LOGIN_ROUTE);
                 }
                 return Promise.reject(error);

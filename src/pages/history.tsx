@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { HistoryMock } from '@/data';
+import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 
 import HistoryRow from '@/components/HistoryRow';
 import withAuth from '@/components/hoc/withAuth';
@@ -8,8 +8,17 @@ import Layout from '@/components/layout/Layout';
 import Seo from '@/components/Seo';
 import Separator from '@/components/Separator';
 
+import { fetchHistory } from '@/redux/actions/History';
+
 export default withAuth(HistoryPage, 'all');
 function HistoryPage() {
+  const { history } = useAppSelector(({ history }) => history);
+  const dispatch = useAppDispatch();
+
+  React.useEffect(() => {
+    dispatch(fetchHistory());
+  }, []);
+
   return (
     <Layout>
       {/* <Seo templateTitle='Home' /> */}
@@ -24,9 +33,11 @@ function HistoryPage() {
             color='#D6AD60BF'
             className='mt-8'
           />
-          {HistoryMock.map((history) => (
-            <HistoryRow key={history.id} history={history} />
-          ))}
+          {history &&
+            history.order &&
+            history.order.map((history) => (
+              <HistoryRow key={history.id} history={history} />
+            ))}
         </div>
       </main>
     </Layout>

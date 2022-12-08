@@ -2,14 +2,14 @@ import * as React from 'react';
 
 type SeparatorProps = {
   width?: number | string;
-  color: string;
+  color?: string;
   className?: string;
   height?: number;
 };
 
 export default function Separator({
   width,
-  color,
+  color = '#D6AD60',
   className,
   height,
 }: SeparatorProps) {

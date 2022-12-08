@@ -40,3 +40,21 @@ export type User = {
   nama: string;
   token: string;
 };
+
+export type OrderData = {
+  id: number;
+  createdAt: Date;
+  cartId: number;
+  customerUsername: string;
+  totalQty: number;
+  totalPrice: number;
+  status: string;
+  address: string;
+  courier: string;
+  proofOfPayment: string;
+  validationBy: string;
+};
+
+export type History = {
+  order: OrderData[];
+};

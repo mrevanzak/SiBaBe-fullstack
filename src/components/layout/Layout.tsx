@@ -11,7 +11,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const { user } = useAppSelector(({ user }) => user);
 
   React.useEffect(() => {
-    if (user) {
+    if (user?.token) {
       httpClient.defaults.headers.Authorization = `Bearer ${user.token}`;
       httpClient.defaults.baseURL = API_URL + '/jwt';
     }

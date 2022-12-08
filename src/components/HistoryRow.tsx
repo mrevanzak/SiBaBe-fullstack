@@ -4,10 +4,10 @@ import Separator from '@/components/Separator';
 
 import thousandSeparator from '@/util/thousandSeparator';
 
-import { History } from '@/types';
+import { OrderData } from '@/types';
 
 type HistoryRowProps = {
-  history: History;
+  history: OrderData;
 };
 
 export default function HistoryRow({ history }: HistoryRowProps) {
@@ -26,14 +26,16 @@ export default function HistoryRow({ history }: HistoryRowProps) {
       <div className='flex cursor-pointer justify-between py-8  transition-all duration-200'>
         <div className=''>
           <p className='text-sm'>Pembelian pada</p>
-          <p className='font-secondary text-xl font-bold'>{history.date}</p>
+          <p className='font-secondary text-xl font-bold'>
+            {history.createdAt.toLocaleString()}
+          </p>
         </div>
         <div className=''>
           <p className='text-sm'>Kode pemesanan</p>
           <p className='font-secondary text-xl font-bold'>{history.id}</p>
         </div>
         <p className='font-secondary font-bold'>
-          Rp {thousandSeparator(history.total)}
+          Rp {thousandSeparator(history.totalPrice)}
         </p>
       </div>
       <Separator

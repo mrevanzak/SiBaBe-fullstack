@@ -20,6 +20,7 @@
   "dependencies": {
     "@emotion/react": "^11.10.4",
     "@emotion/server": "^11.10.0",
+    "@headlessui/react": "^1.7.4",
     "@mantine/core": "^5.5.4",
     "@mantine/hooks": "^5.5.4",
     "@mantine/next": "^5.5.4",

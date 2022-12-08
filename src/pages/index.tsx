@@ -43,23 +43,25 @@ function HomePage() {
             </h1>
             <p className='pt-4'>Coba dan rasakan pelayanan terbaik dari kami</p>
             <p>Daftar sekarang gratis</p>
-            <div className='flex gap-4 pt-6'>
-              <ButtonLink
-                href=''
-                className='rounded-2xl bg-brown py-4 px-20'
-                onClick={() => router.push('auth/register')}
-              >
-                Daftar
-              </ButtonLink>
-              <ButtonLink
-                href=''
-                variant='outline'
-                className='rounded-2xl py-4 px-20'
-                onClick={() => router.push('/auth/login')}
-              >
-                Login
-              </ButtonLink>
-            </div>
+            {!user?.token && (
+              <div className='flex gap-4 pt-6'>
+                <ButtonLink
+                  href=''
+                  className='rounded-2xl bg-brown py-4 px-20'
+                  onClick={() => router.push('auth/register')}
+                >
+                  Daftar
+                </ButtonLink>
+                <ButtonLink
+                  href=''
+                  variant='outline'
+                  className='rounded-2xl py-4 px-20'
+                  onClick={() => router.push('/auth/login')}
+                >
+                  Login
+                </ButtonLink>
+              </div>
+            )}
           </div>
           <Logo className='h-full w-10/12' />
         </div>

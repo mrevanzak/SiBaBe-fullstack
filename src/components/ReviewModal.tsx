@@ -3,7 +3,7 @@ import * as React from 'react';
 import { AiFillStar, AiOutlineStar } from 'react-icons/ai';
 import { RiCloseFill } from 'react-icons/ri';
 
-import { useAppDispatch } from '@/hooks/redux';
+import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 
 import Button from '@/components/buttons/Button';
 import Separator from '@/components/Separator';
@@ -21,15 +21,16 @@ export default function ReviewModal({
   setOpened,
   historyId,
 }: ReviewModalProps) {
+  const { user } = useAppSelector(({ user }) => user);
   const dispatch = useAppDispatch();
   const [rating, setRating] = React.useState(0);
-  const nameRef = React.useRef<HTMLTextAreaElement>(null);
   const reviewRef = React.useRef<HTMLTextAreaElement>(null);
 
   const onSubmit = () => {
-    if (nameRef.current && reviewRef.current) {
+    if (reviewRef.current) {
       dispatch(addReview(reviewRef.current.value, rating, historyId, id));
     }
+    setOpened(false);
   };
 
   return (
@@ -55,7 +56,8 @@ export default function ReviewModal({
           </Button>
         </div>
         <Textarea
-          ref={nameRef}
+          value={user?.username}
+          disabled
           placeholder='Isi nama kamu'
           label='Nama'
           radius='xl'

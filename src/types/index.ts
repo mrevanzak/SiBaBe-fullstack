@@ -14,7 +14,7 @@ export type Product = {
   price: number;
   description: string;
   image: string;
-  stok: number;
+  stock: number;
   reviews: Review[];
 };
 

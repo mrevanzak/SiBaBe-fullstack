@@ -4,7 +4,7 @@ import { ImSpinner8 } from 'react-icons/im';
 
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 
-import { API_URL, httpClient } from '@/pages/api/products';
+import { httpClient } from '@/pages/api/products';
 import { logout } from '@/redux/actions/User';
 
 import { User } from '@/types';
@@ -79,8 +79,6 @@ export default function withAuth<T extends WithAuthProps = WithAuthProps>(
         } else {
           // Prevent unauthenticated user from accessing protected pages
           if (routeRole !== 'auth' && routeRole !== 'optional') {
-            httpClient.defaults.headers.Authorization = null;
-            httpClient.defaults.baseURL = API_URL;
             router.replace(
               `${LOGIN_ROUTE}?redirect=${router.asPath}`,
               `${LOGIN_ROUTE}`

@@ -1,5 +1,7 @@
 import { AppDispatch } from '@/redux';
 
+import { UserData } from '@/types';
+
 export const login =
   (username: string, password: string) => (dispatch: AppDispatch) => {
     dispatch({
@@ -25,20 +27,12 @@ export const logout = () => (dispatch: AppDispatch) => {
 };
 
 export const register =
-  (
-    username: string,
-    password: string,
-    nama: string,
-    umur: number,
-    email: string,
-    telp: string,
-    alamat: string
-  ) =>
+  ({ username, password, name, age, email, phone, address }: UserData) =>
   (dispatch: AppDispatch) => {
     dispatch({
       url: '/register',
       method: 'POST',
-      meta: { username, password, nama, umur, email, telp, alamat },
+      meta: { username, password, name, age, email, phone, address },
       actionStart: 'USER_REGISTER',
       actionSuccess: 'USER_REGISTER_SUCCESS',
       actionError: 'USER_REGISTER_ERROR',
@@ -46,11 +40,23 @@ export const register =
       data: {
         username,
         password,
-        nama,
-        umur,
+        name,
+        age,
         email,
-        telp,
-        alamat,
+        phone,
+        address,
       },
     });
   };
+
+export const fetchUser = () => (dispatch: AppDispatch) => {
+  dispatch({
+    url: '/user',
+    method: 'GET',
+    meta: {},
+    actionStart: 'FETCH_USER',
+    actionSuccess: 'FETCH_USER_SUCCESS',
+    actionError: 'FETCH_USER_ERROR',
+    type: 'API',
+  });
+};

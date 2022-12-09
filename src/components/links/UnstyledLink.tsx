@@ -18,6 +18,13 @@ const UnstyledLink = React.forwardRef<HTMLAnchorElement, UnstyledLinkProps>(
         ? openNewTab
         : href && !href.startsWith('/') && !href.startsWith('#');
 
+    if (!href)
+      return (
+        <a ref={ref} {...rest} className={className + ' cursor-pointer'}>
+          {children}
+        </a>
+      );
+
     if (!isNewTab) {
       return (
         <Link href={href} {...nextLinkProps}>

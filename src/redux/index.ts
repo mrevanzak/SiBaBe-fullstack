@@ -5,12 +5,12 @@ import { persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import thunk from 'redux-thunk';
 
-import { httpClient } from '@/pages/api/products';
+import { API_URL, httpClient } from '@/pages/api/products';
 
 import rootReducer from './reducers';
 
 const apiMiddleware: Middleware =
-  ({ dispatch }) =>
+  ({ dispatch, getState }) =>
   (next) =>
   (action) => {
     next(action);
@@ -32,6 +32,16 @@ const apiMiddleware: Middleware =
 
     // Adds support to POST and PUT requests with data
     const dataOrParams = ['GET'].includes(method) ? 'params' : 'data';
+
+    if (getState().user?.user?.token) {
+      httpClient.defaults.headers.Authorization = `Bearer ${
+        getState().user?.user?.token
+      }`;
+      httpClient.defaults.baseURL = API_URL + '/jwt';
+    } else {
+      httpClient.defaults.baseURL = API_URL;
+      httpClient.defaults.headers.Authorization = null;
+    }
 
     // start action
     dispatch({ type: actionStart, meta });

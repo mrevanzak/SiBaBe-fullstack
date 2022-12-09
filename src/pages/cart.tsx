@@ -11,6 +11,7 @@ import Seo from '@/components/Seo';
 import Separator from '@/components/Separator';
 
 import { fetchCart } from '@/redux/actions/Cart';
+import { clearCheckoutMessage } from '@/redux/actions/Checkout';
 import thousandSeparator from '@/util/thousandSeparator';
 
 export default withAuth(CartPage, 'all');
@@ -63,7 +64,10 @@ function CartPage() {
             <div>
               <Button
                 className='rounded-3xl bg-brown py-6 px-28 font-secondary'
-                onClick={() => router.push('/order')}
+                onClick={() => {
+                  router.push('/order');
+                  dispatch(clearCheckoutMessage());
+                }}
               >
                 BELI
               </Button>

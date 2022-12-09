@@ -2,10 +2,9 @@ import { AxiosError } from 'axios';
 import update from 'immutability-helper';
 import { AnyAction } from 'redux';
 
-import { UserCart } from '@/types';
-
 type CheckoutState = {
-  checkout?: UserCart;
+  status?: string;
+  invoice?: string;
   loading: boolean;
   error?: AxiosError;
 };
@@ -16,19 +15,24 @@ const initialState = {
 
 const CheckoutReducer = (state = initialState, action: AnyAction) => {
   switch (action.type) {
-    case 'FETCH_CHECKOUT':
+    case 'CHECKOUT':
       return update(state, {
         loading: { $set: true },
       });
-    case 'FETCH_CHECKOUT_SUCCESS':
+    case 'CHECKOUT_SUCCESS':
       return update(state, {
-        checkout: { $set: action.payload.data },
+        status: { $set: action.payload.message },
+        invoice: { $set: action.payload.data.invoice },
         loading: { $set: false },
       });
-    case 'FETCH_CHECKOUT_ERROR':
+    case 'CHECKOUT_ERROR':
       return update(state, {
         loading: { $set: false },
         error: { $set: action.payload.error },
+      });
+    case 'CHECKOUT_CLEAR':
+      return update(state, {
+        status: { $set: undefined },
       });
     default:
       return state;

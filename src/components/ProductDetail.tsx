@@ -51,11 +51,13 @@ export default function ProductDetail({
           <Separator width={136} color='#D6AD60' />
           {product.reviews &&
             product.reviews.map((review, i) => (
-              <div key={review.id} className='my-7'>
+              <div key={i} className='my-7'>
                 <div className='mb-4 flex justify-between'>
                   <div className='flex items-center gap-3'>
                     <RiUser3Line className='text-2xl' />
-                    <p className='ml-2 font-secondary text-sm'>{review.name}</p>
+                    <p className='ml-2 font-secondary text-sm'>
+                      {review.username}
+                    </p>
                   </div>
                   <div className='flex items-center'>
                     {[...Array(review.rating)].map((_, i) => (
@@ -66,7 +68,7 @@ export default function ProductDetail({
                     ))}
                   </div>
                 </div>
-                <p className='font-secondary text-xs'>{review.description}</p>
+                <p className='font-secondary text-xs'>{review.feedback}</p>
                 {i !== product.reviews.length - 1 && (
                   <Separator width='100%' color='#B3B3B3' className='my-6' />
                 )}

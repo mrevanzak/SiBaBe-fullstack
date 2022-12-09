@@ -37,7 +37,15 @@ function LoginPage() {
 
     if (username && password && name && age && email && phone && address) {
       dispatch(
-        register(username, password, name, Number(age), email, phone, address)
+        register({
+          username,
+          password,
+          name,
+          age: Number(age),
+          email,
+          phone,
+          address,
+        })
       );
     }
 

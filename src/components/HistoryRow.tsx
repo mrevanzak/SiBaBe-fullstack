@@ -1,3 +1,5 @@
+import moment from 'moment';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 
 import Separator from '@/components/Separator';
@@ -11,6 +13,7 @@ type HistoryRowProps = {
 };
 
 export default function HistoryRow({ history }: HistoryRowProps) {
+  const router = useRouter();
   const [isHover, setIsHover] = React.useState(false);
 
   const onMouseOverHandler = () => {
@@ -21,18 +24,26 @@ export default function HistoryRow({ history }: HistoryRowProps) {
     setIsHover(false);
   };
 
+  const onClickHistory = () => {
+    router.push(`/history/${history.id}`);
+  };
+
   return (
-    <div onMouseOver={onMouseOverHandler} onMouseOut={onMouseOutHandler}>
+    <div
+      onMouseOver={onMouseOverHandler}
+      onMouseOut={onMouseOutHandler}
+      onClick={onClickHistory}
+    >
       <div className='flex cursor-pointer justify-between py-8  transition-all duration-200'>
         <div className=''>
           <p className='text-sm'>Pembelian pada</p>
           <p className='font-secondary text-xl font-bold'>
-            {history.createdAt.toLocaleString()}
+            {moment(history.createdAt).format('DD - MM - YYYY')}
           </p>
         </div>
         <div className=''>
           <p className='text-sm'>Kode pemesanan</p>
-          <p className='font-secondary text-xl font-bold'>{history.id}</p>
+          <p className='font-secondary text-xl font-bold'>{history.invoice}</p>
         </div>
         <p className='font-secondary font-bold'>
           Rp {thousandSeparator(history.totalPrice)}

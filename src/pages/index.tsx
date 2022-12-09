@@ -36,7 +36,7 @@ function HomePage() {
         <div className='layout min-h-main my-6 flex flex-row items-center'>
           <div className=''>
             <p className='text-base font-semibold'>
-              Halo, Selamat Datang! {user?.nama}
+              Halo, Selamat Datang {user?.name}!
             </p>
             <h1 className='pt-3 text-5xl font-extrabold leading-tight'>
               Dapatkan Roti Premium Terlezat Buatan Kami

@@ -32,8 +32,22 @@ const ProductReducer = (state = initialState, action: AnyAction) => {
       });
     case 'USER_LOGOUT':
       return update(state, {
-        loading: { $set: true },
+        loading: { $set: false },
         user: { $set: undefined },
+      });
+    case 'FETCH_USER':
+      return update(state, {
+        loading: { $set: true },
+      });
+    case 'FETCH_USER_SUCCESS':
+      return update(state, {
+        user: { data: { $set: action.payload.data } },
+        loading: { $set: false },
+      });
+    case 'FETCH_USER_ERROR':
+      return update(state, {
+        error: { $set: action.payload.error },
+        loading: { $set: false },
       });
     default:
       return state;

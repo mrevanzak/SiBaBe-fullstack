@@ -3,10 +3,9 @@ export type ListOfObject<T> = {
 };
 
 export type Review = {
-  id: string;
-  name: string;
-  description: string;
+  feedback: string;
   rating: number;
+  username: string;
 };
 
 export type Product = {
@@ -35,15 +34,27 @@ export type UserCart = {
   totalPrice: number;
 };
 
-export type User = {
+export type UserData = {
   username: string;
-  nama: string;
+  password: string;
+  name: string;
+  age: number;
+  email: string;
+  phone: string;
+  address: string;
+};
+
+export type User = {
+  data?: UserData;
+  username: string;
+  name: string;
   token: string;
 };
 
 export type OrderData = {
+  invoice: string;
   id: number;
-  createdAt: Date;
+  createdAt: string;
   cartId: number;
   customerUsername: string;
   totalQty: number;
@@ -57,4 +68,28 @@ export type OrderData = {
 
 export type History = {
   order: OrderData[];
+};
+
+export type HistoryDetail = {
+  invoice: string;
+  orderID: number;
+  cartID: number;
+  status: string;
+  address: string;
+  courier: string;
+  product: ProductElement[];
+};
+
+export type ProductElement = {
+  quantity: number;
+  totalPrice: number;
+  product: ProductProduct;
+};
+
+export type ProductProduct = {
+  id: number;
+  name: string;
+  image: string;
+  description: string;
+  price: number;
 };

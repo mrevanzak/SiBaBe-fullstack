@@ -1,18 +1,27 @@
 import * as React from 'react';
 
+import ArrowLink from '@/components/links/ArrowLink';
 import NextImage from '@/components/NextImage';
 
 import thousandSeparator from '@/util/thousandSeparator';
 
-import { Cart } from '@/types';
+import { Cart, ProductElement } from '@/types';
 
 type OrderRowProps = {
-  product: Cart;
+  product: Cart | ProductElement;
+  review?: boolean;
+  setSelectedProduct?: (id: number) => void;
+  setOpened?: (opened: boolean) => void;
 };
 
-export default function OrderRow({ product }: OrderRowProps) {
+export default function OrderRow({
+  product,
+  review,
+  setSelectedProduct,
+  setOpened,
+}: OrderRowProps) {
   return (
-    <div className='my-8 flex justify-between'>
+    <div className='relative flex items-center justify-between'>
       <div className='flex'>
         <div className='w-[110px] overflow-hidden rounded-l-3xl'>
           <NextImage
@@ -31,6 +40,20 @@ export default function OrderRow({ product }: OrderRowProps) {
           </p>
         </div>
       </div>
+      {review && (
+        <div className='absolute left-1/2'>
+          <ArrowLink
+            onClick={() => {
+              if (setSelectedProduct && setOpened) {
+                setSelectedProduct(product.product.id);
+                setOpened(true);
+              }
+            }}
+          >
+            Beri Ulasan
+          </ArrowLink>
+        </div>
+      )}
       <div className='flex items-center'>
         <p className='font-secondary font-bold'>
           Rp {thousandSeparator(product.totalPrice)}

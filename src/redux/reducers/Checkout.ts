@@ -34,6 +34,19 @@ const CheckoutReducer = (state = initialState, action: AnyAction) => {
       return update(state, {
         status: { $set: undefined },
       });
+    case 'PAYMENT':
+      return update(state, {
+        loading: { $set: true },
+      });
+    case 'PAYMENT_SUCCESS':
+      return update(state, {
+        loading: { $set: false },
+      });
+    case 'PAYMENT_ERROR':
+      return update(state, {
+        loading: { $set: false },
+        error: { $set: action.payload.error },
+      });
     default:
       return state;
   }

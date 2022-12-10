@@ -6,10 +6,12 @@ import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 
 import withAuth from '@/components/hoc/withAuth';
 import Layout from '@/components/layout/Layout';
+import ArrowLink from '@/components/links/ArrowLink';
 import OrderRow from '@/components/OrderRow';
 import ReviewModal from '@/components/ReviewModal';
 import Seo from '@/components/Seo';
 import Separator from '@/components/Separator';
+import UploadModal from '@/components/UploadModal';
 
 import { fetchHistoryById } from '@/redux/actions/History';
 import thousandSeparator from '@/util/thousandSeparator';
@@ -18,8 +20,10 @@ export default withAuth(HistoryDetailPage, 'all');
 function HistoryDetailPage() {
   const { history, historyById } = useAppSelector(({ history }) => history);
   const dispatch = useAppDispatch();
-  const [opened, setOpened] = React.useState(false);
+  const [reviewModalOpened, setreviewModalOpened] = React.useState(false);
+  const [uploadModalOpened, setuploadModalOpened] = React.useState(false);
   const [selectedProduct, setSelectedProduct] = React.useState<number>();
+
   const { query } = useRouter();
   const historyId = query.id as string;
 
@@ -36,8 +40,8 @@ function HistoryDetailPage() {
       {/* <Seo templateTitle='Home' /> */}
 
       <Modal
-        opened={opened}
-        onClose={() => setOpened(false)}
+        opened={reviewModalOpened}
+        onClose={() => setreviewModalOpened(false)}
         centered
         withCloseButton={false}
         padding={0}
@@ -48,7 +52,24 @@ function HistoryDetailPage() {
           <ReviewModal
             historyId={historyId}
             id={selectedProduct}
-            setOpened={setOpened}
+            setOpened={setreviewModalOpened}
+          />
+        )}
+      </Modal>
+
+      <Modal
+        opened={uploadModalOpened}
+        onClose={() => setuploadModalOpened(false)}
+        centered
+        withCloseButton={false}
+        padding={0}
+        radius={50}
+        size={982}
+      >
+        {historyById && (
+          <UploadModal
+            setOpened={setuploadModalOpened}
+            historyById={historyById}
           />
         )}
       </Modal>
@@ -62,6 +83,14 @@ function HistoryDetailPage() {
               <p className='absolute left-8 top-8'>
                 Kode Pemesanan: {historyById.invoice}
               </p>
+            )}
+            {historyById?.status === 'Belum Dibayar' && (
+              <ArrowLink
+                className='absolute top-2 right-8'
+                onClick={() => setuploadModalOpened(true)}
+              >
+                Upload Bukti Pembayaran
+              </ArrowLink>
             )}
             <div className='text-center'>
               <p>Pembayaran Melalui ITS-BANK</p>
@@ -81,7 +110,7 @@ function HistoryDetailPage() {
                     product={product}
                     review={historyDetail?.status !== 'Belum Dibayar'}
                     setSelectedProduct={setSelectedProduct}
-                    setOpened={setOpened}
+                    setOpened={setreviewModalOpened}
                   />
                 </div>
               ))}

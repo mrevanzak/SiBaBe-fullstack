@@ -21,3 +21,20 @@ export const clearCheckoutMessage = () => (dispatch: AppDispatch) => {
     type: 'CHECKOUT_CLEAR',
   });
 };
+
+export const confirmPayment =
+  (invoice: string, proofOfPayment: string) =>
+  async (dispatch: AppDispatch) => {
+    dispatch({
+      url: '/checkout/confirm/payment',
+      method: 'POST',
+      actionStart: 'PAYMENT',
+      actionSuccess: 'PAYMENT_SUCCESS',
+      actionError: 'PAYMENT_ERROR',
+      type: 'API',
+      data: {
+        invoice,
+        proofOfPayment,
+      },
+    });
+  };

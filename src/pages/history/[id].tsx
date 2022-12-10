@@ -79,7 +79,7 @@ function HistoryDetailPage() {
                 <div key={index} className='px-5'>
                   <OrderRow
                     product={product}
-                    review
+                    review={historyDetail?.status !== 'Belum Dibayar'}
                     setSelectedProduct={setSelectedProduct}
                     setOpened={setOpened}
                   />

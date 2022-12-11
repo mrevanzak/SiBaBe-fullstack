@@ -45,11 +45,10 @@ function LoginPage() {
                 </h2>
                 <p className='mt-2 text-sm text-gray-600'>
                   Pengguna baru?{' '}
-                  <Link
-                    href='/auth/register'
-                    className='font-medium text-blue-400 hover:text-blue-300'
-                  >
-                    Buat akun baru
+                  <Link href='/auth/register'>
+                    <span className='font-medium text-blue-400 hover:text-blue-300'>
+                      Buat akun baru
+                    </span>
                   </Link>
                 </p>
               </div>

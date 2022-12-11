@@ -69,7 +69,7 @@ function HistoryDetailPage() {
         {historyById && (
           <UploadModal
             setOpened={setuploadModalOpened}
-            historyById={historyById}
+            invoice={historyById.invoice}
           />
         )}
       </Modal>

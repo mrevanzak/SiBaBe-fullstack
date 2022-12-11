@@ -11,17 +11,12 @@ import Button from '@/components/buttons/Button';
 import { API_KEY } from '@/pages/api/products';
 import { confirmPayment } from '@/redux/actions/Checkout';
 
-import { HistoryDetail } from '@/types';
-
 type UploadModalProps = {
   setOpened: (value: boolean) => void;
-  historyById: HistoryDetail;
+  invoice: string;
 };
 
-export default function UploadModal({
-  setOpened,
-  historyById,
-}: UploadModalProps) {
+export default function UploadModal({ setOpened, invoice }: UploadModalProps) {
   const dispatch = useAppDispatch();
   const [files, setFiles] = React.useState<FileWithPath[]>([]);
   const [loading, setLoading] = React.useState(false);
@@ -53,10 +48,8 @@ export default function UploadModal({
       })
       .then((res) => {
         setLoading(false);
-        if (historyById) {
-          dispatch(
-            confirmPayment(historyById.invoice, res.data.data.medium.url)
-          );
+        if (invoice) {
+          dispatch(confirmPayment(invoice, res.data.data.medium.url));
           setOpened(false);
         }
       });

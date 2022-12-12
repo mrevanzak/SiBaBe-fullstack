@@ -34,14 +34,14 @@ export default function HistoryRow({ history }: HistoryRowProps) {
       onMouseOut={onMouseOutHandler}
       onClick={onClickHistory}
     >
-      <div className='flex cursor-pointer justify-between py-8  transition-all duration-200'>
+      <div className='relative flex cursor-pointer justify-between  py-8 transition-all duration-200'>
         <div className=''>
           <p className='text-sm'>Pembelian pada</p>
           <p className='font-secondary text-xl font-bold'>
             {moment(history.createdAt).format('DD - MM - YYYY')}
           </p>
         </div>
-        <div className=''>
+        <div className='absolute left-1/2'>
           <p className='text-sm'>Kode pemesanan</p>
           <p className='font-secondary text-xl font-bold'>{history.invoice}</p>
         </div>

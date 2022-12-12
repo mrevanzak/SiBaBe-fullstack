@@ -94,7 +94,12 @@ function HistoryDetailPage() {
             )}
             <div className='text-center'>
               <p>Pembayaran Melalui ITS-BANK</p>
-              <h3>{historyById?.status}</h3>
+              <h3>
+                {historyById?.status === 'Menunggu Validasi' ||
+                historyById?.status === 'Belum Dibayar'
+                  ? historyById.status
+                  : `Pesanan anda telah di${historyById?.status.toLowerCase()}`}
+              </h3>
             </div>
             <Separator width='30%' className='mx-auto' height={1.5} />
             <div className='flex flex-row justify-between px-10'>
@@ -108,7 +113,7 @@ function HistoryDetailPage() {
                 <div key={index} className='px-5'>
                   <OrderRow
                     product={product}
-                    review={historyDetail?.status !== 'Belum Dibayar'}
+                    review={historyDetail?.status === 'Terima'}
                     setSelectedProduct={setSelectedProduct}
                     setOpened={setreviewModalOpened}
                   />

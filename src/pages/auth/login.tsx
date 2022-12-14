@@ -86,6 +86,7 @@ function LoginPage() {
                           ref={passwordRef}
                           id='password'
                           type='password'
+                          required
                           className='block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-primary-50 focus:outline-none focus:ring-primary-50 sm:text-sm'
                         />
                       </div>

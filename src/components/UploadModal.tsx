@@ -1,6 +1,7 @@
 import { Group, Image, Text } from '@mantine/core';
 import { Dropzone, FileWithPath, IMAGE_MIME_TYPE } from '@mantine/dropzone';
 import axios from 'axios';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import { FiImage, FiUpload, FiXCircle } from 'react-icons/fi';
 
@@ -20,6 +21,7 @@ export default function UploadModal({ setOpened, invoice }: UploadModalProps) {
   const dispatch = useAppDispatch();
   const [files, setFiles] = React.useState<FileWithPath[]>([]);
   const [loading, setLoading] = React.useState(false);
+  const router = useRouter();
 
   const previews = files.map((file, index) => {
     const imageUrl = URL.createObjectURL(file);
@@ -51,6 +53,7 @@ export default function UploadModal({ setOpened, invoice }: UploadModalProps) {
         if (invoice) {
           dispatch(confirmPayment(invoice, res.data.data.medium.url));
           setOpened(false);
+          router.push('/history');
         }
       });
     // .catch((err) => {

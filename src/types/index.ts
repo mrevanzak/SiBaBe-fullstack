@@ -93,3 +93,9 @@ export type ProductProduct = {
   description: string;
   price: number;
 };
+
+export type ApiResponseType = {
+  message: string;
+  errors: string;
+  data: object;
+};

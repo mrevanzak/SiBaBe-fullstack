@@ -1,4 +1,7 @@
 import * as React from 'react';
+import { ToastContainer } from 'react-toastify';
+
+import 'react-toastify/dist/ReactToastify.css';
 
 import Footer from '@/components/layout/Footer';
 import Header from '@/components/layout/Header';
@@ -15,6 +18,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <Header />
         {children}
         <Footer />
+        <ToastContainer position='top-center' />
       </main>
     </>
   );

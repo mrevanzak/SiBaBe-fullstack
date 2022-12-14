@@ -1,5 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
+import { AxiosError, AxiosResponse } from 'axios';
 import { createWrapper } from 'next-redux-wrapper';
+import { toast } from 'react-toastify';
 import type { Middleware } from 'redux';
 import { persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
@@ -8,6 +10,8 @@ import thunk from 'redux-thunk';
 import { API_URL, httpClient } from '@/pages/api/products';
 
 import rootReducer from './reducers';
+
+import { ApiResponseType } from '@/types';
 
 const apiMiddleware: Middleware =
   ({ dispatch, getState }) =>
@@ -60,31 +64,50 @@ const apiMiddleware: Middleware =
           });
         });
     } else {
-      httpClient
-        .request({
-          url,
-          method,
-          [dataOrParams]: data,
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-        .then((payload) => {
-          dispatch({
-            type: actionSuccess,
-            meta,
-            payload: payload.data,
+      toast.promise(
+        httpClient
+          .request({
+            url,
             method,
-          });
-        })
-        .catch((error) => {
-          dispatch({
-            type: actionError,
-            meta,
-            error: error?.response?.data,
-            errorHttp: error,
-          });
-        });
+            [dataOrParams]: data,
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          })
+          .then((payload) => {
+            dispatch({
+              type: actionSuccess,
+              meta,
+              payload: payload.data,
+              method,
+            });
+            return payload;
+          })
+          .catch((error) => {
+            dispatch({
+              type: actionError,
+              meta,
+              error: error?.response?.data,
+              errorHttp: error,
+            });
+            throw error;
+          }),
+        {
+          pending: 'Loading...',
+          success: {
+            render: (data) => {
+              const successData = data.data as AxiosResponse<ApiResponseType>;
+              return `${successData.data.message}`;
+            },
+          },
+          error: {
+            render: (error) => {
+              const errorData = error.data as AxiosError<ApiResponseType>;
+              return `${errorData.response?.data?.errors}`;
+            },
+          },
+        }
+      );
     }
   };
 

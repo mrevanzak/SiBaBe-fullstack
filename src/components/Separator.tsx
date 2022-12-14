@@ -16,6 +16,7 @@ export default function Separator({
   return (
     <div
       style={{
+        backgroundColor: color,
         width: width,
         border: `${height ? height : 1}px solid ${color}`,
       }}

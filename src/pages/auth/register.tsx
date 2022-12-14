@@ -111,6 +111,7 @@ function LoginPage() {
                           ref={passwordRef}
                           id='password'
                           type='password'
+                          required
                           className='block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-primary-50 focus:outline-none focus:ring-primary-50 sm:text-sm'
                         />
                       </div>
@@ -128,6 +129,7 @@ function LoginPage() {
                           ref={nameRef}
                           id='name'
                           type='text'
+                          required
                           className='block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-primary-50 focus:outline-none focus:ring-primary-50 sm:text-sm'
                         />
                       </div>
@@ -145,6 +147,7 @@ function LoginPage() {
                           ref={ageRef}
                           id='age'
                           type='number'
+                          required
                           className='block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-primary-50 focus:outline-none focus:ring-primary-50 sm:text-sm'
                         />
                       </div>
@@ -162,6 +165,7 @@ function LoginPage() {
                           ref={emailRef}
                           id='email'
                           type='email'
+                          required
                           className='block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-primary-50 focus:outline-none focus:ring-primary-50 sm:text-sm'
                         />
                       </div>
@@ -179,6 +183,7 @@ function LoginPage() {
                           ref={phoneRef}
                           id='phone'
                           type='number'
+                          required
                           className='block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-primary-50 focus:outline-none focus:ring-primary-50 sm:text-sm'
                         />
                       </div>
@@ -196,6 +201,7 @@ function LoginPage() {
                           ref={addressRef}
                           id='address'
                           type='text'
+                          required
                           className='block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-primary-50 focus:outline-none focus:ring-primary-50 sm:text-sm'
                         />
                       </div>

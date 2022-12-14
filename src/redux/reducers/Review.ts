@@ -1,10 +1,11 @@
-import { AxiosError } from 'axios';
 import update from 'immutability-helper';
 import { AnyAction } from 'redux';
 
+import { ApiResponseType } from '@/types';
+
 type ReviewState = {
   loading: boolean;
-  error?: AxiosError;
+  error?: ApiResponseType;
 };
 
 const initialState = {

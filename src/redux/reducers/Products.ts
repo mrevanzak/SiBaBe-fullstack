@@ -1,13 +1,12 @@
-import { AxiosError } from 'axios';
 import update from 'immutability-helper';
 import { AnyAction } from 'redux';
 
-import { Product } from '@/types';
+import { ApiResponseType, Product } from '@/types';
 
 type ProductState = {
   products: Product[];
   loading: boolean;
-  error?: AxiosError;
+  error?: ApiResponseType;
 };
 
 const initialState = {
@@ -29,7 +28,7 @@ const ProductReducer = (state = initialState, action: AnyAction) => {
     case 'PRODUCTS_FETCH_ERROR':
       return update(state, {
         loading: { $set: false },
-        error: { $set: action.payload.error },
+        error: { $set: action.error },
       });
     default:
       return state;

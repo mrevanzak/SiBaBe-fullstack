@@ -1,13 +1,12 @@
-import { AxiosError } from 'axios';
 import update from 'immutability-helper';
 import { AnyAction } from 'redux';
 
-import { User } from '@/types';
+import { ApiResponseType, User } from '@/types';
 
 type UserState = {
   user?: User;
   loading: boolean;
-  error?: AxiosError;
+  error?: ApiResponseType;
 };
 
 const initialState = {
@@ -28,7 +27,7 @@ const ProductReducer = (state = initialState, action: AnyAction) => {
     case 'USER_LOGIN_ERROR':
       return update(state, {
         loading: { $set: false },
-        error: { $set: action.payload.error },
+        error: { $set: action.error },
       });
     case 'USER_LOGOUT':
       return update(state, {
@@ -46,7 +45,7 @@ const ProductReducer = (state = initialState, action: AnyAction) => {
       });
     case 'FETCH_USER_ERROR':
       return update(state, {
-        error: { $set: action.payload.error },
+        error: { $set: action.error },
         loading: { $set: false },
       });
     default:

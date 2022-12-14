@@ -1,14 +1,13 @@
-import { AxiosError } from 'axios';
 import update from 'immutability-helper';
 import { AnyAction } from 'redux';
 
-import { History, HistoryDetail } from '@/types';
+import { ApiResponseType, History, HistoryDetail } from '@/types';
 
 type HistoryState = {
   historyById?: HistoryDetail;
   history?: History;
   loading: boolean;
-  error?: AxiosError;
+  error?: ApiResponseType;
 };
 
 const initialState = {
@@ -28,7 +27,7 @@ const HistoryReducer = (state = initialState, action: AnyAction) => {
       });
     case 'FETCH_HISTORY_ERROR':
       return update(state, {
-        error: { $set: action.payload.error },
+        error: { $set: action.error },
         loading: { $set: false },
       });
     case 'FETCH_HISTORY_BY_ID':
@@ -42,7 +41,7 @@ const HistoryReducer = (state = initialState, action: AnyAction) => {
       });
     case 'FETCH_HISTORY_BY_ID_ERROR':
       return update(state, {
-        error: { $set: action.payload.error },
+        error: { $set: action.error },
         loading: { $set: false },
       });
     default:

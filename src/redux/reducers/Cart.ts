@@ -1,13 +1,12 @@
-import { AxiosError } from 'axios';
 import update from 'immutability-helper';
 import { AnyAction } from 'redux';
 
-import { UserCart } from '@/types';
+import { ApiResponseType, UserCart } from '@/types';
 
 type CartState = {
   cart?: UserCart;
   loading: boolean;
-  error?: AxiosError;
+  error?: ApiResponseType;
 };
 
 const initialState = {
@@ -28,7 +27,7 @@ const CartReducer = (state = initialState, action: AnyAction) => {
     case 'FETCH_CART_ERROR':
       return update(state, {
         loading: { $set: false },
-        error: { $set: action.payload.error },
+        error: { $set: action.error },
       });
     case 'ADD_QUANTITY':
       return update(state, {
@@ -42,7 +41,7 @@ const CartReducer = (state = initialState, action: AnyAction) => {
     case 'ADD_QUANTITY_ERROR':
       return update(state, {
         loading: { $set: false },
-        error: { $set: action.payload.error },
+        error: { $set: action.error },
       });
     case 'MINUS_QUANTITY':
       return update(state, {

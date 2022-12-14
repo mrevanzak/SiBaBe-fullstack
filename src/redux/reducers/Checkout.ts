@@ -1,12 +1,13 @@
-import { AxiosError } from 'axios';
 import update from 'immutability-helper';
 import { AnyAction } from 'redux';
+
+import { ApiResponseType } from '@/types';
 
 type CheckoutState = {
   status?: string;
   invoice?: string;
   loading: boolean;
-  error?: AxiosError;
+  error?: ApiResponseType;
 };
 
 const initialState = {
@@ -28,7 +29,7 @@ const CheckoutReducer = (state = initialState, action: AnyAction) => {
     case 'CHECKOUT_ERROR':
       return update(state, {
         loading: { $set: false },
-        error: { $set: action.payload.error },
+        error: { $set: action.error },
       });
     case 'CHECKOUT_CLEAR':
       return update(state, {
@@ -45,7 +46,7 @@ const CheckoutReducer = (state = initialState, action: AnyAction) => {
     case 'PAYMENT_ERROR':
       return update(state, {
         loading: { $set: false },
-        error: { $set: action.payload.error },
+        error: { $set: action.error },
       });
     default:
       return state;

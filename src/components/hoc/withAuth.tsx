@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { ImSpinner8 } from 'react-icons/im';
+import { toast } from 'react-toastify';
 
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 
@@ -56,18 +57,17 @@ export default function withAuth<T extends WithAuthProps = WithAuthProps>(
     React.useEffect(() => {
       if (!loading) {
         if (user) {
-          if (routeRole === 'all') {
-            httpClient.interceptors.response.use(
-              (response) => response,
-              (error) => {
-                if (error.response.status === 401) {
-                  dispatch(logout());
-                  router.push(LOGIN_ROUTE);
-                }
-                return Promise.reject(error);
+          httpClient.interceptors.response.use(
+            (response) => response,
+            (error) => {
+              if (error.response.status === 401) {
+                dispatch(logout());
+                router.push(LOGIN_ROUTE);
+                toast.warn('Your session has expired. Please login again.');
               }
-            );
-          }
+              return Promise.reject(error);
+            }
+          );
           // Prevent authenticated user from accessing auth or other role pages
           if (routeRole === 'auth') {
             if (query?.redirect) {

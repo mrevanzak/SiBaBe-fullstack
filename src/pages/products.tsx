@@ -55,14 +55,17 @@ function ProductPage() {
                 .filter((product) =>
                   product.name.toLowerCase().includes(search.toLowerCase())
                 )
-                .map((product) => (
-                  <ProductCard
-                    key={product.id}
-                    product={product}
-                    setOpened={setOpened}
-                    setSelectedProduct={setSelectedProduct}
-                  />
-                ))}
+                .map(
+                  (product) =>
+                    product.stock > 0 && (
+                      <ProductCard
+                        key={product.id}
+                        product={product}
+                        setOpened={setOpened}
+                        setSelectedProduct={setSelectedProduct}
+                      />
+                    )
+                )}
           </div>
         </div>
       </main>

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { AiOutlineMinusCircle, AiOutlinePlusCircle } from 'react-icons/ai';
+import { toast } from 'react-toastify';
 
 import { useAppDispatch } from '@/hooks/redux';
 
@@ -18,6 +19,10 @@ export default function CartRow({ product }: CartRowProps) {
   const dispatch = useAppDispatch();
 
   const onAddQuantity = () => {
+    if (product.quantity >= product.product.stock) {
+      toast.warn('Stok tidak mencukupi');
+      return;
+    }
     dispatch(addQuantity(product.productId));
   };
   const onMinusQuantity = () => {

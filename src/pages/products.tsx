@@ -7,6 +7,7 @@ import withAuth from '@/components/hoc/withAuth';
 import Layout from '@/components/layout/Layout';
 import ProductCard from '@/components/ProductCard';
 import ProductDetail from '@/components/ProductDetail';
+import Search from '@/components/Search';
 import Seo from '@/components/Seo';
 
 import { getProducts } from '@/redux/actions/Products';
@@ -20,6 +21,7 @@ function ProductPage() {
   const [opened, setOpened] = React.useState(false);
   const [selectedProduct, setSelectedProduct] =
     React.useState<Product | null>();
+  const [search, setSearch] = React.useState('');
 
   React.useEffect(() => {
     dispatch(getProducts());
@@ -44,16 +46,24 @@ function ProductPage() {
         )}
       </Modal>
       <main>
-        <div className='layout flex max-w-none flex-row flex-wrap items-center justify-center gap-12 py-12 font-secondary'>
-          {!loading &&
-            products.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                setOpened={setOpened}
-                setSelectedProduct={setSelectedProduct}
-              />
-            ))}
+        <div className='layout min-h-main my-6 flex flex-col py-12 font-secondary'>
+          <Search search={search} setSearch={setSearch} />
+          <div className='flex flex-wrap items-center justify-center gap-12'>
+            {!loading &&
+              products &&
+              products
+                .filter((product) =>
+                  product.name.toLowerCase().includes(search.toLowerCase())
+                )
+                .map((product) => (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    setOpened={setOpened}
+                    setSelectedProduct={setSelectedProduct}
+                  />
+                ))}
+          </div>
         </div>
       </main>
     </Layout>

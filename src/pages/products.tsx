@@ -1,5 +1,7 @@
 import { Modal } from '@mantine/core';
+import { useDebouncedValue } from '@mantine/hooks';
 import * as React from 'react';
+import { toast } from 'react-toastify';
 
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 
@@ -22,10 +24,15 @@ function ProductPage() {
   const [selectedProduct, setSelectedProduct] =
     React.useState<Product | null>();
   const [search, setSearch] = React.useState('');
+  const [debounced] = useDebouncedValue(search, 200);
 
   React.useEffect(() => {
     dispatch(getProducts());
   }, []);
+
+  React.useEffect(() => {
+    toast.error('Produk tidak ditemukan');
+  }, [debounced]);
 
   return (
     <Layout>

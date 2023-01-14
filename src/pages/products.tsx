@@ -1,5 +1,5 @@
 import { Modal } from '@mantine/core';
-import { useDebouncedValue } from '@mantine/hooks';
+import { useDebouncedValue, useDidUpdate } from '@mantine/hooks';
 import * as React from 'react';
 import { toast } from 'react-toastify';
 
@@ -24,14 +24,24 @@ function ProductPage() {
   const [selectedProduct, setSelectedProduct] =
     React.useState<Product | null>();
   const [search, setSearch] = React.useState('');
-  const [debounced] = useDebouncedValue(search, 200);
+  const [debounced] = useDebouncedValue(search, 500);
+
+  const productFiltered =
+    products &&
+    products.filter((product) =>
+      product.name.toLowerCase().includes(search.toLowerCase())
+    );
 
   React.useEffect(() => {
     dispatch(getProducts());
   }, []);
 
-  React.useEffect(() => {
-    toast.error('Produk tidak ditemukan');
+  useDidUpdate(() => {
+    if (productFiltered.length === 0) {
+      toast.error('Produk tidak ditemukan', {
+        toastId: 'not-found',
+      });
+    }
   }, [debounced]);
 
   return (
@@ -57,22 +67,17 @@ function ProductPage() {
           <Search search={search} setSearch={setSearch} />
           <div className='flex flex-wrap items-center justify-center gap-12'>
             {!loading &&
-              products &&
-              products
-                .filter((product) =>
-                  product.name.toLowerCase().includes(search.toLowerCase())
-                )
-                .map(
-                  (product) =>
-                    product.stock > 0 && (
-                      <ProductCard
-                        key={product.id}
-                        product={product}
-                        setOpened={setOpened}
-                        setSelectedProduct={setSelectedProduct}
-                      />
-                    )
-                )}
+              productFiltered.map(
+                (product) =>
+                  product.stock > 0 && (
+                    <ProductCard
+                      key={product.id}
+                      product={product}
+                      setOpened={setOpened}
+                      setSelectedProduct={setSelectedProduct}
+                    />
+                  )
+              )}
           </div>
         </div>
       </main>

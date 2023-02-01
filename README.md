@@ -1,5 +1,5 @@
 # SiBaBe | Sistem Informasi Bima Bakery
->Online shop for ordering product from Bima Bakery using Next JS and Golang as Backend
+>An online shop for ordering products from Bima Bakery, utilizing Next.js for the front-end and Golang for the backend.
 
 |*SiBaBe*|
 |:-:|

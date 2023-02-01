@@ -33,7 +33,7 @@ Admin can
 - Reject orders
 
 # How we built it🔧
-Frontend : React with **Next.js**, **Redux** for State management, **Typescript** for strong typing, **Mantine** for some component, **React Toastify** for toast component, **Tailwind CSS** for styling
+Frontend : React with **Next.js**, **Redux** for State management, **Typescript** for strong typing, **Mantine** for some component, **React Toastify** for toast component, **Tailwind CSS** for styling <br>
 Backend : Golang with **Echo**, **PostgreSQL** for database
 
 # Challenges we ran into🏃‍♂️

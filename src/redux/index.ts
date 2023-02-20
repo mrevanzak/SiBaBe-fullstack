@@ -103,6 +103,7 @@ const apiMiddleware: Middleware =
           error: {
             render: (error) => {
               const errorData = error.data as AxiosError<ApiResponseType>;
+              if (errorData.code === 'ERR_NETWORK') return 'Network error';
               return `${errorData.response?.data?.errors}`;
             },
           },

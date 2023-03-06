@@ -45,7 +45,7 @@ export default function HistoryRow({ history }: HistoryRowProps) {
           <p className='text-sm'>Kode pemesanan</p>
           <p className='font-secondary text-xl font-bold'>{history.invoice}</p>
         </div>
-        <p className='font-secondary font-bold'>
+        <p className='self-center font-secondary font-bold'>
           Rp {thousandSeparator(history.totalPrice)}
         </p>
       </div>

@@ -6,6 +6,10 @@ on:
       - main
   pull_request: {}
 
+defaults:
+  run:
+    working-directory: web
+
 jobs:
   lint:
     name: ⬣ ESLint
@@ -21,9 +25,12 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 16
+          cache-dependency-path: web/package-lock.json
 
       - name: 📥 Download deps
         uses: bahmutov/npm-install@v1
+        with:
+          working-directory: web
 
       - name: 🔬 Lint
         run: yarn lint:strict
@@ -42,9 +49,12 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 16
+          cache-dependency-path: web/package-lock.json
 
       - name: 📥 Download deps
         uses: bahmutov/npm-install@v1
+        with:
+          working-directory: web
 
       - name: 🔎 Type check
         run: yarn typecheck
@@ -63,9 +73,12 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 16
+          cache-dependency-path: web/package-lock.json
 
       - name: 📥 Download deps
         uses: bahmutov/npm-install@v1
+        with:
+          working-directory: web
 
       - name: 🔎 Type check
         run: yarn format:check

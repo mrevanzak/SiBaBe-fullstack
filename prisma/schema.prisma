@@ -1,0 +1,125 @@
+generator client {
+  provider = "cargo prisma"
+  output   = "../api/src/prisma.rs"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model admins {
+  id         String    @id @default(uuid())
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+  username   String    @unique(map: "admins_username_unique") @db.VarChar(255)
+  password   String    @db.VarChar(255)
+  name       String    @db.VarChar(255)
+  email      String    @unique(map: "admins_email_unique") @db.VarChar(255)
+  phone      String    @db.VarChar(255)
+}
+
+model carts {
+  id          String    @id @default(uuid())
+  created_at  DateTime? @db.Timestamp(0)
+  updated_at  DateTime? @db.Timestamp(0)
+  deleted_at  DateTime? @db.Timestamp(0)
+  username    String    @db.VarChar(255)
+  total_price Int
+  status      String    @db.VarChar(255)
+}
+
+model customers {
+  id         String    @id @default(uuid())
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+  username   String    @unique(map: "customers_username_unique") @db.VarChar(255)
+  password   String    @db.VarChar(255)
+  name       String    @db.VarChar(255)
+  age        Int
+  email      String    @unique(map: "customers_email_unique") @db.VarChar(255)
+  address    String    @db.VarChar(255)
+  phone      String    @db.VarChar(255)
+}
+
+model feedback {
+  id         String    @id @default(uuid())
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+  deleted_at DateTime? @db.Timestamp(0)
+  product_id Int
+  feedback   String    @db.VarChar(255)
+  rating     Int
+}
+
+model feedback__orders {
+  order_id    Int
+  feedback_id Int
+  username    String   @db.VarChar(255)
+  date        DateTime @default(now()) @db.Timestamp(0)
+
+  @@id([order_id, feedback_id])
+}
+
+model feedback_pemesanan {
+  id_feedback  Int
+  id_pemesanan Int
+  username     String   @db.VarChar(255)
+  tanggal      DateTime @db.Timestamp(0)
+
+  @@id([id_feedback, id_pemesanan])
+}
+
+model orders {
+  id                String    @id @default(uuid())
+  invoice           String    @unique(map: "orders_invoice_unique") @db.VarChar(255)
+  created_at        DateTime? @db.Timestamp(0)
+  updated_at        DateTime? @db.Timestamp(0)
+  deleted_at        DateTime? @db.Timestamp(0)
+  cart_id           Int
+  customer_username String    @db.VarChar(255)
+  total_product     Int
+  total_price       Int
+  status            String    @db.VarChar(255)
+  address           String    @db.VarChar(255)
+  courier           String    @db.VarChar(255)
+  payment_proof     String?   @db.VarChar(255)
+  validated_by      String?   @db.VarChar(255)
+}
+
+model product_carts {
+  product_id  Int
+  cart_id     Int
+  quantity    Int
+  total_price Int
+
+  @@id([product_id, cart_id])
+}
+
+model productions {
+  id             String    @id @default(uuid())
+  created_at     DateTime? @db.Timestamp(0)
+  updated_at     DateTime? @db.Timestamp(0)
+  date           DateTime  @db.Timestamp(0)
+  admin_username String    @db.VarChar(255)
+  total_cost     String    @db.VarChar(255)
+}
+
+model products {
+  id          String    @id @default(uuid())
+  name        String    @db.VarChar(255)
+  description String    @db.VarChar(255)
+  price       Int
+  stock       Int
+  image       String    @db.VarChar(255)
+  created_at  DateTime? @db.Timestamp(0)
+  updated_at  DateTime? @db.Timestamp(0)
+  deleted_at  DateTime? @db.Timestamp(0)
+}
+
+model reports {
+  date    DateTime @id @db.Timestamp(0)
+  income  Int      @default(0)
+  expense Int      @default(0)
+}

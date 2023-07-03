@@ -20,7 +20,7 @@ fn router(client: Arc<prisma::PrismaClient>) -> axum::Router {
             router
                 .endpoint(move |req: Request| {
                     println!("Client requested operation '{}'", req.uri().path());
-                    api::Ctx { client: client.clone() }
+                    api::Ctx { db: client.clone() }
                 })
                 .axum(),
         )

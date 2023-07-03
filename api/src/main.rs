@@ -7,6 +7,7 @@ use tower_http::cors::CorsLayer;
 use rspc::integrations::httpz::Request;
 
 mod api;
+#[allow(unused)]
 mod prisma;
 mod utils;
 

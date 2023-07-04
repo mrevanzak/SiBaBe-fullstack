@@ -4,8 +4,8 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
   relationMode = "prisma"
 }
 
@@ -48,18 +48,29 @@ model feedback {
   created_at DateTime? @db.Timestamp(0)
   updated_at DateTime? @db.Timestamp(0)
   deleted_at DateTime? @db.Timestamp(0)
-  product_id Int
   feedback   String    @db.VarChar(255)
   rating     Int
+
+  product         products          @relation(fields: [product_id], references: [id])
+  product_id      String
+  feedback_orders feedback_orders[]
+
+  @@index([product_id])
 }
 
-model feedback__orders {
-  order_id    Int
-  feedback_id Int
-  username    String   @db.VarChar(255)
-  date        DateTime @default(now()) @db.Timestamp(0)
+model feedback_orders {
+  username String   @db.VarChar(255)
+  date     DateTime @default(now()) @db.Timestamp(0)
+
+  order    orders @relation(fields: [order_id], references: [id])
+  order_id String
+
+  feedback    feedback @relation(fields: [feedback_id], references: [id])
+  feedback_id String
 
   @@id([order_id, feedback_id])
+  @@index([order_id])
+  @@index([feedback_id])
 }
 
 model feedback_pemesanan {
@@ -72,25 +83,26 @@ model feedback_pemesanan {
 }
 
 model orders {
-  id                String    @id @default(uuid())
-  invoice           String    @unique(map: "orders_invoice_unique") @db.VarChar(255)
-  created_at        DateTime? @db.Timestamp(0)
-  updated_at        DateTime? @db.Timestamp(0)
-  deleted_at        DateTime? @db.Timestamp(0)
-  cart_id           Int
-  customer_username String    @db.VarChar(255)
+  id                String            @id @default(uuid())
+  invoice           String            @unique(map: "orders_invoice_unique") @db.VarChar(255)
+  created_at        DateTime?         @db.Timestamp(0)
+  updated_at        DateTime?         @db.Timestamp(0)
+  deleted_at        DateTime?         @db.Timestamp(0)
+  cart_id           String
+  customer_username String            @db.VarChar(255)
   total_product     Int
   total_price       Int
-  status            String    @db.VarChar(255)
-  address           String    @db.VarChar(255)
-  courier           String    @db.VarChar(255)
-  payment_proof     String?   @db.VarChar(255)
-  validated_by      String?   @db.VarChar(255)
+  status            String            @db.VarChar(255)
+  address           String            @db.VarChar(255)
+  courier           String            @db.VarChar(255)
+  payment_proof     String?           @db.VarChar(255)
+  validated_by      String?           @db.VarChar(255)
+  feedback_orders   feedback_orders[]
 }
 
 model product_carts {
-  product_id  Int
-  cart_id     Int
+  product_id  String
+  cart_id     String
   quantity    Int
   total_price Int
 
@@ -107,15 +119,16 @@ model productions {
 }
 
 model products {
-  id          String    @id @default(uuid())
-  name        String    @db.VarChar(255)
-  description String    @db.VarChar(255)
+  id          String     @id @default(uuid())
+  name        String     @db.VarChar(255)
+  description String     @db.VarChar(255)
   price       Int
   stock       Int
-  image       String    @db.VarChar(255)
-  created_at  DateTime? @db.Timestamp(0)
-  updated_at  DateTime? @db.Timestamp(0)
-  deleted_at  DateTime? @db.Timestamp(0)
+  image       String     @db.VarChar(255)
+  created_at  DateTime?  @db.Timestamp(0)
+  updated_at  DateTime?  @db.Timestamp(0)
+  deleted_at  DateTime?  @db.Timestamp(0)
+  feedback    feedback[]
 }
 
 model reports {

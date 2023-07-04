@@ -9,9 +9,8 @@ import {
 import NextImage from '@/components/NextImage';
 import Separator from '@/components/Separator';
 
+import { Product } from '@/utils/api';
 import thousandSeparator from '@/utils/thousandSeparator';
-
-import { Product } from '@/types';
 
 type ProductDetailProps = {
   product: Product;

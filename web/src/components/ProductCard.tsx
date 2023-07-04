@@ -6,9 +6,8 @@ import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import NextImage from '@/components/NextImage';
 
 import { addToCart } from '@/redux/actions/Cart';
+import { Product } from '@/utils/api';
 import thousandSeparator from '@/utils/thousandSeparator';
-
-import { Product } from '@/types';
 
 type ProductCardProps = {
   product: Product;

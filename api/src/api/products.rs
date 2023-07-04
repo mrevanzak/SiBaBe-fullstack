@@ -1,5 +1,4 @@
-use prisma_client_rust::specta::Type;
-use rspc::RouterBuilder;
+use rspc::{RouterBuilder, Type};
 
 use crate::prisma;
 

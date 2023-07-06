@@ -83,9 +83,7 @@
   /* #endregion  /**======== Typography =========== */
 
   .layout {
-    /* 1100px */
-    max-width: 68.75rem;
-    @apply mx-auto w-11/12;
+    @apply mx-auto w-11/12 max-w-7xl;
   }
 
   .bg-dark a.custom-link {

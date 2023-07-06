@@ -1,5 +1,5 @@
 import { Modal } from '@mantine/core';
-import { useDebouncedValue, useDidUpdate } from '@mantine/hooks';
+import { useDebouncedValue } from '@mantine/hooks';
 import * as React from 'react';
 import { toast } from 'react-toastify';
 
@@ -56,7 +56,7 @@ function ProductPage() {
       <main>
         <div className='layout min-h-main my-6 flex flex-col py-12 font-secondary'>
           <Search search={search} setSearch={setSearch} />
-          <div className='flex flex-wrap items-center justify-center gap-12'>
+          <div className='flex flex-wrap items-center justify-center gap-8'>
             {!isLoading &&
               productFiltered?.map(
                 (product) =>

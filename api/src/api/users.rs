@@ -13,8 +13,6 @@ struct Payload {
     r#type: String,
 }
 
-
-
 #[derive(Serialize, Deserialize)]
 #[serde(untagged)]
 enum Data {

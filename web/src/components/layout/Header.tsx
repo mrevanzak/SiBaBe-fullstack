@@ -19,7 +19,6 @@ const publicLinks = [{ href: '/products', label: 'Produk' }];
 export default function Header() {
   const scrollPosition = useScrollPosition();
   const { user } = useUser();
-  console.log(user);
 
   const links = user ? privateLinks : publicLinks;
 

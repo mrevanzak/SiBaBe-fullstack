@@ -1,17 +1,16 @@
+import { useUser } from '@clerk/nextjs';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { ImSpinner8 } from 'react-icons/im';
 import { toast } from 'react-toastify';
 
-import { useAppDispatch, useAppSelector } from '@/hooks/redux';
+import { useAppDispatch } from '@/hooks/redux';
 
 import { httpClient } from '@/pages/api/products';
 import { logout } from '@/redux/actions/User';
 
-import { User } from '@/types';
-
 export interface WithAuthProps {
-  user: User;
+  auth: boolean;
 }
 
 export const USER_ROUTE = '/';
@@ -51,11 +50,11 @@ export default function withAuth<T extends WithAuthProps = WithAuthProps>(
     const { query } = router;
 
     //#region  //*=========== STORE ===========
-    const { user, loading } = useAppSelector(({ user }) => user);
+    const { isLoaded, isSignedIn, user } = useUser();
     //#endregion  //*======== STORE ===========
 
     React.useEffect(() => {
-      if (!loading) {
+      if (isLoaded) {
         if (user) {
           httpClient.interceptors.response.use(
             (response) => response,
@@ -86,11 +85,11 @@ export default function withAuth<T extends WithAuthProps = WithAuthProps>(
           }
         }
       }
-    }, [loading, query, router, user]);
+    }, [isLoaded, query, router]);
 
     if (
       // If unauthenticated user want to access protected pages
-      (loading || !user) &&
+      (!isLoaded || !isSignedIn) &&
       // auth pages and optional pages are allowed to access without login
       routeRole !== 'auth' &&
       routeRole !== 'optional'
@@ -103,7 +102,7 @@ export default function withAuth<T extends WithAuthProps = WithAuthProps>(
       );
     }
 
-    return <Component {...(props as T)} user={user} />;
+    return <Component {...(props as T)} auth={isSignedIn} />;
   };
 
   return ComponentWithAuth;

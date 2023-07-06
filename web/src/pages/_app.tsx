@@ -1,3 +1,4 @@
+import { ClerkProvider } from '@clerk/nextjs';
 import { MantineProvider } from '@mantine/core';
 import { AppProps } from 'next/app';
 import { PersistGate } from 'redux-persist/integration/react';
@@ -16,18 +17,20 @@ import { persistor, wrapper } from '@/redux';
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <rspc.Provider client={client} queryClient={queryClient}>
-      <MantineProvider
-        withGlobalStyles
-        withNormalizeCSS
-        theme={{
-          /** Put your mantine theme override here */
-          colorScheme: 'light',
-        }}
-      >
-        <PersistGate loading={null} persistor={persistor}>
-          <Component {...pageProps} />
-        </PersistGate>
-      </MantineProvider>
+      <ClerkProvider {...pageProps}>
+        <MantineProvider
+          withGlobalStyles
+          withNormalizeCSS
+          theme={{
+            /** Put your mantine theme override here */
+            colorScheme: 'light',
+          }}
+        >
+          <PersistGate loading={null} persistor={persistor}>
+            <Component {...pageProps} />
+          </PersistGate>
+        </MantineProvider>
+      </ClerkProvider>
     </rspc.Provider>
   );
 }

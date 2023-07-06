@@ -1,32 +1,14 @@
-import Link from 'next/link';
+import { SignIn } from '@clerk/nextjs';
 import * as React from 'react';
 
-import { useAppDispatch } from '@/hooks/redux';
-
-import Button from '@/components/buttons/Button';
 import withAuth from '@/components/hoc/withAuth';
 import Layout from '@/components/layout/Layout';
 import Seo from '@/components/Seo';
-
-import { login } from '@/redux/actions/User';
 
 import Logo from '~/svg/pancake.svg';
 
 export default withAuth(LoginPage, 'auth');
 function LoginPage() {
-  const dispatch = useAppDispatch();
-  const usernameRef = React.createRef<HTMLInputElement>();
-  const passwordRef = React.createRef<HTMLInputElement>();
-
-  const onFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const username = usernameRef.current?.value;
-    const password = passwordRef.current?.value;
-    if (username && password) {
-      dispatch(login(username, password));
-    }
-  };
-
   return (
     <Layout>
       {/* <Seo templateTitle='Home' /> */}
@@ -39,67 +21,20 @@ function LoginPage() {
           </div>
           <div className='flex w-1/2 flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24'>
             <div className='mx-auto w-full max-w-sm lg:w-96'>
-              <div>
-                <h2 className='mt-6 text-5xl font-medium text-gray-900'>
-                  Masuk
-                </h2>
-                <p className='mt-2 text-sm text-gray-600'>
-                  Pengguna baru?{' '}
-                  <Link href='/auth/register'>
-                    <span className='font-medium text-blue-400 hover:text-blue-300'>
-                      Buat akun baru
-                    </span>
-                  </Link>
-                </p>
-              </div>
-
               <div className='mt-8 space-y-6'>
                 <div className='mt-6'>
-                  <form className='space-y-6' onSubmit={onFormSubmit}>
-                    <div>
-                      <label
-                        htmlFor='username'
-                        className='block text-sm font-medium text-gray-700'
-                      >
-                        Username
-                      </label>
-                      <div className='mt-1'>
-                        <input
-                          ref={usernameRef}
-                          id='username'
-                          autoComplete='username'
-                          required
-                          className='block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-primary-50 focus:outline-none focus:ring-primary-50 sm:text-sm'
-                        />
-                      </div>
-                    </div>
-
-                    <div className='space-y-1'>
-                      <label
-                        htmlFor='password'
-                        className='block text-sm font-medium text-gray-700'
-                      >
-                        Password
-                      </label>
-                      <div className='mt-1'>
-                        <input
-                          ref={passwordRef}
-                          id='password'
-                          type='password'
-                          required
-                          className='block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-primary-50 focus:outline-none focus:ring-primary-50 sm:text-sm'
-                        />
-                      </div>
-                    </div>
-
-                    <div className='flex justify-end'>
-                      <Button type='submit' className='rounded-2xl px-20 py-3'>
-                        Masuk
-                      </Button>
-                    </div>
-                  </form>
+                  <SignIn appearance={
+                    {
+                      variables: {
+                        colorPrimary: "#D6AD60",
+                      },
+                      elements: {
+                        formButtonPrimary: "bg-primary-500 text-white border border-primary-600 hover:bg-primary-600 hover:text-white active:bg-primary-700 disabled:bg-primary-700",
+                        footerActionLink: "text-blue-400 hover:text-blue-300",
+                      }
+                    }
+                  } signUpUrl='/auth/register' />
                 </div>
-
                 <p className='text-xs text-gray-500'>
                   Dilindungi dan bagian dari{' '}
                   <span className='text-blue-400'>Privacy Policy</span> dan{' '}

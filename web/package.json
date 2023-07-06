@@ -17,6 +17,7 @@
     "postbuild": "next-sitemap --config next-sitemap.config.js"
   },
   "dependencies": {
+    "@clerk/nextjs": "^4.21.13",
     "@emotion/react": "^11.10.4",
     "@emotion/server": "^11.10.0",
     "@headlessui/react": "^1.7.4",

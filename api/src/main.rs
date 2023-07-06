@@ -1,8 +1,8 @@
 use axum::{
-    http::{HeaderValue, Method},
-    routing::get,
+    routing::{get, post}, http::{HeaderValue, Method}, Router, Extension,
 };
-use std::{net::SocketAddr, sync::Arc};
+
+use std::{net::SocketAddr, sync::Arc, env};
 use tower_http::cors::CorsLayer;
 use rspc::integrations::httpz::Request;
 
@@ -11,11 +11,15 @@ mod api;
 mod prisma;
 mod utils;
 
+
 fn router(client: Arc<prisma::PrismaClient>) -> axum::Router {
     let router = api::new().build().arced();
 
     axum::Router::new()
         .route("/", get(|| async { "Hello 'rspc'!" }))
+        .merge(Router::new()
+            .route("/webhooks", post(api::users::users_handler))
+            .layer(Extension(client.clone())))
         .nest(
             "/rspc",
             router

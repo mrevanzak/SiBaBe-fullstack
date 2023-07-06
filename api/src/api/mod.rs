@@ -6,6 +6,7 @@ use rspc::RouterBuilder;
 use std::path::PathBuf;
 
 mod products;
+pub mod users;
 
 pub struct Ctx {
     pub db: Arc<prisma::PrismaClient>,

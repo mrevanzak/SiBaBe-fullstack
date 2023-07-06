@@ -1,6 +1,6 @@
+import { SignOutButton, useUser } from '@clerk/nextjs';
 import * as React from 'react';
 
-import { useAppSelector } from '@/hooks/redux';
 import useScrollPosition from '@/hooks/useScrollPosition';
 
 import ButtonLink from '@/components/links/ButtonLink';
@@ -18,15 +18,15 @@ const publicLinks = [{ href: '/products', label: 'Produk' }];
 
 export default function Header() {
   const scrollPosition = useScrollPosition();
-  const { user } = useAppSelector(({ user }) => user);
+  const { user } = useUser();
+  console.log(user);
 
   const links = user ? privateLinks : publicLinks;
 
   return (
     <header
-      className={`sticky top-0 z-50 bg-white transition-all duration-200 ${
-        scrollPosition > 0 ? 'bg-opacity-100' : 'bg-opacity-0'
-      }`}
+      className={`sticky top-0 z-50 bg-white transition-all duration-200 ${scrollPosition > 0 ? 'bg-opacity-100' : 'bg-opacity-0'
+        }`}
     >
       <div className='layout flex h-[150px] items-center justify-between'>
         <UnstyledLink
@@ -44,12 +44,23 @@ export default function Header() {
                 </UnderlineLink>
               </li>
             ))}
-            <ButtonLink
-              href={user ? '/auth/logout' : '/auth/login'}
-              className='rounded-xl bg-brown px-4 py-2 font-secondary'
-            >
-              {user ? 'Logout' : 'Login'}
-            </ButtonLink>
+            {user ? (
+              <SignOutButton>
+                <ButtonLink
+                  href=''
+                  className='rounded-xl bg-brown px-4 py-2 font-secondary'
+                >
+                  Logout
+                </ButtonLink>
+              </SignOutButton>
+            ) : (
+              <ButtonLink
+                href='/auth/login'
+                className='rounded-xl bg-brown px-4 py-2 font-secondary'
+              >
+                Login
+              </ButtonLink>
+            )}
           </ul>
         </nav>
       </div>

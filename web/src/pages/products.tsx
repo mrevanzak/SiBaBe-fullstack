@@ -27,8 +27,8 @@ function ProductPage() {
     product.name.toLowerCase().includes(debounced.toLowerCase())
   );
 
-  useDidUpdate(() => {
-    if (productFiltered && productFiltered.length === 0) {
+  React.useEffect(() => {
+    if (!isLoading && productFiltered && productFiltered.length === 0) {
       toast.error('Produk tidak ditemukan', {
         toastId: 'not-found',
       });

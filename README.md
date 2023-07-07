@@ -6,7 +6,6 @@ This app was scaffolded using the [create-rspc-app](https://rspc.dev) CLI.
 
 ```bash
 # Terminal One
-cd web
 yarn
 yarn dev
 

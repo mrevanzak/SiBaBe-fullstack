@@ -1,9 +1,9 @@
 use axum::{
-    routing::get, http::{HeaderValue, Method},
+    routing::get, http::Method,
 };
 
 use std::{net::SocketAddr, sync::Arc, env};
-use tower_http::cors::CorsLayer;
+use tower_http::cors::{CorsLayer, Any};
 use rspc::integrations::httpz::Request;
 
 mod api;
@@ -28,8 +28,8 @@ fn router(client: Arc<prisma::PrismaClient>) -> axum::Router {
         )
         .layer(
             CorsLayer::new()
-                .allow_origin("http://localhost:3000".parse::<HeaderValue>().unwrap())
-                .allow_methods([Method::GET]),
+                .allow_origin(Any)
+                .allow_methods([Method::GET, Method::POST, Method::PUT, Method::DELETE]),
         )
 }
 

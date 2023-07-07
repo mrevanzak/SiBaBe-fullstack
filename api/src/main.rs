@@ -38,7 +38,8 @@ async fn main() {
     dotenv::dotenv().ok();
     let client = Arc::new(prisma::new_client().await.unwrap());
 
-    let addr = "[::]:9000".parse::<SocketAddr>().unwrap(); // This listens on IPv6 and IPv4
+    let port = env::var("PORT").unwrap_or("9000".to_string());
+    let addr = format!("[::]:{}", port).parse::<SocketAddr>().unwrap();
     println!("{} listening on http://{}", env!("CARGO_CRATE_NAME"), addr);
     axum::Server::bind(&addr)
         .serve(router(client).into_make_service())

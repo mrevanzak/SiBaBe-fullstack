@@ -1,5 +1,5 @@
 use axum::{
-    routing::{get, post}, http::{HeaderValue, Method}, Router, Extension,
+    routing::get, http::{HeaderValue, Method},
 };
 
 use std::{net::SocketAddr, sync::Arc, env};
@@ -11,15 +11,12 @@ mod api;
 mod prisma;
 mod utils;
 
-
 fn router(client: Arc<prisma::PrismaClient>) -> axum::Router {
     let router = api::new().build().arced();
 
     axum::Router::new()
         .route("/", get(|| async { "Hello 'rspc'!" }))
-        .merge(Router::new()
-            .route("/webhooks", post(api::users::users_handler))
-            .layer(Extension(client.clone())))
+        .merge(api::users::route(client.clone()))
         .nest(
             "/rspc",
             router

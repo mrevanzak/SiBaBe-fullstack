@@ -1,6 +1,6 @@
 use std::{env, sync::Arc};
 
-use axum::{http::{HeaderMap, StatusCode}, body::Bytes, Extension};
+use axum::{http::{HeaderMap, StatusCode}, body::Bytes, Extension, Router, routing::post};
 use serde::{Deserialize, Serialize};
 use svix::webhooks::Webhook;
 
@@ -39,7 +39,8 @@ struct EmailAddress {
     email_address: String,
     id: String,
 }
-pub async fn users_handler(
+
+async fn users_handler(
     db: Extension<Arc<PrismaClient>>,
     headers: HeaderMap,
     body: Bytes,
@@ -118,3 +119,10 @@ pub async fn users_handler(
         Err(_) => StatusCode::INTERNAL_SERVER_ERROR,
     }
 }
+
+pub(crate) fn route(client: Arc<PrismaClient>) -> Router {
+    Router::new()
+        .route("/webhooks", post(users_handler))
+        .layer(Extension(client))
+}
+

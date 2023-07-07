@@ -24,8 +24,9 @@ export default function Header() {
 
   return (
     <header
-      className={`sticky top-0 z-50 bg-white transition-all duration-200 ${scrollPosition > 0 ? 'bg-opacity-100' : 'bg-opacity-0'
-        }`}
+      className={`sticky top-0 z-50 bg-white transition-all duration-200 ${
+        scrollPosition > 0 ? 'bg-opacity-100' : 'bg-opacity-0'
+      }`}
     >
       <div className='layout flex h-[150px] items-center justify-between'>
         <UnstyledLink

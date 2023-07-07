@@ -20,7 +20,7 @@ pub(crate) fn new() -> RouterBuilder<Ctx> {
             Config::new().export_ts_bindings(
                 PathBuf::from(env!("CARGO_MANIFEST_DIR"))
                     .join("..")
-                    .join("web/src/utils/api.ts"),
+                    .join("src/utils/api.ts"),
             ),
         )
         .merge("products.", products::route())

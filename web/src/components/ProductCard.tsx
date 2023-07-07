@@ -1,11 +1,11 @@
+/* eslint-disable unused-imports/no-unused-vars */
 import * as React from 'react';
 import { FiShoppingCart } from 'react-icons/fi';
 
-import { useAppDispatch, useAppSelector } from '@/hooks/redux';
+import { useAppSelector } from '@/hooks/redux';
 
 import NextImage from '@/components/NextImage';
 
-import { addToCart } from '@/redux/actions/Cart';
 import { Product } from '@/utils/api';
 import thousandSeparator from '@/utils/thousandSeparator';
 
@@ -22,7 +22,6 @@ export default function ProductCard({
 }: ProductCardProps) {
   // const { cart } = useAppSelector(({ cart }) => cart);
   const { user } = useAppSelector(({ user }) => user);
-  const dispatch = useAppDispatch();
 
   // const isInCart = (id: number) => {
   //   return cart?.product?.find((item) => item.productId === id);
@@ -73,7 +72,7 @@ export default function ProductCard({
             className='text-2xl transition-all duration-200 hover:text-primary-50'
             onClick={(e) => {
               e.stopPropagation();
-              dispatch(addToCart(product.id));
+              // dispatch(addToCart(product.id));
             }}
           />
         )}

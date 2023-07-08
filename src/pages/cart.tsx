@@ -5,7 +5,6 @@ import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 
 import Button from '@/components/buttons/Button';
 import CartRow from '@/components/CartRow';
-import withAuth from '@/components/hoc/withAuth';
 import Layout from '@/components/layout/Layout';
 import Seo from '@/components/Seo';
 import Separator from '@/components/Separator';
@@ -14,8 +13,7 @@ import { fetchCart } from '@/redux/actions/Cart';
 import { clearCheckoutMessage } from '@/redux/actions/Checkout';
 import thousandSeparator from '@/utils/thousandSeparator';
 
-export default withAuth(CartPage, 'all');
-function CartPage() {
+export default function CartPage() {
   const { cart } = useAppSelector(({ cart }) => cart);
   const dispatch = useAppDispatch();
   const router = useRouter();

@@ -7,7 +7,6 @@ import clsxm from '@/lib/clsxm';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 
 import Button from '@/components/buttons/Button';
-import withAuth from '@/components/hoc/withAuth';
 import Layout from '@/components/layout/Layout';
 import OrderRow from '@/components/OrderRow';
 import Seo from '@/components/Seo';
@@ -24,8 +23,7 @@ const courier = [{ id: 1, name: 'ITS-JEK', price: 10000 }];
 
 const payment = [{ id: 1, method: 'Transfer Bank', name: 'ITS-BANK' }];
 
-export default withAuth(OrderPage, 'all');
-function OrderPage() {
+export default function OrderPage() {
   const { cart } = useAppSelector(({ cart }) => cart);
   const { user } = useAppSelector(({ user }) => user);
   const { status } = useAppSelector(({ checkout }) => checkout);

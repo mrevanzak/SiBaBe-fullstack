@@ -1,14 +1,12 @@
 import { SignUp } from '@clerk/nextjs';
 import * as React from 'react';
 
-import withAuth from '@/components/hoc/withAuth';
 import Layout from '@/components/layout/Layout';
 import Seo from '@/components/Seo';
 
 import Logo from '~/svg/pancake.svg';
 
-export default withAuth(LoginPage, 'auth');
-function LoginPage() {
+export default function LoginPage() {
   return (
     <Layout>
       {/* <Seo templateTitle='Home' /> */}

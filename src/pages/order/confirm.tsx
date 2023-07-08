@@ -3,7 +3,6 @@ import * as React from 'react';
 
 import { useAppSelector } from '@/hooks/redux';
 
-import withAuth from '@/components/hoc/withAuth';
 import Layout from '@/components/layout/Layout';
 import ArrowLink from '@/components/links/ArrowLink';
 import OrderRow from '@/components/OrderRow';
@@ -13,8 +12,7 @@ import UploadModal from '@/components/UploadModal';
 
 import thousandSeparator from '@/utils/thousandSeparator';
 
-export default withAuth(ConfirmOrderPage, 'all');
-function ConfirmOrderPage() {
+export default function ConfirmOrderPage() {
   const { cart } = useAppSelector(({ cart }) => cart);
   const { invoice } = useAppSelector(({ checkout }) => checkout);
   const [uploadModalOpened, setuploadModalOpened] = React.useState(false);

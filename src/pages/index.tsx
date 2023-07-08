@@ -1,9 +1,7 @@
-import { useRouter } from 'next/router';
 import * as React from 'react';
 
 import { useAppSelector } from '@/hooks/redux';
 
-import withAuth from '@/components/hoc/withAuth';
 import Layout from '@/components/layout/Layout';
 import ButtonLink from '@/components/links/ButtonLink';
 import Seo from '@/components/Seo';
@@ -22,9 +20,7 @@ import Logo from '~/svg/pancake.svg';
 // Before you begin editing, follow all comments with `STARTERCONF`,
 // to customize the default configuration.
 
-export default withAuth(HomePage, 'optional');
-function HomePage() {
-  const router = useRouter();
+export default function HomePage() {
   const { user } = useAppSelector(({ user }) => user);
 
   return (
@@ -46,17 +42,15 @@ function HomePage() {
             {!user?.token && (
               <div className='flex gap-4 pt-6'>
                 <ButtonLink
-                  href=''
+                  href='/auth/register'
                   className='rounded-2xl bg-brown px-20 py-4'
-                  onClick={() => router.push('auth/register')}
                 >
                   Daftar
                 </ButtonLink>
                 <ButtonLink
-                  href=''
+                  href='/auth/login'
                   variant='outline'
                   className='rounded-2xl px-20 py-4'
-                  onClick={() => router.push('/auth/login')}
                 >
                   Login
                 </ButtonLink>

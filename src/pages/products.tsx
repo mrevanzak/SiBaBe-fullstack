@@ -5,7 +5,6 @@ import { toast } from 'react-toastify';
 
 import { rspc } from '@/lib/rspc';
 
-import withAuth from '@/components/hoc/withAuth';
 import Layout from '@/components/layout/Layout';
 import ProductCard from '@/components/ProductCard';
 import ProductDetail from '@/components/ProductDetail';
@@ -14,8 +13,7 @@ import Seo from '@/components/Seo';
 
 import { Product } from '@/utils/api';
 
-export default withAuth(ProductPage, 'optional');
-function ProductPage() {
+export default function ProductPage() {
   const { data: products, isLoading } = rspc.useQuery(['products.get']);
   const [opened, setOpened] = React.useState(false);
   const [selectedProduct, setSelectedProduct] =

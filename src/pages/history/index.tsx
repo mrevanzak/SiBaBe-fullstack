@@ -3,15 +3,13 @@ import * as React from 'react';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 
 import HistoryRow from '@/components/HistoryRow';
-import withAuth from '@/components/hoc/withAuth';
 import Layout from '@/components/layout/Layout';
 import Seo from '@/components/Seo';
 import Separator from '@/components/Separator';
 
 import { fetchHistory } from '@/redux/actions/History';
 
-export default withAuth(HistoryPage, 'all');
-function HistoryPage() {
+export default function HistoryPage() {
   const { history } = useAppSelector(({ history }) => history);
   const dispatch = useAppDispatch();
 

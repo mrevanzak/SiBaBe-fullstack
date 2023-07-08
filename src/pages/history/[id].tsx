@@ -4,7 +4,6 @@ import * as React from 'react';
 
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 
-import withAuth from '@/components/hoc/withAuth';
 import Layout from '@/components/layout/Layout';
 import ArrowLink from '@/components/links/ArrowLink';
 import OrderRow from '@/components/OrderRow';
@@ -16,8 +15,7 @@ import UploadModal from '@/components/UploadModal';
 import { fetchHistoryById } from '@/redux/actions/History';
 import thousandSeparator from '@/utils/thousandSeparator';
 
-export default withAuth(HistoryDetailPage, 'all');
-function HistoryDetailPage() {
+export default function HistoryDetailPage() {
   const { history, historyById } = useAppSelector(({ history }) => history);
   const dispatch = useAppDispatch();
   const [reviewModalOpened, setreviewModalOpened] = React.useState(false);

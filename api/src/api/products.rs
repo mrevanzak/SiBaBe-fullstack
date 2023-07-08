@@ -99,4 +99,13 @@ pub(crate) fn route() -> RouterBuilder<Ctx> {
         Ok(edit_product)
       })
     })
+    .mutation("delete", |t| {
+      t(|ctx, id: String| async move {
+        let delete_product = ctx.db
+          .products()
+          .delete(prisma::products::id::equals(id))
+          .exec().await?;
+        Ok(delete_product)
+      })
+    })
 }

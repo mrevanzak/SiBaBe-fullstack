@@ -1,9 +1,12 @@
 import * as React from 'react';
 import { RiCloseFill } from 'react-icons/ri';
 
+import { rspc } from '@/lib/rspc';
+
 import Button from '@/components/buttons/Button';
 
 import { Product } from '@/utils/api';
+
 type ConfirmRemoveProps = {
   product: Product;
   setOpened: (opened: boolean) => void;
@@ -13,11 +16,12 @@ export default function ConfirmRemoveModal({
   product,
   setOpened,
 }: ConfirmRemoveProps) {
-  const handleDelete = () => {
-    setOpened(false);
-    // console.log('delete' + product.id)
-    // dispatch(deleteProduct(product.id));
-  };
+  const { mutate } = rspc.useMutation(['products.delete'], {
+    meta: { message: 'Berhasil menghapus produk' },
+    onSuccess: () => {
+      setOpened(false);
+    },
+  });
 
   return (
     <div className='relative flex flex-row items-center justify-center gap-24 overflow-hidden rounded-[50px] bg-grey pb-8'>
@@ -38,7 +42,7 @@ export default function ConfirmRemoveModal({
           </Button>
           <Button
             className='absolute bottom-0 right-0 flex h-20 w-1/2 justify-center rounded-none bg-red-500 hover:bg-red-600'
-            onClick={handleDelete}
+            onClick={() => mutate(product.id)}
           >
             YES
           </Button>

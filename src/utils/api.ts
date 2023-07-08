@@ -4,6 +4,7 @@ export type Procedures = {
   queries: { key: 'products.get'; input: never; result: Product[] };
   mutations:
     | { key: 'products.create'; input: Products; result: Products }
+    | { key: 'products.delete'; input: string; result: Products }
     | { key: 'products.edit'; input: EditProduct; result: Products };
   subscriptions: never;
 };

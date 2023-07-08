@@ -40,3 +40,6 @@ README.md
 # backend deps
 target
 prisma
+
+# api types gen
+src/utils/api.ts

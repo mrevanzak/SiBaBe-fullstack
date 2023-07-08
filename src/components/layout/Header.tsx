@@ -4,9 +4,10 @@ import * as React from 'react';
 import useScrollPosition from '@/hooks/useScrollPosition';
 
 import ButtonLink from '@/components/links/ButtonLink';
+import UnderlineLink from '@/components/links/UnderlineLink';
 import UnstyledLink from '@/components/links/UnstyledLink';
 
-import UnderlineLink from '../links/UnderlineLink';
+import useIsAdmin from '@/utils/isAdmin';
 
 const privateLinks = [
   { href: '/products', label: 'Produk' },
@@ -16,11 +17,17 @@ const privateLinks = [
 
 const publicLinks = [{ href: '/products', label: 'Produk' }];
 
+const adminLinks = [
+  { href: '/products', label: 'Kelola Produk' },
+  { href: '/report', label: 'Laporan Bisnis' },
+  { href: '/orders', label: 'Daftar Pemesanan' },
+];
+
 export default function Header() {
   const scrollPosition = useScrollPosition();
   const { user } = useUser();
 
-  const links = user ? privateLinks : publicLinks;
+  const links = useIsAdmin() ? adminLinks : user ? privateLinks : publicLinks;
 
   return (
     <header

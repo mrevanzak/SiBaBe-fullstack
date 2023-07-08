@@ -64,14 +64,16 @@ export default function ProductCard({
             Rp {thousandSeparator(product.price)}
           </p>
         </div>
-        <FiEdit
-          className='text-2xl transition-all duration-200 hover:text-primary-50'
-          onClick={(e) => {
-            e.stopPropagation();
-            setOpened(true);
-            setSelectedProduct(product);
-          }}
-        />
+        {useIsAdmin() && (
+          <FiEdit
+            className='text-2xl transition-all duration-200 hover:text-primary-50'
+            onClick={(e) => {
+              e.stopPropagation();
+              setOpened(true);
+              setSelectedProduct(product);
+            }}
+          />
+        )}
         {/* {isInCart(product.id) ? (
           <FiXCircle
             className='text-2xl transition-all duration-200 hover:text-primary-50'

@@ -32,6 +32,9 @@ const queryClient = new QueryClient({
     onError: (err) => {
       if (err instanceof RSPCError) toast.error(err.message);
     },
+    onSuccess: (_data, _variables, _context, mutation) => {
+      toast.success(mutation?.meta?.message as string);
+    },
   }),
 });
 

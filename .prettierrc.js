@@ -4,4 +4,5 @@ module.exports = {
   jsxSingleQuote: true,
   tabWidth: 2,
   semi: true,
+  plugins: ['./node_modules/prettier-plugin-rust'],
 };

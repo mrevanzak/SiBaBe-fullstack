@@ -9,19 +9,17 @@ mod products;
 pub mod users;
 
 pub struct Ctx {
-    pub db: Arc<prisma::PrismaClient>,
+  pub db: Arc<prisma::PrismaClient>,
 }
 
 pub type Router = rspc::Router<Ctx>;
 
 pub(crate) fn new() -> RouterBuilder<Ctx> {
-    Router::new()
-        .config(
-            Config::new().export_ts_bindings(
-                PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-                    .join("..")
-                    .join("src/utils/api.ts"),
-            ),
-        )
-        .merge("products.", products::route())
+  Router::new()
+    .config(
+      Config::new().export_ts_bindings(
+        PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("..").join("src/utils/api.ts")
+      )
+    )
+    .merge("products.", products::route())
 }

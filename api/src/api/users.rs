@@ -44,79 +44,76 @@ async fn users_handler(
     db: Extension<Arc<PrismaClient>>,
     headers: HeaderMap,
     body: Bytes,
-) -> StatusCode {
-    let wh = Webhook::new(env::var("WEBHOOK_SECRET").unwrap().as_str());
+) -> Result<StatusCode, StatusCode> {
+    let wh = Webhook::new(env::var("WEBHOOK_SECRET").unwrap().as_str()).map_err(|_| {
+        println!("Webhook secret not found");
+        StatusCode::INTERNAL_SERVER_ERROR
+    })?;
     let payload: Payload = serde_json::from_slice(&body).unwrap();
 
-    match wh {
-        Ok(wh) => {
-            match wh.verify(&body, &headers) {
-                Ok(_) => {
-                    match payload.data {
-                        Data::CreatedOrUpdated{
-                            id,
-                            username,
-                            first_name,
-                            last_name,
-                            email_addresses,
-                            public_metadata,
-                            ..
-                        } => {
-                                if payload.r#type == "user.created"{
-                                    let name = format!("{} {}", first_name, last_name);
-                                    let email = &email_addresses[0].email_address;
+    wh.verify(&body, &headers).map_err(|_| {
+        println!("Webhook verification failed");
+        StatusCode::UNAUTHORIZED
+    })?;
 
-                                    let user = db.customers().create(
-                                        id,
-                                        username,
-                                        name,
-                                        email.to_string(),
-                                        vec![],
+    match payload.data {
+        Data::CreatedOrUpdated{
+            id,
+            username,
+            first_name,
+            last_name,
+            email_addresses,
+            public_metadata,
+            ..
+        } => {
+                if payload.r#type == "user.created"{
+                    let name = format!("{} {}", first_name, last_name);
+                    let email = &email_addresses[0].email_address;
 
-                                    ).exec().await;
-                                    match user {
-                                        Ok(_) => println!("User created"),
-                                        Err(_) => println!("User not created"),
-                                    }
-                                } else if payload.r#type == "user.updated"{
-                                    let user = db.customers().delete(prisma::customers::id::equals(id.clone())).exec().await;
-                                    match user {
-                                        Ok(_) => println!("User deleted"),
-                                        Err(_) => println!("User not deleted"),
-                                    }
+                    let user = db.customers().create(
+                        id,
+                        username,
+                        name,
+                        email.to_string(),
+                        vec![],
+                    ).exec().await;
+                    match user {
+                        Ok(_) => println!("User created"),
+                        Err(_) => println!("User not created"),
+                    }
+                } else if payload.r#type == "user.updated"{
+                    let user = db.customers().delete(prisma::customers::id::equals(id.clone())).exec().await;
+                    match user {
+                        Ok(_) => println!("User deleted"),
+                        Err(_) => println!("User not deleted"),
+                    }
 
-                                    let name = format!("{} {}", first_name, last_name);
-                                    let email = &email_addresses[0].email_address;
+                    let name = format!("{} {}", first_name, last_name);
+                    let email = &email_addresses[0].email_address;
 
-                                    if public_metadata["role"] == "admin"{
-                                        let admin = db.admins()
-                                            .create(id, username, name, email.to_string(), vec![])
-                                            .exec().await;
+                    if public_metadata["role"] == "admin"{
+                        let admin = db.admins()
+                            .create(id, username, name, email.to_string(), vec![])
+                            .exec().await;
 
-                                        match admin {
-                                            Ok(_) => println!("User promoted to admin"),
-                                            Err(_) => println!("User failed to be promoted to admin"),
-                                        }
-                                    }
-                                } else {
-                                    println!("Unknown user event type");
-                                } 
-                            }
-                        Data::Deleted { id, .. } => {
-                            let user = db.customers().delete(prisma::customers::id::equals(id)).exec().await;
-                            match user {
-                                Ok(_) => println!("User deleted"),
-                                Err(_) => println!("User not deleted"),
-                            }
+                        match admin {
+                            Ok(_) => println!("User promoted to admin"),
+                            Err(_) => println!("User failed to be promoted to admin"),
                         }
                     }
-                    StatusCode::OK
-
-                }
-                Err(_) => StatusCode::UNAUTHORIZED,
+                } else {
+                    println!("Unknown user event type");
+                } 
+                Ok(StatusCode::OK)
             }
+        Data::Deleted { id, .. } => {
+            let user = db.customers().delete(prisma::customers::id::equals(id)).exec().await;
+            match user {
+                Ok(_) => println!("User deleted"),
+                Err(_) => println!("User not deleted"),
+            }
+            Ok(StatusCode::OK)
         }
-        Err(_) => StatusCode::INTERNAL_SERVER_ERROR,
     }
 }
 

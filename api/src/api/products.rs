@@ -21,20 +21,20 @@ struct Product {
 pub(crate) fn route() -> RouterBuilder<Ctx> {
     Router::new().query("get", |t| {
         t(|ctx, _: ()| async move {
-            let _products = ctx.db.products().find_many(vec![]).exec().await.unwrap();
+            let products_query = ctx.db.products().find_many(vec![]).exec().await?;
             let mut products: Vec<Product> = Vec::new();
             
-            for product in _products.iter() {
+            for product in products_query.iter() {
                 let product_id = &product.id;
-                let _reviews = ctx.db.feedback()
+                let reviews_query = ctx.db.feedback()
                     .find_many(vec![prisma::feedback::product::is(vec![prisma::products::id::equals(product_id.to_string())])])
                     .exec()
-                    .await
-                    .unwrap();
+                    .await?;
                 let mut reviews: Vec<Reviews> = Vec::new();
 
-                for review in _reviews.iter() {
-                    let username = ctx.db.feedback_orders().find_first(vec![]).exec().await.unwrap().unwrap().username;
+                for review in reviews_query.iter() {
+                    let feedback_orders = ctx.db.feedback_orders().find_first(vec![]).exec().await?;
+                    let username = feedback_orders.unwrap().username;
                     
                     reviews.push(Reviews {
                         data: review.clone(),
@@ -51,4 +51,3 @@ pub(crate) fn route() -> RouterBuilder<Ctx> {
         })
     })
 }
-

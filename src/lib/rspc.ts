@@ -1,7 +1,8 @@
-import { createClient, FetchTransport } from '@rspc/client';
+import { createClient, FetchTransport, RSPCError } from '@rspc/client';
 import { createReactQueryHooks } from '@rspc/react';
-import { QueryClient } from '@tanstack/react-query';
+import { MutationCache, QueryCache, QueryClient } from '@tanstack/react-query';
 import getConfig from 'next/config';
+import { toast } from 'react-toastify';
 
 import { Procedures } from '@/utils/api';
 
@@ -21,6 +22,17 @@ const client = createClient<Procedures>({
   ),
 });
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  queryCache: new QueryCache({
+    onError: (err) => {
+      if (err instanceof RSPCError) toast.error(err.message);
+    },
+  }),
+  mutationCache: new MutationCache({
+    onError: (err) => {
+      if (err instanceof RSPCError) toast.error(err.message);
+    },
+  }),
+});
 
 export { client, queryClient, rspc };

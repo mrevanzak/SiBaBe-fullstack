@@ -82,9 +82,9 @@ pub(crate) fn route() -> RouterBuilder<Ctx> {
         Ok(create_product)
       })
     })
-    .mutation("edit", |t| {
+    .mutation("update", |t| {
       t(|ctx, input: EditProduct| async move {
-        let edit_product = ctx.db
+        let update_product = ctx.db
           .products()
           .update(
             prisma::products::id::equals(input.id),
@@ -96,7 +96,7 @@ pub(crate) fn route() -> RouterBuilder<Ctx> {
             ]
           )
           .exec().await?;
-        Ok(edit_product)
+        Ok(update_product)
       })
     })
     .mutation("delete", |t| {

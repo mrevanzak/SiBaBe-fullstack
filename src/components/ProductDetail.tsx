@@ -28,7 +28,7 @@ export default function ProductDetail({
   product,
   setOpened,
 }: ProductDetailProps) {
-  const { mutate } = rspc.useMutation(['products.edit'], {
+  const { mutate } = rspc.useMutation(['products.update'], {
     meta: { message: 'Berhasil mengubah produk' },
     onSuccess: () => {
       setOpened(false);

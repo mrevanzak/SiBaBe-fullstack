@@ -6,11 +6,11 @@ import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 
 import Layout from '@/components/layout/Layout';
 import ArrowLink from '@/components/links/ArrowLink';
+import ReviewModal from '@/components/modals/Review';
+import UploadModal from '@/components/modals/Upload';
 import OrderRow from '@/components/OrderRow';
-import ReviewModal from '@/components/ReviewModal';
 import Seo from '@/components/Seo';
 import Separator from '@/components/Separator';
-import UploadModal from '@/components/UploadModal';
 
 import { fetchHistoryById } from '@/redux/actions/History';
 import thousandSeparator from '@/utils/thousandSeparator';

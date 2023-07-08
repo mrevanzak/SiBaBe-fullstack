@@ -5,10 +5,10 @@ import { useAppSelector } from '@/hooks/redux';
 
 import Layout from '@/components/layout/Layout';
 import ArrowLink from '@/components/links/ArrowLink';
+import UploadModal from '@/components/modals/Upload';
 import OrderRow from '@/components/OrderRow';
 import Seo from '@/components/Seo';
 import Separator from '@/components/Separator';
-import UploadModal from '@/components/UploadModal';
 
 import thousandSeparator from '@/utils/thousandSeparator';
 

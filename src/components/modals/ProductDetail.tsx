@@ -24,7 +24,7 @@ type ProductDetailProps = {
   setOpened: (opened: boolean) => void;
 };
 
-export default function ProductDetail({
+export default function ProductDetailModal({
   product,
   setOpened,
 }: ProductDetailProps) {

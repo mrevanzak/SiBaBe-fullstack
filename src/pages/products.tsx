@@ -5,10 +5,10 @@ import { toast } from 'react-toastify';
 
 import { rspc } from '@/lib/rspc';
 
-import ConfirmRemoveModal from '@/components/ConfirmRemoveModal';
 import Layout from '@/components/layout/Layout';
+import ConfirmRemoveModal from '@/components/modals/ConfirmRemove';
+import ProductDetail from '@/components/modals/ProductDetail';
 import ProductCard from '@/components/ProductCard';
-import ProductDetail from '@/components/ProductDetail';
 import Search from '@/components/Search';
 import Seo from '@/components/Seo';
 

@@ -25,6 +25,20 @@ export default function ProductPage() {
     product.name.toLowerCase().includes(debounced.toLowerCase())
   );
 
+  if (isLoading) {
+    toast.loading('Memuat produk...', {
+      toastId: 'fetching',
+    });
+  }
+
+  if (!isLoading) {
+    toast.update('fetching', {
+      render: 'Produk berhasil dimuat',
+      type: 'success',
+      isLoading: false,
+    });
+  }
+
   React.useEffect(() => {
     if (!isLoading && productFiltered && productFiltered.length === 0) {
       toast.error('Produk tidak ditemukan', {

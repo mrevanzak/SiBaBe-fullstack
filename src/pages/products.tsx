@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 
 import { rspc } from '@/lib/rspc';
 
+import ConfirmRemoveModal from '@/components/ConfirmRemoveModal';
 import Layout from '@/components/layout/Layout';
 import ProductCard from '@/components/ProductCard';
 import ProductDetail from '@/components/ProductDetail';
@@ -16,6 +17,7 @@ import { Product } from '@/utils/api';
 export default function ProductPage() {
   const { data: products, isLoading } = rspc.useQuery(['products.get']);
   const [opened, setOpened] = React.useState(false);
+  const [openConfirmRemove, setOpenConfirmRemove] = React.useState(false);
   const [selectedProduct, setSelectedProduct] =
     React.useState<Product | null>();
   const [search, setSearch] = React.useState('');
@@ -36,6 +38,7 @@ export default function ProductPage() {
       render: 'Produk berhasil dimuat',
       type: 'success',
       isLoading: false,
+      autoClose: 2000,
     });
   }
 
@@ -52,6 +55,22 @@ export default function ProductPage() {
       {/* <Seo templateTitle='Home' /> */}
       <Seo />
 
+      <Modal
+        opened={openConfirmRemove}
+        onClose={() => setOpenConfirmRemove(false)}
+        centered
+        withCloseButton={false}
+        padding={0}
+        radius={50}
+        size={825}
+      >
+        {selectedProduct && (
+          <ConfirmRemoveModal
+            product={selectedProduct}
+            setOpened={setOpenConfirmRemove}
+          />
+        )}
+      </Modal>
       <Modal
         opened={opened}
         onClose={() => setOpened(false)}
@@ -78,6 +97,7 @@ export default function ProductPage() {
                       product={product}
                       setOpened={setOpened}
                       setSelectedProduct={setSelectedProduct}
+                      setOpenConfirmRemove={setOpenConfirmRemove}
                     />
                   )
               )}

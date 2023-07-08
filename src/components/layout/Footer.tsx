@@ -5,7 +5,7 @@ import Logo from '~/svg/pancake.svg';
 
 export default function Footer() {
   return (
-    <footer className='bg-green text-white'>
+    <footer className='bg-darkGreen text-white'>
       <div className='layout flex h-48 items-center justify-between '>
         <div className='flex flex-row items-center gap-20'>
           <Logo className='h-32 w-32' />

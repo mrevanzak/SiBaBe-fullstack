@@ -1,6 +1,5 @@
+import { useUser } from '@clerk/nextjs';
 import * as React from 'react';
-
-import { useAppSelector } from '@/hooks/redux';
 
 import Layout from '@/components/layout/Layout';
 import ButtonLink from '@/components/links/ButtonLink';
@@ -21,7 +20,7 @@ import Logo from '~/svg/pancake.svg';
 // to customize the default configuration.
 
 export default function HomePage() {
-  const { user } = useAppSelector(({ user }) => user);
+  const { user, isSignedIn } = useUser();
 
   return (
     <Layout>
@@ -32,14 +31,14 @@ export default function HomePage() {
         <div className='layout min-h-main my-6 flex flex-row items-center'>
           <div className=''>
             <p className='text-base font-semibold'>
-              Halo, Selamat Datang {user?.name}!
+              Halo, Selamat Datang {user?.fullName}!
             </p>
             <h1 className='pt-3 text-5xl font-extrabold leading-tight'>
               Dapatkan Roti Premium Terlezat Buatan Kami
             </h1>
             <p className='pt-4'>Coba dan rasakan pelayanan terbaik dari kami</p>
             <p>Daftar sekarang gratis</p>
-            {!user?.token && (
+            {!isSignedIn && (
               <div className='flex gap-4 pt-6'>
                 <ButtonLink
                   href='/auth/register'

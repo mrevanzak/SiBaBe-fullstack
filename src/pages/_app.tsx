@@ -1,5 +1,6 @@
 import { ClerkProvider } from '@clerk/nextjs';
 import { MantineProvider } from '@mantine/core';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { AppProps } from 'next/app';
 import { PersistGate } from 'redux-persist/integration/react';
 
@@ -30,6 +31,7 @@ function MyApp({ Component, pageProps }: AppProps) {
             <Component {...pageProps} />
           </PersistGate>
         </MantineProvider>
+        <ReactQueryDevtools initialIsOpen={false} />
       </ClerkProvider>
     </rspc.Provider>
   );

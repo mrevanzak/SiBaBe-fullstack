@@ -4,7 +4,7 @@ export type Procedures = {
     queries: 
         { key: "products.get", input: never, result: Product[] },
     mutations: 
-        { key: "products.create", input: Products, result: Products } | 
+        { key: "products.create", input: AddProduct, result: Products } | 
         { key: "products.delete", input: string, result: Products } | 
         { key: "products.update", input: EditProduct, result: Products },
     subscriptions: never
@@ -12,10 +12,12 @@ export type Procedures = {
 
 export type Product = ({ id: string; name: string; description: string; price: number; stock: number; image: string; created_at: string | null; updated_at: string | null; deleted_at: string | null }) & { reviews: Reviews[] }
 
-export type EditProduct = { id: string; name: string; description: string; price: number; stock: number }
-
 export type Products = { id: string; name: string; description: string; price: number; stock: number; image: string; created_at: string | null; updated_at: string | null; deleted_at: string | null }
 
 export type Feedback = { id: string; created_at: string | null; updated_at: string | null; deleted_at: string | null; feedback: string; rating: number; product_id: string }
 
+export type AddProduct = { name: string; description: string; price: number; stock: number; image: string }
+
 export type Reviews = ({ id: string; created_at: string | null; updated_at: string | null; deleted_at: string | null; feedback: string; rating: number; product_id: string }) & { username: string }
+
+export type EditProduct = { id: string; name: string; description: string; price: number; stock: number }

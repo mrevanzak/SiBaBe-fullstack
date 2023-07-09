@@ -1,30 +1,40 @@
 use rspc::{ RouterBuilder, Type, Error, ErrorCode };
+use serde::{Serialize, Deserialize};
 
 use crate::prisma;
 
 use super::{ Ctx, Router };
 
-#[derive(Debug, serde::Serialize, serde::Deserialize, Type)]
+#[derive(Debug, Serialize, Deserialize, Type)]
 struct Reviews {
   #[serde(flatten)]
   data: prisma::feedback::Data,
   username: String,
 }
 
-#[derive(Debug, serde::Serialize, serde::Deserialize, Type)]
+#[derive(Debug, Serialize, Deserialize, Type)]
 struct Product {
   #[serde(flatten)]
   data: prisma::products::Data,
   reviews: Vec<Reviews>,
 }
 
-#[derive(Debug, serde::Serialize, serde::Deserialize, Type)]
+#[derive(Debug, Serialize, Deserialize, Type)]
 struct EditProduct {
   id: String,
   name: String,
   description: String,
   price: i32,
   stock: i32,
+}
+
+#[derive(Debug, Serialize, Deserialize, Type)]
+struct AddProduct {
+  name: String,
+  description: String,
+  price: i32,
+  stock: i32,
+  image: String,
 }
 
 pub(crate) fn route() -> RouterBuilder<Ctx> {
@@ -73,7 +83,7 @@ pub(crate) fn route() -> RouterBuilder<Ctx> {
       })
     })
     .mutation("create", |t| {
-      t(|ctx, input: prisma::products::Data| async move {
+      t(|ctx, input: AddProduct| async move {
         let create_product = ctx.db
           .products()
           .create(input.name, input.description, input.price, input.stock, input.image, vec![])

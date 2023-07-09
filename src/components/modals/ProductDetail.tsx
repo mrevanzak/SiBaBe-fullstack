@@ -30,9 +30,6 @@ export default function ProductDetailModal({
 }: ProductDetailProps) {
   const { mutate } = rspc.useMutation(['products.update'], {
     meta: { message: 'Berhasil mengubah produk' },
-    onSuccess: () => {
-      setOpened(false);
-    },
   });
   //#region  //*=========== Form ===========
   const methods = useForm<EditProduct>({
@@ -49,13 +46,20 @@ export default function ProductDetailModal({
 
   //#region  //*=========== Form Submit ===========
   const onSubmit = handleSubmit((data) => {
-    mutate({
-      id: product.id,
-      name: data.name,
-      price: data.price,
-      stock: Number(data.stock),
-      description: data.description,
-    });
+    mutate(
+      {
+        id: product.id,
+        name: data.name,
+        price: data.price,
+        stock: Number(data.stock),
+        description: data.description,
+      },
+      {
+        onSuccess: () => {
+          setOpened(false);
+        },
+      }
+    );
     // mutate(data);
   });
   //#endregion  //*======== Form Submit ===========

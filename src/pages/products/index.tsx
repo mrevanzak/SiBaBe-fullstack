@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import { rspc } from '@/lib/rspc';
 
 import Layout from '@/components/layout/Layout';
+import ButtonLink from '@/components/links/ButtonLink';
 import ConfirmRemoveModal from '@/components/modals/ConfirmRemove';
 import ProductDetail from '@/components/modals/ProductDetail';
 import ProductCard from '@/components/ProductCard';
@@ -101,6 +102,14 @@ export default function ProductPage() {
                     />
                   )
               )}
+          </div>
+          <div className='flex items-center justify-center p-10'>
+            <ButtonLink
+              className='rounded-full bg-brown px-16 py-5 font-bold'
+              href='/products/add'
+            >
+              Tambah Produk
+            </ButtonLink>
           </div>
         </div>
       </main>

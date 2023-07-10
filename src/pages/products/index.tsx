@@ -14,6 +14,7 @@ import Search from '@/components/Search';
 import Seo from '@/components/Seo';
 
 import { Product } from '@/utils/api';
+import useIsAdmin from '@/utils/isAdmin';
 
 export default function ProductPage() {
   const { data: products, isLoading } = rspc.useQuery(['products.get']);
@@ -103,14 +104,16 @@ export default function ProductPage() {
                   )
               )}
           </div>
-          <div className='flex items-center justify-center p-10'>
-            <ButtonLink
-              className='rounded-full bg-brown px-16 py-5 font-bold'
-              href='/products/add'
-            >
-              Tambah Produk
-            </ButtonLink>
-          </div>
+          {useIsAdmin() && (
+            <div className='flex items-center justify-center p-10'>
+              <ButtonLink
+                className='rounded-full bg-brown px-16 py-5 font-bold'
+                href='/products/add'
+              >
+                Tambah Produk
+              </ButtonLink>
+            </div>
+          )}
         </div>
       </main>
     </Layout>

@@ -1,4 +1,8 @@
-use axum::routing::get;
+use axum::{
+  routing::get,
+  http::{ header::{ COOKIE, CONTENT_TYPE, ACCEPT }, HeaderValue },
+  http::Method,
+};
 use rspc::integrations::httpz::Request;
 use std::{ env, net::SocketAddr, sync::Arc };
 use tower_http::cors::CorsLayer;
@@ -33,7 +37,19 @@ fn router(client: Arc<prisma::PrismaClient>) -> axum::Router {
         .axum()
     )
     .layer(CookieManagerLayer::new())
-    .layer(CorsLayer::very_permissive())
+    .layer(
+      CorsLayer::new()
+        .allow_credentials(true)
+        .allow_headers([COOKIE, CONTENT_TYPE, ACCEPT])
+        .allow_methods([Method::GET, Method::POST])
+        .allow_origin(
+          env
+            ::var("FRONTEND_URL")
+            .unwrap_or("http://localhost:3000".to_string())
+            .parse::<HeaderValue>()
+            .unwrap()
+        )
+    )
 }
 
 #[tokio::main]

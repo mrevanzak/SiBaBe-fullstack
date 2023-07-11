@@ -33,7 +33,7 @@ pub async fn axum_shutdown_signal() {
   println!("signal received, starting graceful shutdown");
 }
 
-pub(crate) fn check_user(cookies: Cookies) -> Role {
+pub(crate) fn get_user(cookies: Cookies) -> Role {
   #[derive(Debug, Serialize, Deserialize)]
   struct Claims {
     azp: String,
@@ -49,7 +49,7 @@ pub(crate) fn check_user(cookies: Cookies) -> Role {
   let token = cookies
     .get("__session")
     .map(|c| c.value().to_string())
-    .ok_or(Error::new(ErrorCode::Unauthorized, "Unauthorized".to_string()));
+    .ok_or(Error::new(ErrorCode::Unauthorized, "Cannot get session".to_string()));
   let key = env
     ::var("CLERK_PEM_PUBLIC_KEY")
     .expect("CLERK_PEM_PUBLIC_KEY not found")
@@ -65,10 +65,10 @@ pub(crate) fn check_user(cookies: Cookies) -> Role {
       match token.claims.role {
         Some(role) =>
           match role.as_str() {
-            "admin" => Role::Admin,
-            _ => Role::Customer,
+            "admin" => Role::Admin(token.claims.sub),
+            _ => Role::None,
           }
-        None => Role::None,
+        None => Role::Customer(token.claims.sub),
       }
     Err(_) => Role::None,
   };

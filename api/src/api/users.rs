@@ -16,8 +16,8 @@ struct Payload {
 
 #[derive(Debug)]
 pub enum Role {
-  Admin,
-  Customer,
+  Admin(String),
+  Customer(String),
   None,
 }
 

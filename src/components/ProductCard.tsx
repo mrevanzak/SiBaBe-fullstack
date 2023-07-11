@@ -1,7 +1,7 @@
 /* eslint-disable unused-imports/no-unused-vars */
 import { useUser } from '@clerk/nextjs';
 import * as React from 'react';
-import { FiEdit, FiShoppingCart, FiTrash2 } from 'react-icons/fi';
+import { FiEdit, FiShoppingCart, FiTrash2, FiXCircle } from 'react-icons/fi';
 
 import { rspc } from '@/lib/rspc';
 
@@ -25,11 +25,10 @@ export default function ProductCard({
   setOpenConfirmRemove,
 }: ProductCardProps) {
   const { user } = useUser();
-  const { mutate } = rspc.useMutation(['carts.add']);
-
-  // const isInCart = (id: number) => {
-  //   return cart?.product?.find((item) => item.productId === id);
-  // };
+  const { mutate } = rspc.useMutation(['carts.add'], {
+    meta: { message: 'Berhasil menambahkan ke keranjang' },
+  });
+  const [inCart, setInCart] = React.useState(false);
 
   return (
     <div
@@ -76,32 +75,27 @@ export default function ProductCard({
             }}
           />
         )}
-        {/* {isInCart(product.id) ? (
-          <FiXCircle
-            className='text-2xl transition-all duration-200 hover:text-primary-50'
-            onClick={(e) => {
-              e.stopPropagation();
-              // dispatch(removeFromCart(product));
-            }}
-          />
-        ) : (
-          <FiShoppingCart
-            className='text-2xl transition-all duration-200 hover:text-primary-50'
-            onClick={(e) => {
-              e.stopPropagation();
-              dispatch(addToCart(product.id));
-            }}
-          />
-        )} */}
-        {!useIsAdmin() && user && (
-          <FiShoppingCart
-            className='text-2xl transition-all duration-200 hover:text-primary-50'
-            onClick={(e) => {
-              e.stopPropagation();
-              mutate(product.id);
-            }}
-          />
-        )}
+        {!useIsAdmin() &&
+          user &&
+          (inCart ? (
+            <FiXCircle
+              className='text-2xl transition-all duration-200 hover:text-primary-50'
+              onClick={(e) => {
+                e.stopPropagation();
+                // setInCart(false);
+                // dispatch(removeFromCart(product));
+              }}
+            />
+          ) : (
+            <FiShoppingCart
+              className='text-2xl transition-all duration-200 hover:text-primary-50'
+              onClick={(e) => {
+                e.stopPropagation();
+                setInCart(true);
+                mutate(product.id);
+              }}
+            />
+          ))}
       </div>
     </div>
   );

@@ -33,9 +33,10 @@ model carts {
   total_price Int        @default(0)
   status      CartStatus @default(idle)
 
-  customer_id String    @db.VarChar(255)
-  customer    customers @relation(fields: [customer_id], references: [id])
-  orders      orders[]
+  customer_id   String          @db.VarChar(255)
+  customer      customers       @relation(fields: [customer_id], references: [id])
+  orders        orders[]
+  product_carts product_carts[]
 
   @@index([customer_id])
 }
@@ -122,8 +123,12 @@ model product_carts {
   cart_id     String
   quantity    Int
   total_price Int
+  product     products @relation(fields: [product_id], references: [id])
+  cart        carts    @relation(fields: [cart_id], references: [id])
 
   @@id([product_id, cart_id])
+  @@index([product_id])
+  @@index([cart_id])
 }
 
 model productions {
@@ -140,16 +145,17 @@ model productions {
 }
 
 model products {
-  id          String     @id @default(uuid())
-  name        String     @db.VarChar(255)
-  description String     @db.VarChar(255)
-  price       Int
-  stock       Int
-  image       String     @db.VarChar(255)
-  created_at  DateTime?  @default(now()) @db.Timestamp(0)
-  updated_at  DateTime?  @updatedAt @db.Timestamp(0)
-  deleted_at  DateTime?  @db.Timestamp(0)
-  feedback    feedback[]
+  id            String          @id @default(uuid())
+  name          String          @db.VarChar(255)
+  description   String          @db.VarChar(255)
+  price         Int
+  stock         Int
+  image         String          @db.VarChar(255)
+  created_at    DateTime?       @default(now()) @db.Timestamp(0)
+  updated_at    DateTime?       @updatedAt @db.Timestamp(0)
+  deleted_at    DateTime?       @db.Timestamp(0)
+  feedback      feedback[]
+  product_carts product_carts[]
 }
 
 model reports {

@@ -1,7 +1,6 @@
-import { useRouter } from 'next/router';
 import * as React from 'react';
 
-import { useAppDispatch, useAppSelector } from '@/hooks/redux';
+import { rspc } from '@/lib/rspc';
 
 import Button from '@/components/buttons/Button';
 import CartRow from '@/components/CartRow';
@@ -9,18 +8,10 @@ import Layout from '@/components/layout/Layout';
 import Seo from '@/components/Seo';
 import Separator from '@/components/Separator';
 
-import { fetchCart } from '@/redux/actions/Cart';
-import { clearCheckoutMessage } from '@/redux/actions/Checkout';
 import thousandSeparator from '@/utils/thousandSeparator';
 
 export default function CartPage() {
-  const { cart } = useAppSelector(({ cart }) => cart);
-  const dispatch = useAppDispatch();
-  const router = useRouter();
-
-  React.useEffect(() => {
-    dispatch(fetchCart());
-  }, []);
+  const { data } = rspc.useQuery(['carts.get']);
 
   return (
     <Layout>
@@ -42,30 +33,28 @@ export default function CartPage() {
             <div className='w-1/4 text-center'>Jumlah</div>
           </div>
           <Separator width='100%' color='#D6AD60BF' />
-          {cart &&
-            cart.product &&
-            cart.product.map((product) => (
-              <div key={product.productId}>
-                <CartRow product={product} />
-                <Separator width='100%' color='#D6AD60BF' />
-              </div>
-            ))}
+          {data?.product_carts.map((product) => (
+            <div key={product.product_id}>
+              <CartRow cartItems={product} />
+              <Separator width='100%' color='#D6AD60BF' />
+            </div>
+          ))}
           <div className='mt-9 flex items-center justify-end gap-7'>
             <div className='text-end'>
               <p className='font-secondary text-sm font-semibold'>
                 Total Harga
               </p>
               <p className='font-secondary text-2xl font-bold'>
-                Rp {thousandSeparator(cart?.totalPrice || 0)}
+                Rp {thousandSeparator(data?.total_price || 0)}
               </p>
             </div>
             <div>
               <Button
                 className='rounded-3xl bg-brown px-28 py-6 font-secondary'
-                onClick={() => {
-                  router.push('/order');
-                  dispatch(clearCheckoutMessage());
-                }}
+                // onClick={() => {
+                //   router.push('/order');
+                //   dispatch(clearCheckoutMessage());
+                // }}
               >
                 BELI
               </Button>

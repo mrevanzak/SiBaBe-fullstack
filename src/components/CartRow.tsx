@@ -2,31 +2,25 @@ import * as React from 'react';
 import { AiOutlineMinusCircle, AiOutlinePlusCircle } from 'react-icons/ai';
 import { toast } from 'react-toastify';
 
-import { useAppDispatch } from '@/hooks/redux';
-
 import NextImage from '@/components/NextImage';
 
-import { addQuantity, minusQuantity } from '@/redux/actions/Cart';
+import { ProductCart } from '@/utils/api';
 import thousandSeparator from '@/utils/thousandSeparator';
 
-import { Cart } from '@/types';
-
 type CartRowProps = {
-  product: Cart;
+  cartItems: ProductCart;
 };
 
-export default function CartRow({ product }: CartRowProps) {
-  const dispatch = useAppDispatch();
-
+export default function CartRow({ cartItems }: CartRowProps) {
   const onAddQuantity = () => {
-    if (product.quantity >= product.product.stock) {
+    if (cartItems.quantity >= cartItems.product.stock) {
       toast.warn('Stok tidak mencukupi');
       return;
     }
-    dispatch(addQuantity(product.productId));
+    // dispatch(addQuantity(product.productId));
   };
   const onMinusQuantity = () => {
-    dispatch(minusQuantity(product.productId));
+    // dispatch(minusQuantity(product.productId));
   };
 
   return (
@@ -35,17 +29,17 @@ export default function CartRow({ product }: CartRowProps) {
         <div className='w-[110px] overflow-hidden rounded-l-3xl'>
           <NextImage
             useSkeleton
-            src={product.product.image}
-            alt={product.product.name}
+            src={cartItems.product.image}
+            alt={cartItems.product.name}
             width={165}
             height={111}
             className='ml-[-30px]'
           />
         </div>
         <div className='ml-9 flex flex-col justify-center'>
-          <p className='font-secondary text-xs'>{product.product.name}</p>
+          <p className='font-secondary text-xs'>{cartItems.product.name}</p>
           <p className='font-secondary font-extrabold'>
-            Rp {thousandSeparator(product.product.price)}
+            Rp {thousandSeparator(cartItems.product.price)}
           </p>
         </div>
       </div>
@@ -53,14 +47,16 @@ export default function CartRow({ product }: CartRowProps) {
         <button className='text-2xl' onClick={onMinusQuantity}>
           <AiOutlineMinusCircle />
         </button>
-        <p className='mx-8 font-secondary font-extrabold'>{product.quantity}</p>
+        <p className='mx-8 font-secondary font-extrabold'>
+          {cartItems.quantity}
+        </p>
         <button className='text-2xl' onClick={onAddQuantity}>
           <AiOutlinePlusCircle />
         </button>
       </div>
       <div className='flex w-1/4 items-center justify-center'>
         <p className='font-secondary font-bold'>
-          Rp {thousandSeparator(product.totalPrice)}
+          Rp {thousandSeparator(cartItems.total_price)}
         </p>
       </div>
     </div>

@@ -1,6 +1,7 @@
 use std::{ env, sync::Arc };
 
 use axum::{ body::Bytes, http::{ HeaderMap, StatusCode }, routing::post, Extension, Router };
+
 use serde::{ Deserialize, Serialize };
 use svix::webhooks::Webhook;
 
@@ -11,6 +12,13 @@ struct Payload {
   data: Data,
   object: String,
   r#type: String,
+}
+
+#[derive(Debug)]
+pub enum Role {
+  Admin,
+  Customer,
+  None,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -117,6 +125,6 @@ async fn users_handler(
   }
 }
 
-pub(crate) fn route(client: Arc<PrismaClient>) -> Router {
+pub(crate) fn webhooks(client: Arc<PrismaClient>) -> Router {
   Router::new().route("/webhooks", post(users_handler)).layer(Extension(client))
 }

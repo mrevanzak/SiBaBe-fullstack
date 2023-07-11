@@ -1,15 +1,17 @@
 use std::sync::Arc;
 
 use crate::prisma;
-use rspc::Config;
-use rspc::RouterBuilder;
+use rspc::{ Config, RouterBuilder };
+use tower_cookies::Cookies;
 use std::path::PathBuf;
 
 mod products;
 pub mod users;
 
+#[derive(Clone, Debug)]
 pub struct Ctx {
   pub db: Arc<prisma::PrismaClient>,
+  pub cookies: Cookies,
 }
 
 pub type Router = rspc::Router<Ctx>;

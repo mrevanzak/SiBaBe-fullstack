@@ -1,8 +1,8 @@
-use axum::{ http::{ Method, header }, routing::get };
-
+use axum::routing::get;
 use rspc::integrations::httpz::Request;
 use std::{ env, net::SocketAddr, sync::Arc };
-use tower_http::cors::{ Any, CorsLayer };
+use tower_http::cors::CorsLayer;
+use tower_cookies::{ Cookies, CookieManagerLayer };
 
 mod api;
 #[allow(unused)]
@@ -18,22 +18,22 @@ fn router(client: Arc<prisma::PrismaClient>) -> axum::Router {
       "/",
       get(|| async { "Hello 'rspc'!" })
     )
-    .merge(api::users::route(client.clone()))
+    .merge(api::users::webhooks(client.clone()))
     .nest(
       "/rspc",
       router
-        .endpoint(move |req: Request| {
-          println!("Client requested operation '{}'", req.uri().path());
-          api::Ctx { db: client.clone() }
+        .endpoint(move |mut req: Request| {
+          println!("Client requested operation '{}'", &req.uri().path());
+          let cookies = req
+            .deprecated_extract::<Cookies, ()>()
+            .expect("Error extracting cookies")
+            .unwrap();
+          api::Ctx { db: client.clone(), cookies }
         })
         .axum()
     )
-    .layer(
-      CorsLayer::new()
-        .allow_origin(Any)
-        .allow_methods([Method::GET, Method::POST, Method::PUT, Method::DELETE])
-        .allow_headers(vec![header::AUTHORIZATION, header::ACCEPT, header::CONTENT_TYPE])
-    )
+    .layer(CookieManagerLayer::new())
+    .layer(CorsLayer::very_permissive())
 }
 
 #[tokio::main]

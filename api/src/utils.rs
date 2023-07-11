@@ -1,4 +1,12 @@
+use std::env;
+
+use jsonwebtoken::{ decode, DecodingKey, Validation, Algorithm };
+use rspc::{ Error, ErrorCode };
+use serde::{ Serialize, Deserialize };
 use tokio::signal;
+use tower_cookies::Cookies;
+
+use crate::api::users::Role;
 
 /// shutdown_signal will inform axum to gracefully shutdown when the process is asked to shutdown.
 pub async fn axum_shutdown_signal() {
@@ -23,4 +31,47 @@ pub async fn axum_shutdown_signal() {
 	}
 
   println!("signal received, starting graceful shutdown");
+}
+
+pub(crate) fn check_user(cookies: Cookies) -> Role {
+  #[derive(Debug, Serialize, Deserialize)]
+  struct Claims {
+    azp: String,
+    exp: usize,
+    iat: usize,
+    iss: String,
+    nbf: usize,
+    sid: String,
+    sub: String,
+    role: Option<String>,
+  }
+
+  let token = cookies
+    .get("__session")
+    .map(|c| c.value().to_string())
+    .ok_or(Error::new(ErrorCode::Unauthorized, "Unauthorized".to_string()));
+  let key = env
+    ::var("CLERK_PEM_PUBLIC_KEY")
+    .expect("CLERK_PEM_PUBLIC_KEY not found")
+    .replace("\\n", "\n");
+  let decode = decode::<Claims>(
+    &token.unwrap(),
+    &DecodingKey::from_rsa_pem(key.as_bytes()).unwrap(),
+    &Validation::new(Algorithm::RS256)
+  );
+
+  let role: Role = match decode {
+    Ok(token) =>
+      match token.claims.role {
+        Some(role) =>
+          match role.as_str() {
+            "admin" => Role::Admin,
+            _ => Role::Customer,
+          }
+        None => Role::None,
+      }
+    Err(_) => Role::None,
+  };
+
+  role
 }

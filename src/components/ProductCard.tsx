@@ -3,6 +3,8 @@ import { useUser } from '@clerk/nextjs';
 import * as React from 'react';
 import { FiEdit, FiShoppingCart, FiTrash2 } from 'react-icons/fi';
 
+import { rspc } from '@/lib/rspc';
+
 import NextImage from '@/components/NextImage';
 
 import { Product } from '@/utils/api';
@@ -22,8 +24,8 @@ export default function ProductCard({
   setSelectedProduct,
   setOpenConfirmRemove,
 }: ProductCardProps) {
-  // const { cart } = useAppSelector(({ cart }) => cart);
   const { user } = useUser();
+  const { mutate } = rspc.useMutation(['carts.add']);
 
   // const isInCart = (id: number) => {
   //   return cart?.product?.find((item) => item.productId === id);
@@ -96,7 +98,7 @@ export default function ProductCard({
             className='text-2xl transition-all duration-200 hover:text-primary-50'
             onClick={(e) => {
               e.stopPropagation();
-              // dispatch(addToCart(product.id));
+              mutate(product.id);
             }}
           />
         )}

@@ -5,6 +5,7 @@ use rspc::{ Config, RouterBuilder };
 use tower_cookies::Cookies;
 use std::path::PathBuf;
 
+mod carts;
 mod products;
 pub mod users;
 
@@ -24,4 +25,5 @@ pub(crate) fn new() -> RouterBuilder<Ctx> {
       )
     )
     .merge("products.", products::route())
+    .merge("carts.", carts::route())
 }

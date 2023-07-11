@@ -1,5 +1,5 @@
 use rspc::{ RouterBuilder, Type, Error, ErrorCode };
-use serde::{Serialize, Deserialize};
+use serde::{ Serialize, Deserialize };
 
 use crate::prisma;
 
@@ -88,7 +88,9 @@ pub(crate) fn route() -> RouterBuilder<Ctx> {
           .products()
           .create(input.name, input.description, input.price, input.stock, input.image, vec![])
           .exec().await
-          .map_err(|e| { Error::new(ErrorCode::InternalServerError, e.to_string()) })?;
+          .map_err(|e| {
+            Error::with_cause(ErrorCode::InternalServerError, "Gagal membuat produk".to_string(), e)
+          })?;
         Ok(create_product)
       })
     })

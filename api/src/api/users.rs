@@ -45,7 +45,9 @@ async fn users_handler(
   headers: HeaderMap,
   body: Bytes
 ) -> Result<StatusCode, StatusCode> {
-  let wh = Webhook::new(env::var("WEBHOOK_SECRET").unwrap().as_str()).map_err(|_| {
+  let wh = Webhook::new(
+    env::var("WEBHOOK_SECRET").expect("WEBHOOK_SECRET not found").as_str()
+  ).map_err(|_| {
     println!("Webhook secret not found");
     StatusCode::INTERNAL_SERVER_ERROR
   })?;

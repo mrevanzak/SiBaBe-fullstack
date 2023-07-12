@@ -25,10 +25,13 @@ pub(crate) fn route() -> RouterBuilder<Ctx> {
     .query("get", |t| {
       t(|ctx, _: ()| async move {
         let user_id = match get_user(ctx.cookies) {
-          Role::Admin(id) => id,
-          Role::Customer(id) => id,
-          Role::None => {
+          Some(Role::Admin(id)) => id,
+          Some(Role::Customer(id)) => id,
+          Some(Role::None) => {
             return Err(Error::new(ErrorCode::Unauthorized, "Unauthorized".to_string()));
+          }
+          None => {
+            return Err(Error::new(ErrorCode::Unauthorized, "Cookie not found".to_string()));
           }
         };
         let get_cart_query = ctx.db
@@ -104,10 +107,18 @@ pub(crate) fn route() -> RouterBuilder<Ctx> {
     .mutation("add", |t| {
       t(|ctx, product_id: String| async move {
         let user_id = match get_user(ctx.cookies) {
-          Role::Admin(id) => id,
-          Role::Customer(id) => id,
-          Role::None => {
+          Some(Role::Admin(id)) => id,
+          Some(Role::Customer(id)) => id,
+          Some(Role::None) => {
             return Err(Error::new(ErrorCode::Unauthorized, "Unauthorized".to_string()));
+          }
+          None => {
+            return Err(
+              Error::new(
+                ErrorCode::Unauthorized,
+                "Cookie not found, Please allow cookie".to_string()
+              )
+            );
           }
         };
         let get_product_query = ctx.db

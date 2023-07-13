@@ -1,12 +1,29 @@
+import { useAuth } from '@clerk/nextjs';
 import * as React from 'react';
 import { ToastContainer } from 'react-toastify';
 
 import 'react-toastify/dist/ReactToastify.css';
 
+import { useJwtStore } from '@/lib/store';
+
 import Footer from '@/components/layout/Footer';
 import Header from '@/components/layout/Header';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
+  const { getToken } = useAuth();
+  const setToken = useJwtStore((s) => s.setJwt);
+
+  React.useEffect(() => {
+    const token = async () => {
+      return await getToken();
+    };
+    token().then((res) => {
+      if (res) {
+        setToken(res);
+      }
+    });
+  }, []);
+
   return (
     <>
       <main

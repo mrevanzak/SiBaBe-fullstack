@@ -4,7 +4,7 @@ use serde::{ Deserialize, Serialize };
 
 use crate::{ prisma::{ self, CartStatus }, utils::get_user };
 
-use super::{ Ctx, Router, users::Role };
+use super::{ users::Role, Ctx, Router };
 
 #[derive(Debug, Clone, Serialize, Deserialize, Type)]
 struct ProductCart {
@@ -24,14 +24,14 @@ pub(crate) fn route() -> RouterBuilder<Ctx> {
   Router::new()
     .query("get", |t| {
       t(|ctx, _: ()| async move {
-        let user_id = match get_user(ctx.cookies) {
+        let user_id = match get_user(ctx.token) {
           Some(Role::Admin(id)) => id,
           Some(Role::Customer(id)) => id,
           Some(Role::None) => {
             return Err(Error::new(ErrorCode::Unauthorized, "Unauthorized".to_string()));
           }
           None => {
-            return Err(Error::new(ErrorCode::Unauthorized, "Cookie not found".to_string()));
+            return Err(Error::new(ErrorCode::Unauthorized, "JWT header not found".to_string()));
           }
         };
         let get_cart_query = ctx.db
@@ -106,7 +106,7 @@ pub(crate) fn route() -> RouterBuilder<Ctx> {
     })
     .mutation("add", |t| {
       t(|ctx, product_id: String| async move {
-        let user_id = match get_user(ctx.cookies) {
+        let user_id = match get_user(ctx.token) {
           Some(Role::Admin(id)) => id,
           Some(Role::Customer(id)) => id,
           Some(Role::None) => {

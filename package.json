@@ -48,7 +48,8 @@
     "redux-persist": "^6.0.0",
     "redux-saga": "^1.2.1",
     "redux-thunk": "^2.4.2",
-    "tailwind-merge": "^1.13.0"
+    "tailwind-merge": "^1.13.0",
+    "zustand": "^4.3.9"
   },
   "devDependencies": {
     "@commitlint/cli": "^16.3.0",

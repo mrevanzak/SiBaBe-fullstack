@@ -1,10 +1,10 @@
 use std::env;
 
+use axum::http::HeaderValue;
 use jsonwebtoken::{ decode, DecodingKey, Validation, Algorithm };
 
 use serde::{ Serialize, Deserialize };
 use tokio::signal;
-use tower_cookies::Cookies;
 
 use crate::api::users::Role;
 
@@ -33,7 +33,7 @@ pub async fn axum_shutdown_signal() {
   println!("signal received, starting graceful shutdown");
 }
 
-pub(crate) fn get_user(cookies: Cookies) -> Option<Role> {
+pub(crate) fn get_user(token: Option<HeaderValue>) -> Option<Role> {
   #[derive(Debug, Serialize, Deserialize)]
   struct Claims {
     azp: String,
@@ -46,13 +46,13 @@ pub(crate) fn get_user(cookies: Cookies) -> Option<Role> {
     role: Option<String>,
   }
 
-  let token = cookies.get("__session").map(|c| c.value().to_string())?;
+  let jwt = token?;
   let key = env
     ::var("CLERK_PEM_PUBLIC_KEY")
     .expect("CLERK_PEM_PUBLIC_KEY not found")
     .replace("\\n", "\n");
   let decode = decode::<Claims>(
-    &token,
+    &jwt.to_str().unwrap().trim_start_matches("Bearer "),
     &DecodingKey::from_rsa_pem(key.as_bytes()).unwrap(),
     &Validation::new(Algorithm::RS256)
   );

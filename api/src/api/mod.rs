@@ -1,8 +1,8 @@
 use std::sync::Arc;
 
 use crate::prisma;
+use axum::http::HeaderValue;
 use rspc::{ Config, RouterBuilder };
-use tower_cookies::Cookies;
 use std::path::PathBuf;
 
 mod carts;
@@ -12,7 +12,7 @@ pub mod users;
 #[derive(Clone, Debug)]
 pub struct Ctx {
   pub db: Arc<prisma::PrismaClient>,
-  pub cookies: Cookies,
+  pub token: Option<HeaderValue>,
 }
 
 pub type Router = rspc::Router<Ctx>;

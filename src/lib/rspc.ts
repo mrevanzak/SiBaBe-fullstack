@@ -4,6 +4,8 @@ import { MutationCache, QueryCache, QueryClient } from '@tanstack/react-query';
 import getConfig from 'next/config';
 import { toast } from 'react-toastify';
 
+import { useJwtStore } from '@/lib/store';
+
 import { Procedures } from '@/utils/api';
 
 const rspc = createReactQueryHooks<Procedures>();
@@ -17,9 +19,14 @@ const BACKEND_URL = `${
 }/rspc`;
 
 const fetch = async (input: RequestInfo | URL, init?: RequestInit) => {
+  const token = useJwtStore.getState().jwt;
   const resp = await globalThis.fetch(input, {
     ...init,
     credentials: 'include',
+    headers: {
+      ...init?.headers,
+      authorization: `Bearer ${token}`,
+    },
   });
   return resp;
 };

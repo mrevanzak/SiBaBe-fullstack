@@ -13,7 +13,7 @@ mod prisma;
 mod utils;
 
 fn router(client: Arc<prisma::PrismaClient>) -> axum::Router {
-  let router = api::new().build().arced();
+  let router = api::new().arced();
 
   axum::Router
     ::new()

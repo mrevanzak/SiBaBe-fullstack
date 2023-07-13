@@ -3,7 +3,7 @@ use serde::{ Serialize, Deserialize };
 
 use crate::prisma;
 
-use super::{ Ctx, Router };
+use super::{ Ctx, PublicRouter, AdminRouter, AdminCtx };
 
 #[derive(Debug, Serialize, Deserialize, Type)]
 struct Reviews {
@@ -37,51 +37,53 @@ struct AddProduct {
   image: String,
 }
 
-pub(crate) fn route() -> RouterBuilder<Ctx> {
-  Router::new()
-    .query("get", |t| {
-      t(|ctx, _: ()| async move {
-        let products_query = ctx.db
-          .products()
-          .find_many(vec![])
+pub(crate) fn public_route() -> RouterBuilder<Ctx> {
+  PublicRouter::new().query("get", |t| {
+    t(|ctx, _: ()| async move {
+      let products_query = ctx.db
+        .products()
+        .find_many(vec![])
+        .exec().await?;
+      let mut products: Vec<Product> = Vec::new();
+
+      for product in products_query.iter() {
+        let product_id = &product.id;
+        let reviews_query = ctx.db
+          .feedback()
+          .find_many(
+            vec![
+              prisma::feedback::product::is(
+                vec![prisma::products::id::equals(product_id.to_string())]
+              )
+            ]
+          )
           .exec().await?;
-        let mut products: Vec<Product> = Vec::new();
+        let mut reviews: Vec<Reviews> = Vec::new();
 
-        for product in products_query.iter() {
-          let product_id = &product.id;
-          let reviews_query = ctx.db
-            .feedback()
-            .find_many(
-              vec![
-                prisma::feedback::product::is(
-                  vec![prisma::products::id::equals(product_id.to_string())]
-                )
-              ]
-            )
+        for review in reviews_query.iter() {
+          let feedback_orders = ctx.db
+            .feedback_orders()
+            .find_first(vec![])
             .exec().await?;
-          let mut reviews: Vec<Reviews> = Vec::new();
+          let username = feedback_orders.unwrap().username;
 
-          for review in reviews_query.iter() {
-            let feedback_orders = ctx.db
-              .feedback_orders()
-              .find_first(vec![])
-              .exec().await?;
-            let username = feedback_orders.unwrap().username;
-
-            reviews.push(Reviews {
-              data: review.clone(),
-              username,
-            });
-          }
-          products.push(Product {
-            data: product.clone(),
-            reviews,
+          reviews.push(Reviews {
+            data: review.clone(),
+            username,
           });
         }
-
-        Ok(products)
-      })
+        products.push(Product {
+          data: product.clone(),
+          reviews,
+        });
+      }
+      Ok(products)
     })
+  })
+}
+
+pub(crate) fn admin_route() -> RouterBuilder<AdminCtx> {
+  AdminRouter::new()
     .mutation("create", |t| {
       t(|ctx, input: AddProduct| async move {
         let create_product = ctx.db

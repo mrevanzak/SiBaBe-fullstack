@@ -1,10 +1,10 @@
 use prisma_client_rust::{ and, Direction };
-use rspc::{ Error, ErrorCode, RouterBuilder, Type };
+use rspc::{ Error, ErrorCode, Type, RouterBuilder };
 use serde::{ Deserialize, Serialize };
 
-use crate::{ prisma::{ self, CartStatus }, utils::get_user };
+use crate::prisma::{ self, CartStatus };
 
-use super::{ users::Role, Ctx, Router };
+use super::{ PrivateCtx, PrivateRouter };
 
 #[derive(Debug, Clone, Serialize, Deserialize, Type)]
 struct ProductCart {
@@ -20,25 +20,17 @@ struct CartResponse {
   product_carts: Vec<ProductCart>,
 }
 
-pub(crate) fn route() -> RouterBuilder<Ctx> {
-  Router::new()
+pub(crate) fn private_route() -> RouterBuilder<PrivateCtx> {
+  PrivateRouter::new()
     .query("get", |t| {
-      t(|ctx, _: ()| async move {
-        let user_id = match get_user(ctx.token) {
-          Some(Role::Admin(id)) => id,
-          Some(Role::Customer(id)) => id,
-          Some(Role::None) => {
-            return Err(Error::new(ErrorCode::Unauthorized, "Unauthorized".to_string()));
-          }
-          None => {
-            return Err(Error::new(ErrorCode::Unauthorized, "JWT header not found".to_string()));
-          }
-        };
+      t(|ctx: PrivateCtx, _: ()| async move {
+        ctx.role.admin_unauthorized()?;
+
         let get_cart_query = ctx.db
           .carts()
           .find_first(
             vec![
-              prisma::carts::customer_id::equals(user_id.to_string()),
+              prisma::carts::customer_id::equals(ctx.user_id.to_string()),
               and!(prisma::carts::status::equals(CartStatus::Idle))
             ]
           )
@@ -63,7 +55,7 @@ pub(crate) fn route() -> RouterBuilder<Ctx> {
           None => {
             let create_cart_query = ctx.db
               .carts()
-              .create(prisma::customers::id::equals(user_id.to_string()), vec![])
+              .create(prisma::customers::id::equals(ctx.user_id.to_string()), vec![])
               .exec().await
               .map_err(|err| {
                 Error::with_cause(
@@ -105,22 +97,9 @@ pub(crate) fn route() -> RouterBuilder<Ctx> {
       })
     })
     .mutation("add", |t| {
-      t(|ctx, product_id: String| async move {
-        let user_id = match get_user(ctx.token) {
-          Some(Role::Admin(id)) => id,
-          Some(Role::Customer(id)) => id,
-          Some(Role::None) => {
-            return Err(Error::new(ErrorCode::Unauthorized, "Unauthorized".to_string()));
-          }
-          None => {
-            return Err(
-              Error::new(
-                ErrorCode::Unauthorized,
-                "Cookie not found, Please allow cookie".to_string()
-              )
-            );
-          }
-        };
+      t(|ctx: PrivateCtx, product_id: String| async move {
+        ctx.role.admin_unauthorized()?;
+
         let get_product_query = ctx.db
           .products()
           .find_first(vec![prisma::products::id::equals(product_id.to_string())])
@@ -138,7 +117,7 @@ pub(crate) fn route() -> RouterBuilder<Ctx> {
           .carts()
           .find_first(
             vec![
-              prisma::carts::customer_id::equals(user_id.to_string()),
+              prisma::carts::customer_id::equals(ctx.user_id.to_string()),
               and!(prisma::carts::status::equals(CartStatus::Idle))
             ]
           )
@@ -156,7 +135,7 @@ pub(crate) fn route() -> RouterBuilder<Ctx> {
           None => {
             let create_cart_query = ctx.db
               .carts()
-              .create(prisma::customers::id::equals(user_id.to_string()), vec![])
+              .create(prisma::customers::id::equals(ctx.user_id.to_string()), vec![])
               .exec().await
               .map_err(|err| {
                 Error::with_cause(

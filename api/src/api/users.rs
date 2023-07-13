@@ -2,6 +2,7 @@ use std::{ env, sync::Arc };
 
 use axum::{ body::Bytes, http::{ HeaderMap, StatusCode }, routing::post, Extension, Router };
 
+use rspc::{ Error, ErrorCode };
 use serde::{ Deserialize, Serialize };
 use svix::webhooks::Webhook;
 
@@ -14,11 +15,30 @@ struct Payload {
   r#type: String,
 }
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub enum Role {
   Admin(String),
   Customer(String),
   None,
+}
+
+impl Role {
+  pub fn get_id(&self) -> String {
+    match self {
+      Role::Admin(id) => id.to_string(),
+      Role::Customer(id) => id.to_string(),
+      Role::None => "".to_string(),
+    }
+  }
+  pub fn admin_unauthorized(&self) -> Result<(), Error> {
+    match self {
+      Role::Admin(_) =>
+        Err(
+          Error::new(ErrorCode::Unauthorized, "Admin tidak bisa mengakses halaman ini".to_string())
+        ),
+      _ => Ok(()),
+    }
+  }
 }
 
 #[derive(Serialize, Deserialize)]

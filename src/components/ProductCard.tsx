@@ -25,7 +25,7 @@ export default function ProductCard({
   setOpenConfirmRemove,
 }: ProductCardProps) {
   const { user } = useUser();
-  const { mutate } = rspc.useMutation(['carts.add'], {
+  const { mutate } = rspc.useMutation(['carts.update'], {
     meta: { message: 'Berhasil menambahkan ke keranjang' },
   });
   const [inCart, setInCart] = React.useState(false);
@@ -92,7 +92,7 @@ export default function ProductCard({
               onClick={(e) => {
                 e.stopPropagation();
                 setInCart(true);
-                mutate(product.id);
+                mutate({ product_id: product.id, quantity: 1 });
               }}
             />
           ))}

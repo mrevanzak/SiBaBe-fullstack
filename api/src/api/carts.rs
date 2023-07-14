@@ -20,6 +20,12 @@ struct CartResponse {
   product_carts: Vec<ProductCart>,
 }
 
+#[derive(Debug, Serialize, Deserialize, Type)]
+struct UpdateCartInput {
+  product_id: String,
+  quantity: i32,
+}
+
 pub(crate) fn private_route() -> RouterBuilder<PrivateCtx> {
   PrivateRouter::new()
     .query("get", |t| {
@@ -96,13 +102,13 @@ pub(crate) fn private_route() -> RouterBuilder<PrivateCtx> {
         })
       })
     })
-    .mutation("add", |t| {
-      t(|ctx: PrivateCtx, product_id: String| async move {
+    .mutation("update", |t| {
+      t(|ctx: PrivateCtx, input: UpdateCartInput| async move {
         ctx.role.admin_unauthorized()?;
 
         let get_product_query = ctx.db
           .products()
-          .find_first(vec![prisma::products::id::equals(product_id.to_string())])
+          .find_first(vec![prisma::products::id::equals(input.product_id.to_string())])
           .exec().await
           .map_err(|err| {
             Error::with_cause(
@@ -149,20 +155,20 @@ pub(crate) fn private_route() -> RouterBuilder<PrivateCtx> {
           }
         };
 
-        let _product_cart_query = ctx.db
+        let product_cart_query = ctx.db
           .product_carts()
           .upsert(
-            prisma::product_carts::product_id_cart_id(product_id.clone(), cart_id.clone()),
+            prisma::product_carts::product_id_cart_id(input.product_id.clone(), cart_id.clone()),
             prisma::product_carts::create(
-              1,
+              input.quantity,
               product.price,
-              prisma::products::id::equals(product_id.to_string()),
+              prisma::products::id::equals(input.product_id.to_string()),
               prisma::carts::id::equals(cart_id.to_string()),
               vec![]
             ),
             vec![
-              prisma::product_carts::quantity::increment(1),
-              prisma::product_carts::total_price::increment(product.price)
+              prisma::product_carts::quantity::increment(input.quantity),
+              prisma::product_carts::total_price::increment(input.quantity * product.price)
             ]
           )
           .exec().await
@@ -174,11 +180,25 @@ pub(crate) fn private_route() -> RouterBuilder<PrivateCtx> {
             )
           })?;
 
-        let update_cart_query = ctx.db
+        if product_cart_query.quantity == 0 {
+          let _delete_product_cart_query = ctx.db
+            .product_carts()
+            .delete(prisma::product_carts::product_id_cart_id(input.product_id, cart_id.clone()))
+            .exec().await
+            .map_err(|err| {
+              Error::with_cause(
+                ErrorCode::InternalServerError,
+                "Gagal menghapus produk dari keranjang".to_string(),
+                err
+              )
+            })?;
+        }
+
+        let _update_cart_query = ctx.db
           .carts()
           .update(
             prisma::carts::id::equals(cart_id),
-            vec![prisma::carts::total_price::increment(product.price)]
+            vec![prisma::carts::total_price::increment(input.quantity * product.price)]
           )
           .exec().await
           .map_err(|err| {
@@ -189,7 +209,7 @@ pub(crate) fn private_route() -> RouterBuilder<PrivateCtx> {
             )
           })?;
 
-        Ok(update_cart_query)
+        Ok(product_cart_query)
       })
     })
 }

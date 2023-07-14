@@ -1,10 +1,13 @@
+import { produce } from 'immer';
 import * as React from 'react';
 import { AiOutlineMinusCircle, AiOutlinePlusCircle } from 'react-icons/ai';
 import { toast } from 'react-toastify';
 
+import { rspc } from '@/lib/rspc';
+
 import NextImage from '@/components/NextImage';
 
-import { ProductCart } from '@/utils/api';
+import { CartResponse, ProductCart } from '@/utils/api';
 import thousandSeparator from '@/utils/thousandSeparator';
 
 type CartRowProps = {
@@ -12,15 +15,47 @@ type CartRowProps = {
 };
 
 export default function CartRow({ cartItems }: CartRowProps) {
+  const queryClient = rspc.useContext().queryClient;
+  const { mutate } = rspc.useMutation(['carts.update'], {
+    meta: { message: 'Berhasil menambahkan jumlah produk' },
+    onSuccess: (_, input) => {
+      queryClient.setQueryData<CartResponse>(
+        ['carts.get'],
+        produce((draft) => {
+          if (!draft) return;
+          const cartIndex = draft.product_carts.findIndex(
+            (cart) => cart.product_id === input.product_id
+          );
+
+          draft.product_carts[cartIndex].quantity += input.quantity;
+          draft.product_carts[cartIndex].total_price +=
+            input.quantity * draft.product_carts[cartIndex].product.price;
+          draft.total_price +=
+            input.quantity * draft.product_carts[cartIndex].product.price;
+
+          if (draft.product_carts[cartIndex].quantity <= 0) {
+            draft.product_carts.splice(cartIndex, 1);
+          }
+        })
+      );
+    },
+  });
+
   const onAddQuantity = () => {
     if (cartItems.quantity >= cartItems.product.stock) {
       toast.warn('Stok tidak mencukupi');
       return;
     }
-    // dispatch(addQuantity(product.productId));
+    mutate({
+      product_id: cartItems.product_id,
+      quantity: 1,
+    });
   };
   const onMinusQuantity = () => {
-    // dispatch(minusQuantity(product.productId));
+    mutate({
+      product_id: cartItems.product_id,
+      quantity: -1,
+    });
   };
 
   return (

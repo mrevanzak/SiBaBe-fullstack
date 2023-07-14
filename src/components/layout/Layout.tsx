@@ -17,12 +17,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     const token = async () => {
       return await getToken();
     };
-    token().then((res) => {
-      if (res) {
-        setToken(res);
-      }
-    });
-  }, []);
+    token().then((res) => setToken(res));
+  }, [getToken]);
 
   return (
     <>

@@ -5,6 +5,7 @@ export type Procedures = {
         { key: "carts.get", input: never, result: CartResponse } | 
         { key: "products.get", input: never, result: Product[] },
     mutations: 
+        { key: "carts.remove", input: string, result: null } | 
         { key: "carts.update", input: UpdateCartInput, result: ProductCarts } | 
         { key: "products.create", input: AddProduct, result: Products } | 
         { key: "products.delete", input: string, result: Products } | 
@@ -20,8 +21,6 @@ export type Feedback = { id: string; created_at: string | null; updated_at: stri
 
 export type ProductCart = ({ product_id: string; cart_id: string; quantity: number; total_price: number }) & { product: Products }
 
-export type ProductCarts = { product_id: string; cart_id: string; quantity: number; total_price: number }
-
 export type Products = { id: string; name: string; description: string; price: number; stock: number; image: string; created_at: string | null; updated_at: string | null; deleted_at: string | null }
 
 export type AddProduct = { name: string; description: string; price: number; stock: number; image: string }
@@ -31,3 +30,5 @@ export type Reviews = ({ id: string; created_at: string | null; updated_at: stri
 export type CartResponse = { id: string; total_price: number; product_carts: ProductCart[] }
 
 export type EditProduct = { id: string; name: string; description: string; price: number; stock: number }
+
+export type ProductCarts = { product_id: string; cart_id: string; quantity: number; total_price: number }

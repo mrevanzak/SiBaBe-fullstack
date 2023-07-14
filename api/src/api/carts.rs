@@ -135,25 +135,7 @@ pub(crate) fn private_route() -> RouterBuilder<PrivateCtx> {
               err
             )
           })?;
-
-        let cart_id = match get_cart_query {
-          Some(cart) => cart.id,
-          None => {
-            let create_cart_query = ctx.db
-              .carts()
-              .create(prisma::customers::id::equals(ctx.user_id.to_string()), vec![])
-              .exec().await
-              .map_err(|err| {
-                Error::with_cause(
-                  ErrorCode::InternalServerError,
-                  "Gagal membuat keranjang".to_string(),
-                  err
-                )
-              })?;
-
-            create_cart_query.id
-          }
-        };
+        let cart_id = get_cart_query.unwrap().id;
 
         let product_cart_query = ctx.db
           .product_carts()
@@ -210,6 +192,58 @@ pub(crate) fn private_route() -> RouterBuilder<PrivateCtx> {
           })?;
 
         Ok(product_cart_query)
+      })
+    })
+    .mutation("remove", |t| {
+      t(|ctx: PrivateCtx, product_id: String| async move {
+        ctx.role.admin_unauthorized()?;
+
+        let get_cart_query = ctx.db
+          .carts()
+          .find_first(
+            vec![
+              prisma::carts::customer_id::equals(ctx.user_id.to_string()),
+              and!(prisma::carts::status::equals(CartStatus::Idle))
+            ]
+          )
+          .exec().await
+          .map_err(|err| {
+            Error::with_cause(
+              ErrorCode::InternalServerError,
+              "Keranjang tidak ditemukan".to_string(),
+              err
+            )
+          })?;
+        let cart_id = get_cart_query.unwrap().id;
+
+        let delete_product_cart_query = ctx.db
+          .product_carts()
+          .delete(prisma::product_carts::product_id_cart_id(product_id, cart_id.clone()))
+          .exec().await
+          .map_err(|err| {
+            Error::with_cause(
+              ErrorCode::InternalServerError,
+              "Gagal menghapus produk dari keranjang".to_string(),
+              err
+            )
+          })?;
+
+        let _update_cart_query = ctx.db
+          .carts()
+          .update(
+            prisma::carts::id::equals(cart_id),
+            vec![prisma::carts::total_price::decrement(delete_product_cart_query.total_price)]
+          )
+          .exec().await
+          .map_err(|err| {
+            Error::with_cause(
+              ErrorCode::InternalServerError,
+              "Gagal update harga total keranjang".to_string(),
+              err
+            )
+          })?;
+
+        Ok(())
       })
     })
 }

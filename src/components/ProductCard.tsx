@@ -25,9 +25,15 @@ export default function ProductCard({
   setOpenConfirmRemove,
 }: ProductCardProps) {
   const { user } = useUser();
-  const { mutate } = rspc.useMutation(['carts.update'], {
+  const { mutate: add } = rspc.useMutation(['carts.update'], {
     meta: { message: 'Berhasil menambahkan ke keranjang' },
+    onSuccess: () => setInCart(true),
   });
+  const { mutate: remove } = rspc.useMutation(['carts.remove'], {
+    meta: { message: 'Berhasil menghapus dari keranjang' },
+    onSuccess: () => setInCart(false),
+  });
+
   const [inCart, setInCart] = React.useState(false);
 
   return (
@@ -82,8 +88,7 @@ export default function ProductCard({
               className='text-2xl transition-all duration-200 hover:text-primary-50'
               onClick={(e) => {
                 e.stopPropagation();
-                // setInCart(false);
-                // dispatch(removeFromCart(product));
+                remove(product.id);
               }}
             />
           ) : (
@@ -91,8 +96,7 @@ export default function ProductCard({
               className='text-2xl transition-all duration-200 hover:text-primary-50'
               onClick={(e) => {
                 e.stopPropagation();
-                setInCart(true);
-                mutate({ product_id: product.id, quantity: 1 });
+                add({ product_id: product.id, quantity: 1 });
               }}
             />
           ))}

@@ -2,11 +2,13 @@ use std::{ env, sync::Arc };
 
 use axum::{ body::Bytes, http::{ HeaderMap, StatusCode }, routing::post, Extension, Router };
 
-use rspc::{ Error, ErrorCode };
+use rspc::{ Error, ErrorCode, RouterBuilder };
 use serde::{ Deserialize, Serialize };
 use svix::webhooks::Webhook;
 
 use crate::prisma::{ self, PrismaClient };
+
+use super::{ PrivateCtx, PrivateRouter };
 
 #[derive(Serialize, Deserialize)]
 struct Payload {
@@ -147,4 +149,16 @@ async fn users_handler(
 
 pub(crate) fn webhooks(client: Arc<PrismaClient>) -> Router {
   Router::new().route("/webhooks", post(users_handler)).layer(Extension(client))
+}
+
+pub(crate) fn private_route() -> RouterBuilder<PrivateCtx> {
+  PrivateRouter::new().query("get", |t| {
+    t(|ctx: PrivateCtx, _: ()| async move {
+      let users = ctx.db
+        .customers()
+        .find_first(vec![prisma::customers::id::equals(ctx.user_id)])
+        .exec().await?;
+      Ok(users)
+    })
+  })
 }

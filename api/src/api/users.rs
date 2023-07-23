@@ -2,13 +2,19 @@ use std::{ env, sync::Arc };
 
 use axum::{ body::Bytes, http::{ HeaderMap, StatusCode }, routing::post, Extension, Router };
 
-use rspc::{ Error, ErrorCode, RouterBuilder };
+use rspc::{ Error, ErrorCode, RouterBuilder, Type };
 use serde::{ Deserialize, Serialize };
 use svix::webhooks::Webhook;
 
 use crate::prisma::{ self, PrismaClient };
 
 use super::{ PrivateCtx, PrivateRouter };
+
+#[derive(Serialize, Deserialize, Type)]
+struct AddAddress {
+  address: String,
+  phone: String,
+}
 
 #[derive(Serialize, Deserialize)]
 struct Payload {
@@ -152,13 +158,32 @@ pub(crate) fn webhooks(client: Arc<PrismaClient>) -> Router {
 }
 
 pub(crate) fn private_route() -> RouterBuilder<PrivateCtx> {
-  PrivateRouter::new().query("get", |t| {
-    t(|ctx: PrivateCtx, _: ()| async move {
-      let users = ctx.db
-        .customers()
-        .find_first(vec![prisma::customers::id::equals(ctx.user_id)])
-        .exec().await?;
-      Ok(users)
+  PrivateRouter::new()
+    .query("get", |t| {
+      t(|ctx: PrivateCtx, _: ()| async move {
+        let users = ctx.db
+          .customers()
+          .find_first(vec![prisma::customers::id::equals(ctx.user_id)])
+          .exec().await?;
+        Ok(users)
+      })
     })
-  })
+    .mutation("add.address", |t| {
+      t(|ctx: PrivateCtx, input: AddAddress| async move {
+        let user_id = ctx.user_id;
+
+        let update_address_query = ctx.db
+          .customers()
+          .update(
+            prisma::customers::id::equals(user_id),
+            vec![
+              prisma::customers::address::set(Some(input.address)),
+              prisma::customers::phone::set(Some(input.phone))
+            ]
+          )
+          .exec().await?;
+
+        Ok(update_address_query)
+      })
+    })
 }

@@ -2,9 +2,9 @@ import * as React from 'react';
 
 import { rspc } from '@/lib/rspc';
 
-import Button from '@/components/buttons/Button';
 import CartRow from '@/components/CartRow';
 import Layout from '@/components/layout/Layout';
+import ButtonLink from '@/components/links/ButtonLink';
 import Seo from '@/components/Seo';
 import Separator from '@/components/Separator';
 
@@ -48,17 +48,12 @@ export default function CartPage() {
                 Rp {thousandSeparator(data?.total_price || 0)}
               </p>
             </div>
-            <div>
-              <Button
-                className='rounded-3xl bg-brown px-28 py-6 font-secondary'
-                // onClick={() => {
-                //   router.push('/order');
-                //   dispatch(clearCheckoutMessage());
-                // }}
-              >
-                BELI
-              </Button>
-            </div>
+            <ButtonLink
+              href='/order'
+              className='rounded-3xl bg-brown px-28 py-6 font-secondary'
+            >
+              BELI
+            </ButtonLink>
           </div>
         </div>
       </main>

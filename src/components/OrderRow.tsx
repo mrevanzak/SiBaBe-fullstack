@@ -3,14 +3,13 @@ import * as React from 'react';
 import ArrowLink from '@/components/links/ArrowLink';
 import NextImage from '@/components/NextImage';
 
+import { ProductCart } from '@/utils/api';
 import thousandSeparator from '@/utils/thousandSeparator';
 
-import { Cart, ProductElement } from '@/types';
-
 type OrderRowProps = {
-  product: Cart | ProductElement;
+  product: ProductCart;
   review?: boolean;
-  setSelectedProduct?: (id: number) => void;
+  setSelectedProduct?: (id: string) => void;
   setOpened?: (opened: boolean) => void;
 };
 
@@ -56,7 +55,7 @@ export default function OrderRow({
       )}
       <div className='flex items-center'>
         <p className='font-secondary font-bold'>
-          Rp {thousandSeparator(product.totalPrice)}
+          Rp {thousandSeparator(product.total_price)}
         </p>
       </div>
     </div>

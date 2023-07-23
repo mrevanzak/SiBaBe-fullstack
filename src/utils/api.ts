@@ -3,13 +3,15 @@
 export type Procedures = {
     queries: 
         { key: "carts.get", input: never, result: CartResponse } | 
-        { key: "products.get", input: never, result: Product[] },
+        { key: "products.get", input: never, result: Product[] } | 
+        { key: "users.get", input: never, result: Customers | null },
     mutations: 
         { key: "carts.remove", input: string, result: null } | 
         { key: "carts.update", input: UpdateCartInput, result: ProductCarts } | 
         { key: "products.create", input: AddProduct, result: Products } | 
         { key: "products.delete", input: string, result: Products } | 
-        { key: "products.update", input: EditProduct, result: Products },
+        { key: "products.update", input: EditProduct, result: Products } | 
+        { key: "users.add.address", input: AddAddress, result: Customers },
     subscriptions: never
 };
 
@@ -17,11 +19,15 @@ export type Product = ({ id: string; name: string; description: string; price: n
 
 export type UpdateCartInput = { product_id: string; quantity: number }
 
+export type AddAddress = { address: string; phone: string }
+
 export type Feedback = { id: string; created_at: string | null; updated_at: string | null; deleted_at: string | null; feedback: string; rating: number; product_id: string }
 
 export type ProductCart = ({ product_id: string; cart_id: string; quantity: number; total_price: number }) & { product: Products }
 
 export type Products = { id: string; name: string; description: string; price: number; stock: number; image: string; created_at: string | null; updated_at: string | null; deleted_at: string | null }
+
+export type Customers = { id: string; created_at: string | null; updated_at: string | null; username: string; name: string; email: string; address: string | null; phone: string | null }
 
 export type AddProduct = { name: string; description: string; price: number; stock: number; image: string }
 

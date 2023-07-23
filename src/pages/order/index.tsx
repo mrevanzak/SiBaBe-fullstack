@@ -1,54 +1,70 @@
 import { Listbox, Transition } from '@headlessui/react';
-import { useRouter } from 'next/router';
+import { Modal } from '@mantine/core';
 import * as React from 'react';
 import { CgCheck, CgSelect } from 'react-icons/cg';
 
 import clsxm from '@/lib/clsxm';
-import { useAppDispatch, useAppSelector } from '@/hooks/redux';
+import { rspc } from '@/lib/rspc';
 
 import Button from '@/components/buttons/Button';
 import Layout from '@/components/layout/Layout';
+import AddAddressModal from '@/components/modals/AddAddress';
 import OrderRow from '@/components/OrderRow';
 import Seo from '@/components/Seo';
 import Separator from '@/components/Separator';
 
-import { checkout } from '@/redux/actions/Checkout';
-import { fetchUser } from '@/redux/actions/User';
 import thousandSeparator from '@/utils/thousandSeparator';
 
 import Map from '~/svg/map.svg';
 import Ninuninu from '~/svg/ninuninu.svg';
 
-const courier = [{ id: 1, name: 'ITS-JEK', price: 10000 }];
+const courier = [
+  { id: 1, name: 'ITS-JEK', price: 10000 },
+  { id: 2, name: 'ITS-EXPRESS', price: 20000 },
+];
 
-const payment = [{ id: 1, method: 'Transfer Bank', name: 'ITS-BANK' }];
+const payment = [
+  { id: 1, method: 'Transfer Bank', name: 'ITS-BANK' },
+  { id: 2, method: 'COD', name: 'ITS-COD' },
+];
 
 export default function OrderPage() {
-  const { cart } = useAppSelector(({ cart }) => cart);
-  const { user } = useAppSelector(({ user }) => user);
-  const { status } = useAppSelector(({ checkout }) => checkout);
-  const dispatch = useAppDispatch();
+  const { data: cart } = rspc.useQuery(['carts.get']);
+  const { data: user } = rspc.useQuery(['users.get']);
+
   const [courierOptions, setcourierOptions] = React.useState(courier[0]);
   const [paymentOptions, setPaymentOptions] = React.useState(payment[0]);
-  const router = useRouter();
+  const [openAddAddressModal, setOpenAddAddressModal] = React.useState(false);
 
-  React.useEffect(() => {
-    if (user && !user.data) {
-      dispatch(fetchUser());
-    }
-    if (status === 'Success confirm checkout') router.push('/order/confirm');
-  }, [status]);
+  // React.useEffect(() => {
+  //   if (user && !user.data) {
+  //     dispatch(fetchUser());
+  //   }
+  //   if (status === 'Success confirm checkout') router.push('/order/confirm');
+  // }, [status]);
 
-  const onConfirmOrder = () => {
-    if (user?.data) {
-      dispatch(checkout(courierOptions.name, user.data.address));
-    }
-  };
+  // const onConfirmOrder = () => {
+  //   if (user?.data) {
+  //     dispatch(checkout(courierOptions.name, user.data.address));
+  //   }
+  // };
 
   return (
     <Layout>
       {/* <Seo templateTitle='Home' /> */}
       <Seo />
+      <Modal
+        opened={openAddAddressModal}
+        onClose={() => setOpenAddAddressModal(false)}
+        centered
+        withCloseButton={false}
+        padding={0}
+        radius={50}
+        size='lg'
+      >
+        <AddAddressModal setOpened={setOpenAddAddressModal} />
+      </Modal>
+
       <main className='bg-white pb-12'>
         <div className='layout min-h-main flex flex-col'>
           <p className='my-14 text-xl font-bold'>Pemesanan</p>
@@ -57,14 +73,26 @@ export default function OrderPage() {
               <div className='flex w-8/12 flex-row items-center'>
                 <Map className='mr-8 h-20 w-20 flex-shrink-0 self-center rounded-l-2xl border border-black' />
                 <div className='space-y-3'>
-                  <p className='font-semibold'>{user?.data?.address}</p>
-                  <p>Phone: {user?.data?.phone}</p>
+                  {user?.address ? (
+                    <p className='font-semibold'>{user?.address}</p>
+                  ) : (
+                    <>
+                      <p className='font-semibold'>Alamat belum diisi</p>
+                      <Button
+                        className='rounded-xl bg-brown px-4 py-2 font-secondary'
+                        onClick={() => setOpenAddAddressModal(true)}
+                      >
+                        Tambah Alamat
+                      </Button>
+                    </>
+                  )}
+                  {user?.phone && <p>Phone: {user?.phone}</p>}
                 </div>
               </div>
               <Separator />
               <div className=' flex w-4/12 flex-col items-center justify-center'>
                 <p className='font-semibold'>Penerima</p>
-                <p>{user?.data?.name}</p>
+                <p>{user?.name}</p>
               </div>
             </div>
             <Ninuninu className='w-full' />
@@ -93,7 +121,7 @@ export default function OrderPage() {
                         leaveFrom='opacity-100'
                         leaveTo='opacity-0'
                       >
-                        <Listbox.Options className='absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm'>
+                        <Listbox.Options className='absolute z-10 mt-1 max-h-60 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm'>
                           {courier.map((person) => (
                             <Listbox.Option
                               key={person.id}
@@ -102,7 +130,7 @@ export default function OrderPage() {
                                   active
                                     ? 'bg-primary-600 text-white'
                                     : 'text-gray-900',
-                                  'relative cursor-default select-none py-2 pl-3 pr-9'
+                                  'relative cursor-default select-none px-3 py-2'
                                 )
                               }
                               value={person}
@@ -120,7 +148,7 @@ export default function OrderPage() {
                                     {person.name}
                                   </span>
 
-                                  {courierOptions ? (
+                                  {selected ? (
                                     <span
                                       className={clsxm(
                                         active
@@ -183,7 +211,7 @@ export default function OrderPage() {
                                   active
                                     ? 'bg-primary-600 text-white'
                                     : 'text-gray-900',
-                                  'relative cursor-default select-none py-2 pl-3 pr-9'
+                                  'relative cursor-default select-none px-3 py-2'
                                 )
                               }
                               value={person}
@@ -229,13 +257,11 @@ export default function OrderPage() {
               <p className='font-semibold'>{paymentOptions.name}</p>
             </div>
             <Separator width='70%' className='mx-auto' height={1.5} />
-            {cart &&
-              cart.product &&
-              cart.product.map((product) => (
-                <div key={product.productId} className='px-20'>
-                  <OrderRow product={product} />
-                </div>
-              ))}
+            {cart?.product_carts.map((product) => (
+              <div key={product.cart_id} className='px-20'>
+                <OrderRow product={product} />
+              </div>
+            ))}
           </div>
           <div className='mt-9 flex items-center justify-end gap-7'>
             <div className='text-end'>
@@ -243,14 +269,14 @@ export default function OrderPage() {
                 Total Harga
               </p>
               <p className='font-secondary text-2xl font-bold'>
-                Rp {cart?.totalPrice && thousandSeparator(cart?.totalPrice)}
+                Rp {cart && thousandSeparator(cart?.total_price)}
               </p>
             </div>
             <div>
               <Button
                 className='rounded-3xl px-10 py-6 font-secondary'
                 variant='outline'
-                onClick={onConfirmOrder}
+                // onClick={onConfirmOrder}
               >
                 Lanjutkan Pemesanan
               </Button>

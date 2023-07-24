@@ -6,7 +6,6 @@ import { useAppSelector } from '@/hooks/redux';
 import Layout from '@/components/layout/Layout';
 import ArrowLink from '@/components/links/ArrowLink';
 import UploadModal from '@/components/modals/Upload';
-import OrderRow from '@/components/OrderRow';
 import Seo from '@/components/Seo';
 import Separator from '@/components/Separator';
 
@@ -62,7 +61,7 @@ export default function ConfirmOrderPage() {
               cart.product &&
               cart.product.map((product) => (
                 <div key={product.productId} className='px-5'>
-                  <OrderRow product={product} />
+                  {/* <OrderRow product={product} /> */}
                 </div>
               ))}
             <div className='flex flex-row justify-between px-5'>

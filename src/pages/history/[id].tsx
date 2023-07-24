@@ -6,9 +6,7 @@ import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 
 import Layout from '@/components/layout/Layout';
 import ArrowLink from '@/components/links/ArrowLink';
-import ReviewModal from '@/components/modals/Review';
 import UploadModal from '@/components/modals/Upload';
-import OrderRow from '@/components/OrderRow';
 import Seo from '@/components/Seo';
 import Separator from '@/components/Separator';
 
@@ -18,9 +16,7 @@ import thousandSeparator from '@/utils/thousandSeparator';
 export default function HistoryDetailPage() {
   const { history, historyById } = useAppSelector(({ history }) => history);
   const dispatch = useAppDispatch();
-  const [reviewModalOpened, setreviewModalOpened] = React.useState(false);
   const [uploadModalOpened, setuploadModalOpened] = React.useState(false);
-  const [selectedProduct, setSelectedProduct] = React.useState<number>();
 
   const { query } = useRouter();
   const historyId = query.id as string;
@@ -37,23 +33,23 @@ export default function HistoryDetailPage() {
     <Layout>
       {/* <Seo templateTitle='Home' /> */}
 
-      <Modal
-        opened={reviewModalOpened}
-        onClose={() => setreviewModalOpened(false)}
-        centered
-        withCloseButton={false}
-        padding={0}
-        radius={50}
-        size={982}
-      >
-        {selectedProduct && (
-          <ReviewModal
-            historyId={historyId}
-            id={selectedProduct}
-            setOpened={setreviewModalOpened}
-          />
-        )}
-      </Modal>
+      {/* <Modal */}
+      {/*   opened={reviewModalOpened} */}
+      {/*   onClose={() => setreviewModalOpened(false)} */}
+      {/*   centered */}
+      {/*   withCloseButton={false} */}
+      {/*   padding={0} */}
+      {/*   radius={50} */}
+      {/*   size={982} */}
+      {/* > */}
+      {/*   {selectedProduct && ( */}
+      {/*     <ReviewModal */}
+      {/*       historyId={historyId} */}
+      {/*       id={selectedProduct} */}
+      {/*       setOpened={setreviewModalOpened} */}
+      {/*     /> */}
+      {/*   )} */}
+      {/* </Modal> */}
 
       <Modal
         opened={uploadModalOpened}
@@ -109,12 +105,12 @@ export default function HistoryDetailPage() {
               historyById.product &&
               historyById.product.map((product, index) => (
                 <div key={index} className='px-5'>
-                  <OrderRow
-                    product={product}
-                    review={historyDetail?.status === 'Terima'}
-                    setSelectedProduct={setSelectedProduct}
-                    setOpened={setreviewModalOpened}
-                  />
+                  {/* <OrderRow */}
+                  {/*   product={product} */}
+                  {/*   review={historyDetail?.status === 'Terima'} */}
+                  {/*   setSelectedProduct={setSelectedProduct} */}
+                  {/*   setOpened={setreviewModalOpened} */}
+                  {/* /> */}
                 </div>
               ))}
             <div className='flex flex-row justify-between px-5'>

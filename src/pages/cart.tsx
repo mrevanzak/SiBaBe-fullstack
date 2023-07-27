@@ -8,10 +8,12 @@ import ButtonLink from '@/components/links/ButtonLink';
 import Seo from '@/components/Seo';
 import Separator from '@/components/Separator';
 
+import LoadingHandler from '@/utils/loading';
 import thousandSeparator from '@/utils/thousandSeparator';
 
 export default function CartPage() {
-  const { data } = rspc.useQuery(['carts.get']);
+  const { data, isLoading } = rspc.useQuery(['carts.get']);
+  LoadingHandler(isLoading, 'keranjang');
 
   return (
     <Layout>

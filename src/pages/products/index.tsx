@@ -15,9 +15,12 @@ import Search from '@/components/Search';
 import Seo from '@/components/Seo';
 
 import { Product } from '@/utils/api';
+import LoadingHandler from '@/utils/loading';
 
 export default function ProductPage() {
   const { data: products, isLoading } = rspc.useQuery(['products.get']);
+  LoadingHandler(isLoading, 'produk');
+
   const [opened, setOpened] = React.useState(false);
   const [openConfirmRemove, setOpenConfirmRemove] = React.useState(false);
   const [selectedProduct, setSelectedProduct] =
@@ -28,21 +31,6 @@ export default function ProductPage() {
   const productFiltered = products?.filter((product) =>
     product.name.toLowerCase().includes(debounced.toLowerCase())
   );
-
-  if (isLoading) {
-    toast.loading('Memuat produk...', {
-      toastId: 'fetching',
-    });
-  }
-
-  if (!isLoading) {
-    toast.update('fetching', {
-      render: 'Produk berhasil dimuat',
-      type: 'success',
-      isLoading: false,
-      autoClose: 2000,
-    });
-  }
 
   React.useEffect(() => {
     if (!isLoading && productFiltered && productFiltered.length === 0) {

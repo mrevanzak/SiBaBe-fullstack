@@ -1,8 +1,5 @@
 import { useAuth } from '@clerk/nextjs';
 import * as React from 'react';
-import { ToastContainer } from 'react-toastify';
-
-import 'react-toastify/dist/ReactToastify.css';
 
 import { useJwtStore } from '@/lib/store';
 
@@ -31,7 +28,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <Header />
         {children}
         <Footer />
-        <ToastContainer position='top-center' />
       </main>
     </>
   );

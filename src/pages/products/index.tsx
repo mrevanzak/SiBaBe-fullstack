@@ -3,6 +3,7 @@ import { useDebouncedValue } from '@mantine/hooks';
 import * as React from 'react';
 import { toast } from 'react-toastify';
 
+import useIsAdmin from '@/lib/isAdmin';
 import { rspc } from '@/lib/rspc';
 
 import Layout from '@/components/layout/Layout';
@@ -14,7 +15,6 @@ import Search from '@/components/Search';
 import Seo from '@/components/Seo';
 
 import { Product } from '@/utils/api';
-import useIsAdmin from '@/utils/isAdmin';
 
 export default function ProductPage() {
   const { data: products, isLoading } = rspc.useQuery(['products.get']);

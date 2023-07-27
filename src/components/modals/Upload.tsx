@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import * as React from 'react';
 import { FiImage, FiUpload, FiXCircle } from 'react-icons/fi';
 
-import { useAppDispatch } from '@/hooks/redux';
+import { useAppDispatch } from '@/lib/hooks/redux';
 
 import Button from '@/components/buttons/Button';
 

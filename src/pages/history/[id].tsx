@@ -2,7 +2,7 @@ import { Modal } from '@mantine/core';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 
-import { useAppDispatch, useAppSelector } from '@/hooks/redux';
+import { useAppDispatch, useAppSelector } from '@/lib/hooks/redux';
 
 import Layout from '@/components/layout/Layout';
 import ArrowLink from '@/components/links/ArrowLink';

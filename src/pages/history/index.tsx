@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { useAppDispatch, useAppSelector } from '@/hooks/redux';
+import { useAppDispatch, useAppSelector } from '@/lib/hooks/redux';
 
 import HistoryRow from '@/components/HistoryRow';
 import Layout from '@/components/layout/Layout';

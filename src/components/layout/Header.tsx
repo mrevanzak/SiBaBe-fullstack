@@ -1,13 +1,12 @@
 import { SignOutButton, useUser } from '@clerk/nextjs';
 import * as React from 'react';
 
-import useScrollPosition from '@/hooks/useScrollPosition';
+import useScrollPosition from '@/lib/hooks/useScrollPosition';
+import useIsAdmin from '@/lib/isAdmin';
 
 import ButtonLink from '@/components/links/ButtonLink';
 import UnderlineLink from '@/components/links/UnderlineLink';
 import UnstyledLink from '@/components/links/UnstyledLink';
-
-import useIsAdmin from '@/utils/isAdmin';
 
 const privateLinks = [
   { href: '/products', label: 'Produk' },

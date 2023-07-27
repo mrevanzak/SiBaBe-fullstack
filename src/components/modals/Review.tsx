@@ -3,7 +3,7 @@ import * as React from 'react';
 import { AiFillStar, AiOutlineStar } from 'react-icons/ai';
 import { RiCloseFill } from 'react-icons/ri';
 
-import { useAppDispatch, useAppSelector } from '@/hooks/redux';
+import { useAppDispatch, useAppSelector } from '@/lib/hooks/redux';
 
 import Button from '@/components/buttons/Button';
 import Separator from '@/components/Separator';

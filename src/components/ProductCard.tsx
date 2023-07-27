@@ -3,12 +3,12 @@ import { useUser } from '@clerk/nextjs';
 import * as React from 'react';
 import { FiEdit, FiShoppingCart, FiTrash2, FiXCircle } from 'react-icons/fi';
 
+import useIsAdmin from '@/lib/isAdmin';
 import { rspc } from '@/lib/rspc';
 
 import NextImage from '@/components/NextImage';
 
 import { Product } from '@/utils/api';
-import useIsAdmin from '@/utils/isAdmin';
 import thousandSeparator from '@/utils/thousandSeparator';
 
 type ProductCardProps = {

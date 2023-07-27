@@ -7,6 +7,7 @@ import {
   RiUser3Line,
 } from 'react-icons/ri';
 
+import useIsAdmin from '@/lib/isAdmin';
 import { rspc } from '@/lib/rspc';
 
 import Button from '@/components/buttons/Button';
@@ -16,7 +17,6 @@ import NextImage from '@/components/NextImage';
 import Separator from '@/components/Separator';
 
 import { EditProduct, Product } from '@/utils/api';
-import useIsAdmin from '@/utils/isAdmin';
 import thousandSeparator from '@/utils/thousandSeparator';
 
 type ProductDetailProps = {

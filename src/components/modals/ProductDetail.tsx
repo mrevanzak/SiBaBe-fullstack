@@ -16,7 +16,7 @@ import TextArea from '@/components/forms/TextArea';
 import NextImage from '@/components/NextImage';
 import Separator from '@/components/Separator';
 
-import { EditProduct, Product } from '@/utils/api';
+import { Product, UpdateProductArgs } from '@/utils/api';
 import thousandSeparator from '@/utils/thousandSeparator';
 
 type ProductDetailProps = {
@@ -32,7 +32,7 @@ export default function ProductDetailModal({
     meta: { message: 'Berhasil mengubah produk' },
   });
   //#region  //*=========== Form ===========
-  const methods = useForm<EditProduct>({
+  const methods = useForm<UpdateProductArgs>({
     mode: 'onTouched',
     defaultValues: {
       name: product.name,

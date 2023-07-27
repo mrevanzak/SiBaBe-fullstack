@@ -5,40 +5,22 @@ use crate::prisma;
 
 use super::{ Ctx, PublicRouter, AdminRouter, AdminCtx };
 
-#[derive(Debug, Serialize, Deserialize, Type)]
-struct Reviews {
-  #[serde(flatten)]
-  data: prisma::feedback::Data,
-  username: String,
-}
-
-#[derive(Debug, Serialize, Deserialize, Type)]
-struct Product {
-  #[serde(flatten)]
-  data: prisma::products::Data,
-  reviews: Vec<Reviews>,
-}
-
-#[derive(Debug, Serialize, Deserialize, Type)]
-struct EditProduct {
-  id: String,
-  name: String,
-  description: String,
-  price: i32,
-  stock: i32,
-}
-
-#[derive(Debug, Serialize, Deserialize, Type)]
-struct AddProduct {
-  name: String,
-  description: String,
-  price: i32,
-  stock: i32,
-  image: String,
-}
-
 pub(crate) fn public_route() -> RouterBuilder<Ctx> {
   PublicRouter::new().query("get", |t| {
+    #[derive(Debug, Serialize, Deserialize, Type)]
+    struct Product {
+      #[serde(flatten)]
+      data: prisma::products::Data,
+      reviews: Vec<Reviews>,
+    }
+
+    #[derive(Debug, Serialize, Deserialize, Type)]
+    struct Reviews {
+      #[serde(flatten)]
+      data: prisma::feedback::Data,
+      username: String,
+    }
+
     t(|ctx, _: ()| async move {
       let products_query = ctx.db
         .products()
@@ -85,7 +67,16 @@ pub(crate) fn public_route() -> RouterBuilder<Ctx> {
 pub(crate) fn admin_route() -> RouterBuilder<AdminCtx> {
   AdminRouter::new()
     .mutation("create", |t| {
-      t(|ctx, input: AddProduct| async move {
+      #[derive(Debug, Serialize, Deserialize, Type)]
+      struct AddProductArgs {
+        name: String,
+        description: String,
+        price: i32,
+        stock: i32,
+        image: String,
+      }
+
+      t(|ctx, input: AddProductArgs| async move {
         let create_product = ctx.db
           .products()
           .create(input.name, input.description, input.price, input.stock, input.image, vec![])
@@ -97,7 +88,16 @@ pub(crate) fn admin_route() -> RouterBuilder<AdminCtx> {
       })
     })
     .mutation("update", |t| {
-      t(|ctx, input: EditProduct| async move {
+      #[derive(Debug, Serialize, Deserialize, Type)]
+      struct UpdateProductArgs {
+        id: String,
+        name: String,
+        description: String,
+        price: i32,
+        stock: i32,
+      }
+
+      t(|ctx, input: UpdateProductArgs| async move {
         let update_product = ctx.db
           .products()
           .update(

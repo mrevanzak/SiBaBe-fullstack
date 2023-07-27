@@ -1,6 +1,7 @@
 import { Group, Image, Text } from '@mantine/core';
 import { Dropzone, FileWithPath, IMAGE_MIME_TYPE } from '@mantine/dropzone';
 import axios from 'axios';
+import getConfig from 'next/config';
 import * as React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { FiImage, FiUpload, FiXCircle } from 'react-icons/fi';
@@ -15,8 +16,9 @@ import Layout from '@/components/layout/Layout';
 import Seo from '@/components/Seo';
 import Separator from '@/components/Separator';
 
-import { API_KEY } from '@/pages/api/products';
-import { AddProduct } from '@/utils/api';
+import { AddProductArgs } from '@/utils/api';
+
+const { publicRuntimeConfig: config } = getConfig();
 
 export default function AddProductPage() {
   const { mutate } = rspc.useMutation(['products.create'], {
@@ -27,7 +29,7 @@ export default function AddProductPage() {
   const [loading, setLoading] = React.useState(false);
 
   //#region  //*=========== Form ===========
-  const methods = useForm<AddProduct>({
+  const methods = useForm<AddProductArgs>({
     mode: 'onTouched',
   });
   const { handleSubmit, reset } = methods;
@@ -83,7 +85,7 @@ export default function AddProductPage() {
     });
     return instance
       .post('/upload', {
-        key: API_KEY,
+        key: config.IMGBB_KEY,
         image: files[0],
       })
       .then((res) => {

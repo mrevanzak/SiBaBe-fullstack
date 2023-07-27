@@ -6,29 +6,23 @@ use crate::prisma::{ self, CartStatus };
 
 use super::{ PrivateCtx, PrivateRouter };
 
-#[derive(Debug, Clone, Serialize, Deserialize, Type)]
-struct ProductCart {
-  #[serde(flatten)]
-  data: prisma::product_carts::Data,
-  product: prisma::products::Data,
-}
-
-#[derive(Debug, Serialize, Deserialize, Type)]
-struct CartResponse {
-  id: String,
-  total_price: i32,
-  product_carts: Vec<ProductCart>,
-}
-
-#[derive(Debug, Serialize, Deserialize, Type)]
-struct UpdateCartInput {
-  product_id: String,
-  quantity: i32,
-}
-
 pub(crate) fn private_route() -> RouterBuilder<PrivateCtx> {
   PrivateRouter::new()
     .query("get", |t| {
+      #[derive(Debug, Serialize, Deserialize, Type)]
+      struct Cart {
+        id: String,
+        total_price: i32,
+        product_carts: Vec<ProductCart>,
+      }
+
+      #[derive(Debug, Clone, Serialize, Deserialize, Type)]
+      struct ProductCart {
+        #[serde(flatten)]
+        data: prisma::product_carts::Data,
+        product: prisma::products::Data,
+      }
+
       t(|ctx: PrivateCtx, _: ()| async move {
         ctx.role.admin_unauthorized()?;
 
@@ -89,7 +83,7 @@ pub(crate) fn private_route() -> RouterBuilder<PrivateCtx> {
             )
           })?;
 
-        Ok(CartResponse {
+        Ok(Cart {
           id: cart_id,
           total_price: get_cart_query.unwrap().total_price,
           product_carts: product_cart_query
@@ -103,7 +97,13 @@ pub(crate) fn private_route() -> RouterBuilder<PrivateCtx> {
       })
     })
     .mutation("update", |t| {
-      t(|ctx: PrivateCtx, input: UpdateCartInput| async move {
+      #[derive(Debug, Serialize, Deserialize, Type)]
+      struct UpdateCartArgs {
+        product_id: String,
+        quantity: i32,
+      }
+
+      t(|ctx: PrivateCtx, input: UpdateCartArgs| async move {
         ctx.role.admin_unauthorized()?;
 
         let get_product_query = ctx.db

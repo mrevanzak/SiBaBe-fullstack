@@ -8,7 +8,7 @@ import Button from '@/components/buttons/Button';
 import Input from '@/components/forms/Input';
 import TextArea from '@/components/forms/TextArea';
 
-import { AddAddress, Customers } from '@/utils/api';
+import { AddAddressArgs, Customers } from '@/utils/api';
 
 type AddAddressModalProps = {
   setOpened: (opened: boolean) => void;
@@ -27,7 +27,7 @@ export default function AddAddressModal({ setOpened }: AddAddressModalProps) {
     },
   });
   //#region  //*=========== Form ===========
-  const methods = useForm<AddAddress>({
+  const methods = useForm<AddAddressArgs>({
     mode: 'onTouched',
   });
   const { handleSubmit } = methods;

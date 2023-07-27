@@ -10,12 +10,6 @@ use crate::prisma::{ self, PrismaClient };
 
 use super::{ PrivateCtx, PrivateRouter };
 
-#[derive(Serialize, Deserialize, Type)]
-struct AddAddress {
-  address: String,
-  phone: String,
-}
-
 #[derive(Serialize, Deserialize)]
 struct Payload {
   data: Data,
@@ -169,7 +163,13 @@ pub(crate) fn private_route() -> RouterBuilder<PrivateCtx> {
       })
     })
     .mutation("add.address", |t| {
-      t(|ctx: PrivateCtx, input: AddAddress| async move {
+      #[derive(Serialize, Deserialize, Type)]
+      struct AddAddressArgs {
+        address: String,
+        phone: String,
+      }
+
+      t(|ctx: PrivateCtx, input: AddAddressArgs| async move {
         let user_id = ctx.user_id;
 
         let update_address_query = ctx.db

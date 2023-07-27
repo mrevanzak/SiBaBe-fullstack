@@ -7,7 +7,7 @@ import { rspc } from '@/lib/rspc';
 
 import NextImage from '@/components/NextImage';
 
-import { CartResponse, ProductCart } from '@/utils/api';
+import { Cart, ProductCart } from '@/utils/api';
 import thousandSeparator from '@/utils/thousandSeparator';
 
 type CartRowProps = {
@@ -19,7 +19,7 @@ export default function CartRow({ cartItems }: CartRowProps) {
   const { mutate } = rspc.useMutation(['carts.update'], {
     meta: { message: 'Berhasil menambahkan jumlah produk' },
     onSuccess: (_, input) => {
-      queryClient.setQueryData<CartResponse>(
+      queryClient.setQueryData<Cart>(
         ['carts.get'],
         produce((draft) => {
           if (!draft) return;

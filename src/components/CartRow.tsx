@@ -18,7 +18,10 @@ export default function CartRow({ cartItems }: CartRowProps) {
   const queryClient = rspc.useContext().queryClient;
   const { mutate } = rspc.useMutation(['carts.update'], {
     meta: { message: 'Berhasil menambahkan jumlah produk' },
-    onSuccess: (_, input) => {
+    onMutate: async (input) => {
+      await queryClient.cancelQueries(['carts.get']);
+      const previousCart = queryClient.getQueryData<Cart>(['carts.get']);
+
       queryClient.setQueryData<Cart>(
         ['carts.get'],
         produce((draft) => {
@@ -38,6 +41,13 @@ export default function CartRow({ cartItems }: CartRowProps) {
           }
         })
       );
+
+      return { previousCart };
+    },
+    onError: (_, __, context) => {
+      if (context?.previousCart) {
+        queryClient.setQueryData(['carts.get'], context.previousCart);
+      }
     },
   });
 

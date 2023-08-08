@@ -9,18 +9,13 @@ use super::{ PrivateCtx, PrivateRouter };
 pub(crate) fn private_route() -> RouterBuilder<PrivateCtx> {
   PrivateRouter::new()
     .query("get", |t| {
+      prisma::product_carts::include!(ProductCart { product });
+
       #[derive(Debug, Serialize, Deserialize, Type)]
       struct Cart {
         id: String,
         total_price: i32,
-        product_carts: Vec<ProductCart>,
-      }
-
-      #[derive(Debug, Clone, Serialize, Deserialize, Type)]
-      struct ProductCart {
-        #[serde(flatten)]
-        data: prisma::product_carts::Data,
-        product: prisma::products::Data,
+        product_carts: Vec<ProductCart::Data>,
       }
 
       t(|ctx: PrivateCtx, _: ()| async move {
@@ -73,7 +68,7 @@ pub(crate) fn private_route() -> RouterBuilder<PrivateCtx> {
           .product_carts()
           .find_many(vec![prisma::product_carts::cart_id::equals(String::from(&cart_id))])
           .order_by(prisma::product_carts::product_id::order(Direction::Asc))
-          .with(prisma::product_carts::product::fetch())
+          .include(ProductCart::include())
           .exec().await
           .map_err(|err| {
             Error::with_cause(
@@ -86,13 +81,7 @@ pub(crate) fn private_route() -> RouterBuilder<PrivateCtx> {
         Ok(Cart {
           id: cart_id,
           total_price: get_cart_query.unwrap().total_price,
-          product_carts: product_cart_query
-            .into_iter()
-            .map(|product_cart| ProductCart {
-              data: product_cart.clone(),
-              product: product_cart.product().unwrap().clone(),
-            })
-            .collect(),
+          product_carts: product_cart_query,
         })
       })
     })

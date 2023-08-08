@@ -1,5 +1,6 @@
 import { Listbox, Transition } from '@headlessui/react';
 import { Modal } from '@mantine/core';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import { CgCheck, CgSelect } from 'react-icons/cg';
 
@@ -29,25 +30,30 @@ const payment = [
 ];
 
 export default function OrderPage() {
-  const { data: cart } = rspc.useQuery(['carts.get']);
-  const { data: user } = rspc.useQuery(['users.get']);
+  const { data: cart, isLoading: isCartLoading } = rspc.useQuery(['carts.get']);
+  const { data: user, isLoading: isUserLoading } = rspc.useQuery(['users.get']);
+  const { mutate } = rspc.useMutation(['orders.checkout']);
 
   const [courierOptions, setcourierOptions] = React.useState(courier[0]);
   const [paymentOptions, setPaymentOptions] = React.useState(payment[0]);
   const [openAddAddressModal, setOpenAddAddressModal] = React.useState(false);
 
-  // React.useEffect(() => {
-  //   if (user && !user.data) {
-  //     dispatch(fetchUser());
-  //   }
-  //   if (status === 'Success confirm checkout') router.push('/order/confirm');
-  // }, [status]);
-
-  // const onConfirmOrder = () => {
-  //   if (user?.data) {
-  //     dispatch(checkout(courierOptions.name, user.data.address));
-  //   }
-  // };
+  const router = useRouter();
+  const onConfirmOrder = () => {
+    if (!user?.address) return;
+    mutate(
+      {
+        courier: courierOptions.name,
+        payment_method: paymentOptions.method,
+        address: user?.address,
+      },
+      {
+        onSuccess: () => {
+          router.push('/order/confirm');
+        },
+      }
+    );
+  };
 
   return (
     <Layout>
@@ -122,9 +128,9 @@ export default function OrderPage() {
                         leaveTo='opacity-0'
                       >
                         <Listbox.Options className='absolute z-10 mt-1 max-h-60 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm'>
-                          {courier.map((person) => (
+                          {courier.map((courier) => (
                             <Listbox.Option
-                              key={person.id}
+                              key={courier.id}
                               className={({ active }) =>
                                 clsxm(
                                   active
@@ -133,7 +139,7 @@ export default function OrderPage() {
                                   'relative cursor-default select-none px-3 py-2'
                                 )
                               }
-                              value={person}
+                              value={courier}
                             >
                               {({ selected, active }) => (
                                 <>
@@ -145,7 +151,7 @@ export default function OrderPage() {
                                       'block truncate'
                                     )}
                                   >
-                                    {person.name}
+                                    {courier.name}
                                   </span>
 
                                   {selected ? (
@@ -203,9 +209,9 @@ export default function OrderPage() {
                         leaveTo='opacity-0'
                       >
                         <Listbox.Options className='absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm'>
-                          {payment.map((person) => (
+                          {payment.map((payment) => (
                             <Listbox.Option
-                              key={person.id}
+                              key={payment.id}
                               className={({ active }) =>
                                 clsxm(
                                   active
@@ -214,7 +220,7 @@ export default function OrderPage() {
                                   'relative cursor-default select-none px-3 py-2'
                                 )
                               }
-                              value={person}
+                              value={payment}
                             >
                               {({ selected, active }) => (
                                 <>
@@ -226,7 +232,7 @@ export default function OrderPage() {
                                       'block truncate'
                                     )}
                                   >
-                                    {person.method}
+                                    {payment.method}
                                   </span>
 
                                   {selected ? (
@@ -258,7 +264,7 @@ export default function OrderPage() {
             </div>
             <Separator width='70%' className='mx-auto' height={1.5} />
             {cart?.product_carts.map((product) => (
-              <div key={product.cart_id} className='px-20'>
+              <div key={product.product_id} className='px-20'>
                 <OrderRow product={product} />
               </div>
             ))}
@@ -276,7 +282,8 @@ export default function OrderPage() {
               <Button
                 className='rounded-3xl px-10 py-6 font-secondary'
                 variant='outline'
-                // onClick={onConfirmOrder}
+                disabled={isCartLoading && isUserLoading}
+                onClick={onConfirmOrder}
               >
                 Lanjutkan Pemesanan
               </Button>

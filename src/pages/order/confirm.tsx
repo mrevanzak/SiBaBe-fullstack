@@ -2,18 +2,20 @@ import { Modal } from '@mantine/core';
 import * as React from 'react';
 
 import { useAppSelector } from '@/lib/hooks/redux';
+import { rspc } from '@/lib/rspc';
 
 import Layout from '@/components/layout/Layout';
 import ArrowLink from '@/components/links/ArrowLink';
 import UploadModal from '@/components/modals/Upload';
+import OrderRow from '@/components/OrderRow';
 import Seo from '@/components/Seo';
 import Separator from '@/components/Separator';
 
 import thousandSeparator from '@/utils/thousandSeparator';
 
 export default function ConfirmOrderPage() {
-  const { cart } = useAppSelector(({ cart }) => cart);
   const { invoice } = useAppSelector(({ checkout }) => checkout);
+  const { data: cart } = rspc.useQuery(['carts.get']);
   const [uploadModalOpened, setuploadModalOpened] = React.useState(false);
 
   return (
@@ -41,7 +43,8 @@ export default function ConfirmOrderPage() {
           <div className='relative mx-8 flex flex-col space-y-6 rounded-3xl bg-grey p-12 px-20'>
             <p className='absolute left-8 top-8'>Kode Pemesanan: {invoice}</p>
             <ArrowLink
-              className='absolute right-8 top-2'
+              as='button'
+              className='absolute right-8 top-6'
               onClick={() => setuploadModalOpened(true)}
             >
               Upload Bukti Pembayaran
@@ -57,13 +60,11 @@ export default function ConfirmOrderPage() {
               <p>Harga</p>
             </div>
             <Separator width='100%' className='mx-auto' height={1.5} />
-            {cart &&
-              cart.product &&
-              cart.product.map((product) => (
-                <div key={product.productId} className='px-5'>
-                  {/* <OrderRow product={product} /> */}
-                </div>
-              ))}
+            {cart?.product_carts.map((product) => (
+              <div key={product.product_id} className='px-5'>
+                <OrderRow product={product} />
+              </div>
+            ))}
             <div className='flex flex-row justify-between px-5'>
               <p>Jasa Pengiriman</p>
               <p className='font-secondary font-bold'>Rp 0</p>
@@ -75,7 +76,7 @@ export default function ConfirmOrderPage() {
                 <h4 className='font-secondary'>Harga</h4>
               </div>
               <p className='font-secondary text-2xl font-bold'>
-                Rp {cart?.totalPrice && thousandSeparator(cart?.totalPrice)}
+                Rp {cart?.total_price && thousandSeparator(cart?.total_price)}
               </p>
             </div>
           </div>

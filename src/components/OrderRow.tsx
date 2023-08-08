@@ -42,6 +42,7 @@ export default function OrderRow({
       {review && (
         <div className='absolute left-1/2'>
           <ArrowLink
+            as='button'
             onClick={() => {
               if (setSelectedProduct && setOpened) {
                 setSelectedProduct(product.product.id);

@@ -8,7 +8,7 @@ export type Procedures = {
     mutations: 
         { key: "carts.remove", input: string, result: null } | 
         { key: "carts.update", input: UpdateCartArgs, result: ProductCarts } | 
-        { key: "orders.checkout", input: never, result: Carts | null } | 
+        { key: "orders.checkout", input: Checkout, result: null } | 
         { key: "products.create", input: AddProductArgs, result: Products } | 
         { key: "products.delete", input: string, result: Products } | 
         { key: "products.update", input: UpdateProductArgs, result: Products } | 
@@ -16,13 +16,17 @@ export type Procedures = {
     subscriptions: never
 };
 
-export type Cart = { id: string; total_price: number; product_carts: ProductCart[] }
+export type ProductCarts = { product_id: string; cart_id: string; quantity: number; total_price: number }
+
+export type Checkout = { courier: string; address: string; payment_method: string }
+
+export type Customers = { id: string; created_at: string | null; updated_at: string | null; username: string; name: string; email: string; address: string | null; phone: string | null }
 
 export type UpdateCartArgs = { product_id: string; quantity: number }
 
-export type CartStatus = "idle" | "checkout" | "success"
-
 export type Feedback = { id: string; created_at: string | null; updated_at: string | null; deleted_at: string | null; feedback: string; rating: number; product_id: string }
+
+export type ProductCart = { product_id: string; cart_id: string; quantity: number; total_price: number; product: Products }
 
 export type AddAddressArgs = { address: string; phone: string }
 
@@ -32,14 +36,8 @@ export type Product = ({ id: string; name: string; description: string; price: n
 
 export type UpdateProductArgs = { id: string; name: string; description: string; price: number; stock: number }
 
-export type Products = { id: string; name: string; description: string; price: number; stock: number; image: string; created_at: string | null; updated_at: string | null; deleted_at: string | null }
-
 export type AddProductArgs = { name: string; description: string; price: number; stock: number; image: string }
 
-export type Carts = { id: string; created_at: string | null; updated_at: string | null; deleted_at: string | null; total_price: number; status: CartStatus; customer_id: string }
+export type Cart = { id: string; total_price: number; product_carts: ProductCart[] }
 
-export type Customers = { id: string; created_at: string | null; updated_at: string | null; username: string; name: string; email: string; address: string | null; phone: string | null }
-
-export type ProductCart = ({ product_id: string; cart_id: string; quantity: number; total_price: number }) & { product: Products }
-
-export type ProductCarts = { product_id: string; cart_id: string; quantity: number; total_price: number }
+export type Products = { id: string; name: string; description: string; price: number; stock: number; image: string; created_at: string | null; updated_at: string | null; deleted_at: string | null }

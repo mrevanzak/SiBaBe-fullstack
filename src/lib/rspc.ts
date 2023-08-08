@@ -38,6 +38,11 @@ const client = createClient<Procedures>({
 });
 
 const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 3,
+    },
+  },
   queryCache: new QueryCache({
     onError: (err) => {
       if (err instanceof RSPCError) return toast.error(err.message);

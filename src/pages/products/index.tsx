@@ -15,11 +15,9 @@ import Search from '@/components/Search';
 import Seo from '@/components/Seo';
 
 import { Product } from '@/utils/api';
-import LoadingHandler from '@/utils/loading';
 
 export default function ProductPage() {
   const { data: products, isLoading } = rspc.useQuery(['products.get']);
-  LoadingHandler(isLoading, 'produk');
 
   const [opened, setOpened] = React.useState(false);
   const [openConfirmRemove, setOpenConfirmRemove] = React.useState(false);

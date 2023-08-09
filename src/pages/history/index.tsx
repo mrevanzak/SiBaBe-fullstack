@@ -1,21 +1,14 @@
 import * as React from 'react';
 
-import { useAppDispatch, useAppSelector } from '@/lib/hooks/redux';
+import { rspc } from '@/lib/rspc';
 
 import HistoryRow from '@/components/HistoryRow';
 import Layout from '@/components/layout/Layout';
 import Seo from '@/components/Seo';
 import Separator from '@/components/Separator';
 
-import { fetchHistory } from '@/redux/actions/History';
-
 export default function HistoryPage() {
-  const { history } = useAppSelector(({ history }) => history);
-  const dispatch = useAppDispatch();
-
-  React.useEffect(() => {
-    dispatch(fetchHistory());
-  }, []);
+  const { data: history } = rspc.useQuery(['orders.get']);
 
   return (
     <Layout>
@@ -31,11 +24,9 @@ export default function HistoryPage() {
             color='#D6AD60BF'
             className='mt-8'
           />
-          {history &&
-            history.order &&
-            history.order.map((history) => (
-              <HistoryRow key={history.id} history={history} />
-            ))}
+          {history?.map((history) => (
+            <HistoryRow key={history.id} history={history} />
+          ))}
         </div>
       </main>
     </Layout>

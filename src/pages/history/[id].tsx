@@ -1,55 +1,53 @@
-import { Modal } from '@mantine/core';
+import { Modal, Tooltip } from '@mantine/core';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 
-import { useAppDispatch, useAppSelector } from '@/lib/hooks/redux';
+import { rspc } from '@/lib/rspc';
 
 import Layout from '@/components/layout/Layout';
 import ArrowLink from '@/components/links/ArrowLink';
+import UnderlineLink from '@/components/links/UnderlineLink';
+import ReviewModal from '@/components/modals/Review';
 import UploadModal from '@/components/modals/Upload';
+import OrderRow from '@/components/OrderRow';
 import Seo from '@/components/Seo';
 import Separator from '@/components/Separator';
 
-import { fetchHistoryById } from '@/redux/actions/History';
+import { ProductCart } from '@/utils/api';
 import thousandSeparator from '@/utils/thousandSeparator';
 
 export default function HistoryDetailPage() {
-  const { history, historyById } = useAppSelector(({ history }) => history);
-  const dispatch = useAppDispatch();
   const [uploadModalOpened, setuploadModalOpened] = React.useState(false);
+  const [reviewModalOpened, setreviewModalOpened] = React.useState(false);
+  const [selectedProduct, setSelectedProduct] = React.useState<string>();
 
-  const { query } = useRouter();
+  const { query, isReady } = useRouter();
   const historyId = query.id as string;
-
-  const historyDetail = history?.order?.find(
-    (history) => history.id === Number(historyId)
-  );
-
-  React.useEffect(() => {
-    dispatch(fetchHistoryById(Number(historyId)));
-  }, []);
+  const { data: history } = rspc.useQuery(['orders.show', historyId], {
+    enabled: isReady,
+  });
 
   return (
     <Layout>
       {/* <Seo templateTitle='Home' /> */}
 
-      {/* <Modal */}
-      {/*   opened={reviewModalOpened} */}
-      {/*   onClose={() => setreviewModalOpened(false)} */}
-      {/*   centered */}
-      {/*   withCloseButton={false} */}
-      {/*   padding={0} */}
-      {/*   radius={50} */}
-      {/*   size={982} */}
-      {/* > */}
-      {/*   {selectedProduct && ( */}
-      {/*     <ReviewModal */}
-      {/*       historyId={historyId} */}
-      {/*       id={selectedProduct} */}
-      {/*       setOpened={setreviewModalOpened} */}
-      {/*     /> */}
-      {/*   )} */}
-      {/* </Modal> */}
+      <Modal
+        opened={reviewModalOpened}
+        onClose={() => setreviewModalOpened(false)}
+        centered
+        withCloseButton={false}
+        padding={0}
+        radius={50}
+        size={982}
+      >
+        {selectedProduct && (
+          <ReviewModal
+            historyId={historyId}
+            id={selectedProduct}
+            setOpened={setreviewModalOpened}
+          />
+        )}
+      </Modal>
 
       <Modal
         opened={uploadModalOpened}
@@ -60,11 +58,8 @@ export default function HistoryDetailPage() {
         radius={50}
         size={982}
       >
-        {historyById && (
-          <UploadModal
-            setOpened={setuploadModalOpened}
-            invoice={historyById.invoice}
-          />
+        {history && (
+          <UploadModal setOpened={setuploadModalOpened} invoice={history.id} />
         )}
       </Modal>
 
@@ -73,13 +68,14 @@ export default function HistoryDetailPage() {
         <div className='layout min-h-main flex flex-col'>
           <p className='my-14 text-xl font-bold'>Detail Riwayat Pemesanan</p>
           <div className='relative mx-8 flex flex-col space-y-6 rounded-3xl bg-grey p-12 px-20'>
-            {historyById && (
+            {history && (
               <p className='absolute left-8 top-8'>
-                Kode Pemesanan: {historyById.invoice}
+                Kode Pemesanan: {history.id}
               </p>
             )}
-            {historyById?.status === 'Belum Dibayar' && (
+            {history?.status === 'pending' && (
               <ArrowLink
+                as='button'
                 className='absolute right-8 top-2'
                 onClick={() => setuploadModalOpened(true)}
               >
@@ -87,12 +83,28 @@ export default function HistoryDetailPage() {
               </ArrowLink>
             )}
             <div className='text-center'>
-              <p>Pembayaran Melalui ITS-BANK</p>
+              <p>
+                Pembayaran Melalui{' '}
+                <Tooltip
+                  label={
+                    <>
+                      <p>Silahkan Transfer Pada ITS BANK</p>
+                      <h3>012 - 3456 - 789</h3>
+                      <p>Bima Ganteng</p>
+                    </>
+                  }
+                >
+                  <UnderlineLink>{history?.payment_method}</UnderlineLink>
+                </Tooltip>
+              </p>
               <h3>
-                {historyById?.status === 'Menunggu Validasi' ||
-                historyById?.status === 'Belum Dibayar'
-                  ? historyById.status
-                  : `Pesanan anda telah di${historyById?.status.toLowerCase()}`}
+                {history?.status === 'pending'
+                  ? 'Menunggu Pembayaran'
+                  : history?.status === 'payment'
+                  ? 'Menunggu validasi pembayaran'
+                  : history?.status === 'validated'
+                  ? 'Pesanan anda sedang dikirim'
+                  : 'Pesanan anda telah selesai'}
               </h3>
             </div>
             <Separator width='30%' className='mx-auto' height={1.5} />
@@ -101,18 +113,16 @@ export default function HistoryDetailPage() {
               <p>Harga</p>
             </div>
             <Separator width='100%' className='mx-auto' height={1.5} />
-            {historyById &&
-              historyById.product &&
-              historyById.product.map((product, index) => (
-                <div key={index} className='px-5'>
-                  {/* <OrderRow */}
-                  {/*   product={product} */}
-                  {/*   review={historyDetail?.status === 'Terima'} */}
-                  {/*   setSelectedProduct={setSelectedProduct} */}
-                  {/*   setOpened={setreviewModalOpened} */}
-                  {/* /> */}
-                </div>
-              ))}
+            {history?.cart.product_carts.map((product, index) => (
+              <div key={index} className='px-5'>
+                <OrderRow
+                  product={product as ProductCart}
+                  review={history?.status === 'complete'}
+                  setSelectedProduct={setSelectedProduct}
+                  setOpened={setreviewModalOpened}
+                />
+              </div>
+            ))}
             <div className='flex flex-row justify-between px-5'>
               <p>Jasa Pengiriman</p>
               <p className='font-secondary font-bold'>Rp 0</p>
@@ -125,8 +135,8 @@ export default function HistoryDetailPage() {
               </div>
               <p className='font-secondary text-2xl font-bold'>
                 Rp{' '}
-                {historyDetail?.totalPrice &&
-                  thousandSeparator(historyDetail?.totalPrice)}
+                {history?.total_price &&
+                  thousandSeparator(history?.total_price)}
               </p>
             </div>
           </div>

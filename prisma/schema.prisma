@@ -18,7 +18,13 @@ enum CartStatus {
 enum OrderStatus {
   pending
   payment
+  validated
   complete
+}
+
+enum PaymentMethod {
+  ITS_BANK
+  COD
 }
 
 model admins {
@@ -109,6 +115,7 @@ model orders {
   status          OrderStatus       @default(pending)
   address         String            @db.VarChar(255)
   courier         String            @db.VarChar(255)
+  payment_method  PaymentMethod
   payment_proof   String?           @db.VarChar(255)
   validated_by    String?           @db.VarChar(255)
   feedback_orders feedback_orders[]

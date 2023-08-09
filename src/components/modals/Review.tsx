@@ -12,7 +12,7 @@ import { addReview } from '@/redux/actions/Review';
 
 type ReviewModalProps = {
   historyId: string;
-  id: number;
+  id: string;
   setOpened: (opened: boolean) => void;
 };
 

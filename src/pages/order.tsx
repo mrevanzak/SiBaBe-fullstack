@@ -14,6 +14,7 @@ import OrderRow from '@/components/OrderRow';
 import Seo from '@/components/Seo';
 import Separator from '@/components/Separator';
 
+import { PaymentMethod } from '@/utils/api';
 import thousandSeparator from '@/utils/thousandSeparator';
 
 import Map from '~/svg/map.svg';
@@ -24,9 +25,9 @@ const courier = [
   { id: 2, name: 'ITS-EXPRESS', price: 20000 },
 ];
 
-const payment = [
-  { id: 1, method: 'Transfer Bank', name: 'ITS-BANK' },
-  { id: 2, method: 'COD', name: 'ITS-COD' },
+const payment: { id: number; method: string; name: PaymentMethod }[] = [
+  { id: 1, method: 'Transfer Bank', name: 'ITS_BANK' },
+  { id: 2, method: 'COD', name: 'COD' },
 ];
 
 export default function OrderPage() {
@@ -44,12 +45,12 @@ export default function OrderPage() {
     mutate(
       {
         courier: courierOptions.name,
-        payment_method: paymentOptions.method,
+        payment_method: paymentOptions.name,
         address: user?.address,
       },
       {
-        onSuccess: () => {
-          router.push('/order/confirm');
+        onSuccess: (data) => {
+          router.push(`history/${data.id}`);
         },
       }
     );

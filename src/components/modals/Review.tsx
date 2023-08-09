@@ -3,12 +3,10 @@ import * as React from 'react';
 import { AiFillStar, AiOutlineStar } from 'react-icons/ai';
 import { RiCloseFill } from 'react-icons/ri';
 
-import { useAppDispatch, useAppSelector } from '@/lib/hooks/redux';
+import { useAppSelector } from '@/lib/hooks/redux';
 
 import Button from '@/components/buttons/Button';
 import Separator from '@/components/Separator';
-
-import { addReview } from '@/redux/actions/Review';
 
 type ReviewModalProps = {
   historyId: string;
@@ -16,19 +14,14 @@ type ReviewModalProps = {
   setOpened: (opened: boolean) => void;
 };
 
-export default function ReviewModal({
-  id,
-  setOpened,
-  historyId,
-}: ReviewModalProps) {
+export default function ReviewModal({ setOpened }: ReviewModalProps) {
   const { user } = useAppSelector(({ user }) => user);
-  const dispatch = useAppDispatch();
   const [rating, setRating] = React.useState(0);
   const reviewRef = React.useRef<HTMLTextAreaElement>(null);
 
   const onSubmit = () => {
     if (reviewRef.current) {
-      dispatch(addReview(reviewRef.current.value, rating, historyId, id));
+      // dispatch(addReview(reviewRef.current.value, rating, historyId, id));
     }
     setOpened(false);
   };

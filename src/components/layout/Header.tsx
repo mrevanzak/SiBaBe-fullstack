@@ -4,6 +4,7 @@ import * as React from 'react';
 import useScrollPosition from '@/lib/hooks/useScrollPosition';
 import useIsAdmin from '@/lib/isAdmin';
 
+import Button from '@/components/buttons/Button';
 import ButtonLink from '@/components/links/ButtonLink';
 import UnderlineLink from '@/components/links/UnderlineLink';
 import UnstyledLink from '@/components/links/UnstyledLink';
@@ -52,12 +53,9 @@ export default function Header() {
             ))}
             {user ? (
               <SignOutButton>
-                <ButtonLink
-                  href=''
-                  className='rounded-xl bg-brown px-4 py-2 font-secondary'
-                >
+                <Button className='rounded-xl bg-brown px-4 py-2 font-secondary'>
                   Logout
-                </ButtonLink>
+                </Button>
               </SignOutButton>
             ) : (
               <ButtonLink

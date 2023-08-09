@@ -124,7 +124,25 @@ pub(crate) fn private_route() -> RouterBuilder<PrivateCtx> {
               err
             )
           })?;
-        let cart_id = get_cart_query.unwrap().id;
+
+        let cart_id = match &get_cart_query {
+          Some(cart) => String::from(&cart.id),
+          None => {
+            let create_cart_query = ctx.db
+              .carts()
+              .create(prisma::customers::id::equals(ctx.user_id.to_string()), vec![])
+              .exec().await
+              .map_err(|err| {
+                Error::with_cause(
+                  ErrorCode::InternalServerError,
+                  "Gagal membuat keranjang".to_string(),
+                  err
+                )
+              })?;
+
+            create_cart_query.id
+          }
+        };
 
         let product_cart_query = ctx.db
           .product_carts()

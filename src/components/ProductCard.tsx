@@ -48,9 +48,8 @@ export default function ProductCard({
         useSkeleton
         src={product.image}
         alt={product.name}
-        width={250}
-        height={150}
-        className='w-64'
+        fill
+        className='relative h-40 w-64'
       />
       {useIsAdmin() && (
         <div

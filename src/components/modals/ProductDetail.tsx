@@ -76,9 +76,9 @@ export default function ProductDetailModal({
             useSkeleton
             src={product.image}
             alt={product.name}
-            width={1024}
-            height={320}
-            imgClassName='object-none'
+            fill
+            className='relative h-[320px] w-full'
+            imgClassName='object-cover'
           />
           <Separator height={1.5} width='50%' className='mx-auto' />
           <div className='mx-14 my-7 flex flex-col items-center space-y-5'>

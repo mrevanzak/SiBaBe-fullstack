@@ -19,6 +19,7 @@ enum OrderStatus {
   pending
   payment
   validated
+  rejected
   complete
 }
 

@@ -4,7 +4,17 @@ use serde::{ Serialize, Deserialize };
 
 use crate::prisma::{ self, CartStatus, PaymentMethod };
 
-use super::{ PrivateCtx, PrivateRouter };
+use super::{ PrivateCtx, PrivateRouter, AdminCtx, AdminRouter };
+
+prisma::orders::include!(OrderWithCart {
+  cart: select{
+    product_carts: select{
+      product
+      quantity
+      total_price
+    }
+  }
+});
 
 pub(crate) fn private_route() -> RouterBuilder<PrivateCtx> {
   PrivateRouter::new()
@@ -82,14 +92,14 @@ pub(crate) fn private_route() -> RouterBuilder<PrivateCtx> {
         Ok(create_order_query)
       })
     })
-    .mutation("confirm", |t| {
+    .mutation("payment", |t| {
       #[derive(Serialize, Deserialize, Type)]
-      struct ConfirmArgs {
+      struct PaymentConfirmArgs {
         id: String,
         payment_proof: String,
       }
 
-      t(|ctx: PrivateCtx, input: ConfirmArgs| async move {
+      t(|ctx: PrivateCtx, input: PaymentConfirmArgs| async move {
         ctx.role.admin_unauthorized()?;
 
         let _update_order_query = ctx.db
@@ -133,16 +143,6 @@ pub(crate) fn private_route() -> RouterBuilder<PrivateCtx> {
       })
     })
     .query("show", |t| {
-      prisma::orders::include!(OrderWithCart {
-        cart: select{
-          product_carts: select{
-            product
-            quantity
-            total_price
-          }
-        }
-      });
-
       t(|ctx: PrivateCtx, order_id: String| async move {
         ctx.role.admin_unauthorized()?;
 
@@ -160,6 +160,74 @@ pub(crate) fn private_route() -> RouterBuilder<PrivateCtx> {
           })?;
 
         Ok(get_order_query)
+      })
+    })
+}
+
+pub(crate) fn admin_route() -> RouterBuilder<AdminCtx> {
+  AdminRouter::new()
+    .query("admin.get", |t| {
+      t(|ctx: AdminCtx, _: ()| async move {
+        let get_orders_query = ctx.db
+          .orders()
+          .find_many(vec![])
+          .include(OrderWithCart::include())
+          .exec().await
+          .map_err(|err| {
+            Error::with_cause(
+              ErrorCode::InternalServerError,
+              "Gagal mengambil order".to_string(),
+              err
+            )
+          })?;
+
+        Ok(get_orders_query)
+      })
+    })
+    .mutation("confirm", |t| {
+      #[derive(Serialize, Deserialize, Type)]
+      struct ConfirmArgs {
+        id: String,
+        confirm: bool,
+      }
+
+      t(|ctx: AdminCtx, input: ConfirmArgs| async move {
+        match input.confirm {
+          true => {
+            ctx.db
+              .orders()
+              .update(
+                prisma::orders::id::equals(input.id),
+                vec![prisma::orders::status::set(prisma::OrderStatus::Validated)]
+              )
+              .exec().await
+              .map_err(|err| {
+                Error::with_cause(
+                  ErrorCode::InternalServerError,
+                  "Gagal mengupdate order".to_string(),
+                  err
+                )
+              })?;
+          }
+          false => {
+            ctx.db
+              .orders()
+              .update(
+                prisma::orders::id::equals(input.id),
+                vec![prisma::orders::status::set(prisma::OrderStatus::Rejected)]
+              )
+              .exec().await
+              .map_err(|err| {
+                Error::with_cause(
+                  ErrorCode::InternalServerError,
+                  "Gagal mengupdate order".to_string(),
+                  err
+                )
+              })?;
+          }
+        }
+
+        Ok(())
       })
     })
 }

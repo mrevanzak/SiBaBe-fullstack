@@ -18,7 +18,7 @@ type UploadModalProps = {
 };
 
 export default function UploadModal({ setOpened, invoice }: UploadModalProps) {
-  const { mutate } = rspc.useMutation(['orders.confirm']);
+  const { mutate } = rspc.useMutation(['orders.payment']);
   const queryClient = rspc.useContext().queryClient;
 
   const [files, setFiles] = React.useState<FileWithPath[]>([]);

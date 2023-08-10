@@ -90,5 +90,6 @@ pub(crate) fn new() -> PublicRouter {
       })
     )
     .merge("products.", products::admin_route())
+    .merge("orders.", orders::admin_route())
     .build()
 }

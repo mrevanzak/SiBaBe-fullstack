@@ -94,7 +94,9 @@ export default function HistoryDetailPage() {
                     </>
                   }
                 >
-                  <UnderlineLink>{history?.payment_method}</UnderlineLink>
+                  <UnderlineLink>
+                    {history?.payment_method.replace('_', ' ')}
+                  </UnderlineLink>
                 </Tooltip>
               </p>
               <h3>

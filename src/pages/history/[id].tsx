@@ -83,22 +83,24 @@ export default function HistoryDetailPage() {
               </ArrowLink>
             )}
             <div className='text-center'>
-              <p>
-                Pembayaran Melalui{' '}
-                <Tooltip
-                  label={
-                    <>
-                      <p>Silahkan Transfer Pada ITS BANK</p>
-                      <h3>012 - 3456 - 789</h3>
-                      <p>Bima Ganteng</p>
-                    </>
-                  }
-                >
-                  <UnderlineLink>
-                    {history?.payment_method.replace('_', ' ')}
-                  </UnderlineLink>
-                </Tooltip>
-              </p>
+              {history?.status === 'pending' && (
+                <p>
+                  Pembayaran Melalui{' '}
+                  <Tooltip
+                    label={
+                      <>
+                        <p>Silahkan Transfer Pada ITS BANK</p>
+                        <h3>012 - 3456 - 789</h3>
+                        <p>Bima Ganteng</p>
+                      </>
+                    }
+                  >
+                    <UnderlineLink>
+                      {history?.payment_method.replace('_', ' ')}
+                    </UnderlineLink>
+                  </Tooltip>
+                </p>
+              )}
               <h3>
                 {history?.status === 'pending'
                   ? 'Menunggu Pembayaran'

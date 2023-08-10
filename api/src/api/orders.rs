@@ -10,13 +10,13 @@ pub(crate) fn private_route() -> RouterBuilder<PrivateCtx> {
   PrivateRouter::new()
     .mutation("checkout", |t| {
       #[derive(Serialize, Deserialize, Type)]
-      struct Checkout {
+      struct CheckoutArgs {
         courier: String,
         address: String,
         payment_method: PaymentMethod,
       }
 
-      t(|ctx: PrivateCtx, input: Checkout| async move {
+      t(|ctx: PrivateCtx, input: CheckoutArgs| async move {
         ctx.role.admin_unauthorized()?;
 
         let get_product_cart_query = ctx.db
@@ -80,6 +80,37 @@ pub(crate) fn private_route() -> RouterBuilder<PrivateCtx> {
           })?;
 
         Ok(create_order_query)
+      })
+    })
+    .mutation("confirm", |t| {
+      #[derive(Serialize, Deserialize, Type)]
+      struct ConfirmArgs {
+        id: String,
+        payment_proof: String,
+      }
+
+      t(|ctx: PrivateCtx, input: ConfirmArgs| async move {
+        ctx.role.admin_unauthorized()?;
+
+        let _update_order_query = ctx.db
+          .orders()
+          .update(
+            prisma::orders::id::equals(input.id),
+            vec![
+              prisma::orders::payment_proof::set(Some(input.payment_proof)),
+              prisma::orders::status::set(prisma::OrderStatus::Payment)
+            ]
+          )
+          .exec().await
+          .map_err(|err| {
+            Error::with_cause(
+              ErrorCode::InternalServerError,
+              "Gagal mengupdate order".to_string(),
+              err
+            )
+          })?;
+
+        Ok(())
       })
     })
     .query("get", |t| {

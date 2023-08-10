@@ -33,6 +33,7 @@ module.exports = {
   publicRuntimeConfig: {
     APP_ENV: process.env.APP_ENV,
     BACKEND_URL: process.env.BACKEND_URL,
-    IMGBB_KEY: process.env.IMGBB_KEY,
+    STORAGE_URL: process.env.STORAGE_URL,
+    STORAGE_KEY: process.env.STORAGE_KEY,
   },
 };

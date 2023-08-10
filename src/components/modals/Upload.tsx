@@ -1,16 +1,16 @@
 import { Group, Image, Text } from '@mantine/core';
 import { Dropzone, FileWithPath, IMAGE_MIME_TYPE } from '@mantine/dropzone';
-import axios from 'axios';
-import { useRouter } from 'next/router';
+import { produce } from 'immer';
 import * as React from 'react';
 import { FiImage, FiUpload, FiXCircle } from 'react-icons/fi';
+import { toast } from 'react-toastify';
 
-import { useAppDispatch } from '@/lib/hooks/redux';
+import { rspc } from '@/lib/rspc';
+import { storageClient } from '@/lib/supabase';
 
 import Button from '@/components/buttons/Button';
 
-import { API_KEY } from '@/pages/api/products';
-import { confirmPayment } from '@/redux/actions/Checkout';
+import type { OrderWithCart } from '@/utils/api';
 
 type UploadModalProps = {
   setOpened: (value: boolean) => void;
@@ -18,10 +18,11 @@ type UploadModalProps = {
 };
 
 export default function UploadModal({ setOpened, invoice }: UploadModalProps) {
-  const dispatch = useAppDispatch();
+  const { mutate } = rspc.useMutation(['orders.confirm']);
+  const queryClient = rspc.useContext().queryClient;
+
   const [files, setFiles] = React.useState<FileWithPath[]>([]);
   const [loading, setLoading] = React.useState(false);
-  const router = useRouter();
 
   const previews = files.map((file, index) => {
     const imageUrl = URL.createObjectURL(file);
@@ -35,31 +36,34 @@ export default function UploadModal({ setOpened, invoice }: UploadModalProps) {
     );
   });
 
-  const onUpload = () => {
+  const onUpload = async () => {
     setLoading(true);
-    const instance = axios.create({
-      baseURL: 'https://api.imgbb.com/1',
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-    instance
-      .post('/upload', {
-        key: API_KEY,
-        image: files[0],
-      })
-      .then((res) => {
-        setLoading(false);
-        if (invoice) {
-          dispatch(confirmPayment(invoice, res.data.data.medium.url));
+    const { data, error } = await storageClient
+      .from('payment')
+      .upload(
+        `payment_${invoice}.${files[0].path?.split('.').pop()}`,
+        files[0]
+      );
+
+    if (error) return toast.error(error.message);
+    if (!data?.path)
+      return toast.error('Terjadi kesalahan saat mengupload bukti');
+    mutate(
+      { id: invoice, payment_proof: data.path },
+      {
+        onSuccess: () => {
+          toast.success('Bukti pembayaran berhasil diupload');
           setOpened(false);
-          router.push('/history');
-        }
-      });
-    // .catch((err) => {
-    //   setLoading(false);
-    //   console.log(err);
-    // });
+          queryClient.setQueryData<OrderWithCart>(
+            ['orders.show', invoice],
+            produce((oldData) => {
+              if (!oldData) return;
+              oldData.payment_proof = data.path;
+            })
+          );
+        },
+      }
+    );
   };
 
   return (
@@ -67,7 +71,7 @@ export default function UploadModal({ setOpened, invoice }: UploadModalProps) {
       <div className='flex flex-col space-y-6 p-14'>
         <Dropzone
           onDrop={setFiles}
-          // onReject={(files) => console.log('rejected files', files)}
+          onReject={() => toast.error('File tidak sesuai')}
           maxSize={25 * 1024 * 1024}
           accept={IMAGE_MIME_TYPE}
           multiple={false}

@@ -1,13 +1,12 @@
 import { Group, Image, Text } from '@mantine/core';
 import { Dropzone, FileWithPath, IMAGE_MIME_TYPE } from '@mantine/dropzone';
-import axios from 'axios';
-import getConfig from 'next/config';
 import * as React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { FiImage, FiUpload, FiXCircle } from 'react-icons/fi';
 import { toast } from 'react-toastify';
 
 import { rspc } from '@/lib/rspc';
+import { storageClient } from '@/lib/supabase';
 
 import Button from '@/components/buttons/Button';
 import Input from '@/components/forms/Input';
@@ -17,8 +16,6 @@ import Seo from '@/components/Seo';
 import Separator from '@/components/Separator';
 
 import { AddProductArgs } from '@/utils/api';
-
-const { publicRuntimeConfig: config } = getConfig();
 
 export default function AddProductPage() {
   const { mutate } = rspc.useMutation(['products.create'], {
@@ -32,7 +29,7 @@ export default function AddProductPage() {
   const methods = useForm<AddProductArgs>({
     mode: 'onTouched',
   });
-  const { handleSubmit, reset } = methods;
+  const { handleSubmit, reset, getValues } = methods;
   //#endregion  //*======== Form ===========
 
   //#region  //*=========== Form Submit ===========
@@ -42,8 +39,12 @@ export default function AddProductPage() {
       return;
     }
 
-    const image = await onUpload();
-    if (!image) return;
+    await onUpload();
+    const { data: image } = storageClient
+      .from('product')
+      .getPublicUrl(
+        `product_${getValues('name')}.${files[0].path?.split('.').pop()}`
+      );
 
     mutate(
       {
@@ -51,10 +52,11 @@ export default function AddProductPage() {
         price: Number(data.price),
         stock: Number(data.stock),
         description: data.description,
-        image,
+        image: image.publicUrl,
       },
       {
         onSuccess: () => {
+          setLoading(false);
           reset();
           setFiles([]);
         },
@@ -77,25 +79,18 @@ export default function AddProductPage() {
 
   const onUpload = async () => {
     setLoading(true);
-    const instance = axios.create({
-      baseURL: 'https://api.imgbb.com/1',
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-    return instance
-      .post('/upload', {
-        key: config.IMGBB_KEY,
-        image: files[0],
-      })
-      .then((res) => {
-        setLoading(false);
-        return res.data.data.url as string;
-      })
-      .catch(() => {
-        setLoading(false);
-        toast.error('Gagal mengupload gambar');
-      });
+    const { data, error } = await storageClient
+      .from('product')
+      .upload(
+        `product_${getValues('name')}.${files[0].path?.split('.').pop()}`,
+        files[0]
+      );
+
+    if (error) return toast.error(error.message);
+    if (!data?.path)
+      return toast.error('Terjadi kesalahan saat mengupload gambar');
+
+    return data.path;
   };
 
   return (
@@ -108,7 +103,7 @@ export default function AddProductPage() {
             <div>
               <Dropzone
                 onDrop={setFiles}
-                // onReject={(files) => console.log('rejected files', files)}
+                onReject={() => toast.error('File tidak sesuai')}
                 maxSize={25 * 1024 * 1024}
                 accept={IMAGE_MIME_TYPE}
                 multiple={false}

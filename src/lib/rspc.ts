@@ -45,13 +45,25 @@ const queryClient = new QueryClient({
   },
   queryCache: new QueryCache({
     onError: (err) => {
-      if (err instanceof RSPCError) return toast.error(err.message);
+      if (err instanceof RSPCError) {
+        if (err.code === 401) {
+          useJwtStore.getState().setExpired(true);
+          return;
+        }
+        return toast.error(err.message);
+      }
       toast.error('Something went wrong, please try again later.');
     },
   }),
   mutationCache: new MutationCache({
     onError: (err) => {
-      if (err instanceof RSPCError) return toast.error(err.message);
+      if (err instanceof RSPCError) {
+        if (err.code === 401) {
+          useJwtStore.getState().setExpired(true);
+          return;
+        }
+        return toast.error(err.message);
+      }
       toast.error('Something went wrong, please try again later.');
     },
     onSuccess: (_data, _variables, _context, mutation) => {

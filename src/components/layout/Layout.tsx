@@ -23,15 +23,17 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     toast.dismiss('loading');
   }
 
-  const { getToken } = useAuth();
+  const { getToken, isSignedIn } = useAuth();
   const setToken = useJwtStore((s) => s.setJwt);
+  const isExpired = useJwtStore((s) => s.expired);
 
   React.useEffect(() => {
+    if (isSignedIn && !isExpired) return;
     const token = async () => {
       return await getToken();
     };
     token().then((res) => setToken(res));
-  }, [getToken]);
+  }, [isSignedIn, isExpired]);
 
   return (
     <>

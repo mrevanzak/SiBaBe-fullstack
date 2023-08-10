@@ -87,6 +87,7 @@ export default function HistoryDetailPage() {
                 <p>
                   Pembayaran Melalui{' '}
                   <Tooltip
+                    color='#D6AD60'
                     label={
                       <>
                         <p>Silahkan Transfer Pada ITS BANK</p>

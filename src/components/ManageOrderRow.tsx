@@ -1,5 +1,6 @@
 import { Tooltip } from '@mantine/core';
 import { useHover } from '@mantine/hooks';
+import { produce } from 'immer';
 import * as React from 'react';
 import { FiCheck, FiMap, FiX } from 'react-icons/fi';
 
@@ -19,8 +20,43 @@ type OrdersRowProps = {
 
 export default function ManageOrderRow({ orders }: OrdersRowProps) {
   const { mutate } = rspc.useMutation(['orders.confirm']);
+  const queryClient = rspc.useContext().queryClient;
 
   const { hovered, ref } = useHover();
+
+  const onConfirm = () => {
+    mutate(
+      { id: orders.id, confirm: true },
+      {
+        onSuccess: () => {
+          queryClient.setQueryData<OrderWithCart>(
+            ['orders.show', orders.id],
+            produce((oldData) => {
+              if (!oldData) return;
+              oldData.status = 'validated';
+            })
+          );
+        },
+      }
+    );
+  };
+
+  const onReject = () => {
+    mutate(
+      { id: orders.id, confirm: false },
+      {
+        onSuccess: () => {
+          queryClient.setQueryData<OrderWithCart>(
+            ['orders.show', orders.id],
+            produce((oldData) => {
+              if (!oldData) return;
+              oldData.status = 'rejected';
+            })
+          );
+        },
+      }
+    );
+  };
 
   const tooltipLabel = () => (
     <div>
@@ -60,9 +96,7 @@ export default function ManageOrderRow({ orders }: OrdersRowProps) {
               <>
                 <FiCheck
                   className='m-2 h-10 cursor-pointer pr-5 text-5xl'
-                  onClick={() => {
-                    mutate({ id: orders.id, confirm: true });
-                  }}
+                  onClick={onConfirm}
                 ></FiCheck>
                 <div
                   style={{
@@ -73,9 +107,7 @@ export default function ManageOrderRow({ orders }: OrdersRowProps) {
                 />
                 <FiX
                   className='m-2 h-10 cursor-pointer pl-5 text-5xl'
-                  onClick={() => {
-                    mutate({ id: orders.id, confirm: false });
-                  }}
+                  onClick={onReject}
                 ></FiX>
               </>
             ) : orders.status === 'validated' ? (

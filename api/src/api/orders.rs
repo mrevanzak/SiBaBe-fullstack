@@ -198,7 +198,10 @@ pub(crate) fn admin_route() -> RouterBuilder<AdminCtx> {
               .orders()
               .update(
                 prisma::orders::id::equals(input.id),
-                vec![prisma::orders::status::set(prisma::OrderStatus::Validated)]
+                vec![
+                  prisma::orders::status::set(prisma::OrderStatus::Validated),
+                  prisma::orders::validated_by::set(Some(ctx.user_id))
+                ]
               )
               .exec().await
               .map_err(|err| {

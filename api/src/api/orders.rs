@@ -130,6 +130,7 @@ pub(crate) fn private_route() -> RouterBuilder<PrivateCtx> {
         let get_orders_query = ctx.db
           .orders()
           .find_many(vec![prisma::orders::customer_id::equals(ctx.user_id.to_string())])
+          .order_by(prisma::orders::created_at::order(prisma_client_rust::Direction::Desc))
           .exec().await
           .map_err(|err| {
             Error::with_cause(
@@ -171,6 +172,7 @@ pub(crate) fn admin_route() -> RouterBuilder<AdminCtx> {
         let get_orders_query = ctx.db
           .orders()
           .find_many(vec![])
+          .order_by(prisma::orders::created_at::order(prisma_client_rust::Direction::Desc))
           .include(OrderWithCart::include())
           .exec().await
           .map_err(|err| {

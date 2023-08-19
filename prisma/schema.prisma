@@ -172,7 +172,7 @@ model products {
 }
 
 model reports {
-  date    DateTime @id @db.Timestamp(0)
+  date    DateTime @id @default(dbgenerated("(CURRENT_DATE)")) @db.Date
   income  Int      @default(0)
   expense Int      @default(0)
 }

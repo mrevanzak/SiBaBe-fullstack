@@ -1,5 +1,8 @@
 import { Modal } from '@mantine/core';
+import { LineChart } from '@tremor/react';
 import * as React from 'react';
+
+import { rspc } from '@/lib/rspc';
 
 import Button from '@/components/buttons/Button';
 import Layout from '@/components/layout/Layout';
@@ -7,52 +10,37 @@ import AddProduction from '@/components/modals/AddProduction';
 import Seo from '@/components/Seo';
 import Separator from '@/components/Separator';
 
+import thousandSeparator from '@/utils/thousandSeparator';
+
 export default function ReportPage() {
+  const { data } = rspc.useQuery(['reports.get']);
+  const computedData = React.useMemo(() => {
+    if (!data) return [];
+    const month = [
+      'Januari',
+      'Februari',
+      'Maret',
+      'April',
+      'Mei',
+      'Juni',
+      'Juli',
+      'Agustus',
+      'September',
+      'Oktober',
+      'November',
+      'Desember',
+    ];
+
+    return month.map((month, index) => {
+      return {
+        month,
+        income: data[index]?.income ?? 0,
+        expense: data[index]?.expense ?? 0,
+      };
+    });
+  }, [data]);
+
   const [openAddProduction, setOpenAddProduction] = React.useState(false);
-
-  // const data = React.useMemo(
-  //   () => ({
-  //     labels: [
-  //       'Jan',
-  //       'Feb',
-  //       'Mar',
-  //       'Apr',
-  //       'Mei',
-  //       'Jun',
-  //       'Jul',
-  //       'Agust',
-  //       'Sept',
-  //       'Okto',
-  //       'Nov',
-  //       'Des',
-  //     ],
-  //     datasets: [
-  //       {
-  //         data:
-  //           report?.map((item) => {
-  //             if (!item.report) {
-  //               return 0;
-  //             }
-  //             return item.report
-  //               ?.map((item) => item.income - item.expense)
-  //               .reduce((a, b) => a + b, 0);
-  //           }) || [],
-  //         backgroundColor: '#D6AD60',
-  //         borderColor: '#D6AD60',
-  //       },
-  //     ],
-  //   }),
-  //   [report]
-  // );
-
-  // const options: ChartOptions<'line'> = {
-  //   plugins: {
-  //     tooltip: {
-  //       formatLabel: (label) => `Bulan ${label}`,
-  //       formatValue: (value) => `Rp ${thousandSeparator(value)}`,
-  //     },
-  //   },
-  // };
 
   return (
     <Layout>
@@ -78,7 +66,16 @@ export default function ReportPage() {
             <Separator width='100%' height={2} className='mx-auto' />
           </div>
           <div className='relative'>
-            {/* <LineChart id='report' hideBrush data={data} options={options} /> */}
+            <LineChart
+              className='mt-6'
+              data={computedData}
+              index='month'
+              categories={['income', 'expense']}
+              colors={['emerald', 'red']}
+              valueFormatter={(value) => `Rp ${thousandSeparator(value)}`}
+              showYAxis={false}
+              curveType='monotone'
+            />
           </div>
 
           <div className='mt-9 flex items-center justify-end gap-7'>

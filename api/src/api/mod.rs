@@ -11,6 +11,7 @@ mod carts;
 mod products;
 pub mod users;
 mod orders;
+mod reports;
 
 #[derive(Clone, Debug)]
 pub struct Ctx {
@@ -91,5 +92,6 @@ pub(crate) fn new() -> PublicRouter {
     )
     .merge("products.", products::admin_route())
     .merge("orders.", orders::admin_route())
+    .merge("reports.", reports::admin_route())
     .build()
 }

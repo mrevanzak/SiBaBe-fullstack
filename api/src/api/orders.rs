@@ -9,6 +9,7 @@ use super::{ PrivateCtx, PrivateRouter, AdminCtx, AdminRouter };
 prisma::orders::include!(OrderWithCart {
   cart: select{
     product_carts: select{
+      is_reviewed
       product
       quantity
       total_price

@@ -17,7 +17,7 @@ pub(crate) fn public_route() -> RouterBuilder<Ctx> {
     #[derive(Debug, Serialize, Deserialize, Type)]
     struct Reviews {
       #[serde(flatten)]
-      data: prisma::feedback::Data,
+      data: prisma::feedbacks::Data,
       username: String,
     }
 
@@ -31,10 +31,10 @@ pub(crate) fn public_route() -> RouterBuilder<Ctx> {
       for product in products_query.iter() {
         let product_id = &product.id;
         let reviews_query = ctx.db
-          .feedback()
+          .feedbacks()
           .find_many(
             vec![
-              prisma::feedback::product::is(
+              prisma::feedbacks::product::is(
                 vec![prisma::products::id::equals(product_id.to_string())]
               )
             ]

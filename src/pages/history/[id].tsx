@@ -109,6 +109,8 @@ export default function HistoryDetailPage() {
                   ? 'Menunggu validasi pembayaran'
                   : history?.status === 'validated'
                   ? 'Pesanan anda sedang dikirim'
+                  : history?.status === 'rejected'
+                  ? 'Pembayaran anda ditolak'
                   : 'Pesanan anda telah selesai'}
               </h3>
             </div>
@@ -122,7 +124,9 @@ export default function HistoryDetailPage() {
               <div key={index} className='px-5'>
                 <OrderRow
                   product={product as ProductCart}
-                  review={history?.status === 'complete'}
+                  review={
+                    history?.status === 'validated' && !product.is_reviewed
+                  }
                   setSelectedProduct={setSelectedProduct}
                   setOpened={setreviewModalOpened}
                 />

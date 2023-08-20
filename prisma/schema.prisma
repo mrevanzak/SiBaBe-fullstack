@@ -67,7 +67,7 @@ model customers {
   orders     orders[]
 }
 
-model feedback {
+model feedbacks {
   id         String    @id @default(uuid())
   created_at DateTime? @default(now()) @db.Timestamp(0)
   updated_at DateTime? @updatedAt @db.Timestamp(0)
@@ -89,21 +89,12 @@ model feedback_orders {
   order    orders @relation(fields: [order_id], references: [id])
   order_id String
 
-  feedback    feedback @relation(fields: [feedback_id], references: [id])
+  feedback    feedbacks @relation(fields: [feedback_id], references: [id])
   feedback_id String
 
   @@id([order_id, feedback_id])
   @@index([order_id])
   @@index([feedback_id])
-}
-
-model feedback_pemesanan {
-  id_feedback  Int
-  id_pemesanan Int
-  username     String   @db.VarChar(255)
-  tanggal      DateTime @db.Timestamp(0)
-
-  @@id([id_feedback, id_pemesanan])
 }
 
 model orders {
@@ -138,6 +129,7 @@ model product_carts {
   total_price Int
   product     products @relation(fields: [product_id], references: [id])
   cart        carts    @relation(fields: [cart_id], references: [id])
+  is_reviewed Boolean  @default(false)
 
   @@id([product_id, cart_id])
   @@index([product_id])
@@ -167,7 +159,7 @@ model products {
   created_at    DateTime?       @default(now()) @db.Timestamp(0)
   updated_at    DateTime?       @updatedAt @db.Timestamp(0)
   deleted_at    DateTime?       @db.Timestamp(0)
-  feedback      feedback[]
+  feedback      feedbacks[]
   product_carts product_carts[]
 }
 

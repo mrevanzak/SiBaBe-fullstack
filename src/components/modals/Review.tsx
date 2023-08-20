@@ -2,8 +2,9 @@ import { Rating, Textarea } from '@mantine/core';
 import * as React from 'react';
 import { AiFillStar, AiOutlineStar } from 'react-icons/ai';
 import { RiCloseFill } from 'react-icons/ri';
+import { toast } from 'react-toastify';
 
-import { useAppSelector } from '@/lib/hooks/redux';
+import { rspc } from '@/lib/rspc';
 
 import Button from '@/components/buttons/Button';
 import Separator from '@/components/Separator';
@@ -14,16 +15,37 @@ type ReviewModalProps = {
   setOpened: (opened: boolean) => void;
 };
 
-export default function ReviewModal({ setOpened }: ReviewModalProps) {
-  const { user } = useAppSelector(({ user }) => user);
+export default function ReviewModal({
+  setOpened,
+  id,
+  historyId,
+}: ReviewModalProps) {
+  const queryClient = rspc.useContext().queryClient;
+  const { data: user } = rspc.useQuery(['users.get']);
+  const { mutate } = rspc.useMutation(['reviews.create'], {
+    meta: { message: 'Ulasan berhasil dikirim' },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['orders.show', historyId]);
+      setOpened(false);
+    },
+  });
+
   const [rating, setRating] = React.useState(0);
   const reviewRef = React.useRef<HTMLTextAreaElement>(null);
 
   const onSubmit = () => {
-    if (reviewRef.current) {
-      // dispatch(addReview(reviewRef.current.value, rating, historyId, id));
+    if (rating === 0) {
+      return toast.warn('Beri rating terlebih dahulu');
     }
-    setOpened(false);
+    if (reviewRef.current && user) {
+      mutate({
+        rating,
+        feedback: reviewRef.current.value,
+        order_id: historyId,
+        product_id: id,
+        name: user.name,
+      });
+    }
   };
 
   return (
@@ -49,7 +71,7 @@ export default function ReviewModal({ setOpened }: ReviewModalProps) {
           </Button>
         </div>
         <Textarea
-          value={user?.username}
+          value={user?.name}
           disabled
           placeholder='Isi nama kamu'
           label='Nama'

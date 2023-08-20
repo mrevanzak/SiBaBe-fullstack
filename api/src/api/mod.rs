@@ -12,6 +12,7 @@ mod products;
 pub mod users;
 mod orders;
 mod reports;
+mod reviews;
 
 #[derive(Clone, Debug)]
 pub struct Ctx {
@@ -69,6 +70,7 @@ pub(crate) fn new() -> PublicRouter {
     .merge("users.", users::private_route())
     .merge("carts.", carts::private_route())
     .merge("orders.", orders::private_route())
+    .merge("reviews.", reviews::private_route())
     .middleware(|mw|
       mw.middleware(|mw| async move {
         let old_ctx: PrivateCtx = mw.ctx.clone();

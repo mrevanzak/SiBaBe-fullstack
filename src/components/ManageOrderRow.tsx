@@ -1,6 +1,5 @@
 import { Tooltip } from '@mantine/core';
 import { useHover } from '@mantine/hooks';
-import { produce } from 'immer';
 import * as React from 'react';
 import { FiCheck, FiMap, FiX } from 'react-icons/fi';
 
@@ -19,43 +18,22 @@ type OrdersRowProps = {
 };
 
 export default function ManageOrderRow({ orders }: OrdersRowProps) {
-  const { mutate } = rspc.useMutation(['orders.confirm']);
+  const { mutate } = rspc.useMutation(['orders.confirm'], {
+    meta: { message: 'Berhasil mengubah status pesanan' },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['orders.admin.get']);
+    },
+  });
   const queryClient = rspc.useContext().queryClient;
 
   const { hovered, ref } = useHover();
 
   const onConfirm = () => {
-    mutate(
-      { id: orders.id, confirm: true },
-      {
-        onSuccess: () => {
-          queryClient.setQueryData<OrderWithCart>(
-            ['orders.show', orders.id],
-            produce((oldData) => {
-              if (!oldData) return;
-              oldData.status = 'validated';
-            })
-          );
-        },
-      }
-    );
+    mutate({ id: orders.id, confirm: true });
   };
 
   const onReject = () => {
-    mutate(
-      { id: orders.id, confirm: false },
-      {
-        onSuccess: () => {
-          queryClient.setQueryData<OrderWithCart>(
-            ['orders.show', orders.id],
-            produce((oldData) => {
-              if (!oldData) return;
-              oldData.status = 'rejected';
-            })
-          );
-        },
-      }
-    );
+    mutate({ id: orders.id, confirm: false });
   };
 
   const tooltipLabel = () => (

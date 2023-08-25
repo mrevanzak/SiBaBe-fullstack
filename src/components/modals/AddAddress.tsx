@@ -8,7 +8,7 @@ import Button from '@/components/buttons/Button';
 import Input from '@/components/forms/Input';
 import TextArea from '@/components/forms/TextArea';
 
-import { AddAddressArgs, Customers } from '@/utils/api';
+import { AddAddressArgs } from '@/utils/api';
 
 type AddAddressModalProps = {
   setOpened: (opened: boolean) => void;
@@ -17,13 +17,8 @@ type AddAddressModalProps = {
 export default function AddAddressModal({ setOpened }: AddAddressModalProps) {
   const queryClient = rspc.useContext().queryClient;
   const { mutate } = rspc.useMutation(['users.add.address'], {
-    onSuccess: (data) => {
-      queryClient.setQueryData<Customers>(['users.get'], (oldData) => {
-        if (!oldData) return;
-        return {
-          ...data,
-        };
-      });
+    onSuccess: () => {
+      queryClient.invalidateQueries(['users.get']);
     },
   });
   //#region  //*=========== Form ===========

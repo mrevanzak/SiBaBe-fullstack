@@ -1,6 +1,5 @@
 import { Group, Image, Text } from '@mantine/core';
 import { Dropzone, FileWithPath, IMAGE_MIME_TYPE } from '@mantine/dropzone';
-import { produce } from 'immer';
 import * as React from 'react';
 import { FiImage, FiUpload, FiXCircle } from 'react-icons/fi';
 import { toast } from 'react-toastify';
@@ -9,8 +8,6 @@ import { rspc } from '@/lib/rspc';
 import { storageClient } from '@/lib/supabase';
 
 import Button from '@/components/buttons/Button';
-
-import type { OrderWithCart } from '@/utils/api';
 
 type UploadModalProps = {
   setOpened: (value: boolean) => void;
@@ -54,13 +51,7 @@ export default function UploadModal({ setOpened, invoice }: UploadModalProps) {
         onSuccess: () => {
           toast.success('Bukti pembayaran berhasil diupload');
           setOpened(false);
-          queryClient.setQueryData<OrderWithCart>(
-            ['orders.show', invoice],
-            produce((oldData) => {
-              if (!oldData) return;
-              oldData.payment_proof = data.path;
-            })
-          );
+          queryClient.invalidateQueries(['orders.show', invoice]);
         },
       }
     );

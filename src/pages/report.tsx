@@ -30,8 +30,9 @@ export default function ReportPage() {
       'November',
       'Desember',
     ];
+    const monthIndex = new Date().getMonth();
 
-    return month.map((month, index) => {
+    return month.slice(0, monthIndex).map((month, index) => {
       return {
         month,
         income: data[index]?.income ?? 0,

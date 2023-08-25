@@ -16,13 +16,13 @@ pub(crate) fn admin_route() -> RouterBuilder<AdminCtx> {
           vec![
             prisma::reports::date::gte(
               chrono::DateTime::<chrono::FixedOffset>
-                ::parse_from_rfc3339(&format!("{}-01-01T00:00:00+07:00", current_year))
+                ::parse_from_rfc3339(&format!("{}-01-01T00:00:00+00:00", current_year))
                 .unwrap()
             ),
             and!(
               prisma::reports::date::lte(
                 chrono::DateTime::<chrono::FixedOffset>
-                  ::parse_from_rfc3339(&format!("{}-12-31T23:59:59+07:00", current_year))
+                  ::parse_from_rfc3339(&format!("{}-12-31T23:59:59+00:00", current_year))
                   .unwrap()
               )
             )

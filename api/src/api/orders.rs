@@ -1,4 +1,4 @@
-use prisma_client_rust::and;
+use prisma_client_rust::{ and, chrono::{ Utc, DateTime, FixedOffset, Timelike } };
 use rspc::{ RouterBuilder, Error, ErrorCode, Type };
 use serde::{ Serialize, Deserialize };
 
@@ -197,6 +197,43 @@ pub(crate) fn admin_route() -> RouterBuilder<AdminCtx> {
       t(|ctx: AdminCtx, input: ConfirmArgs| async move {
         match input.confirm {
           true => {
+            let get_order_query = ctx.db
+              .orders()
+              .find_first(vec![prisma::orders::id::equals(input.id.clone())])
+              .exec().await
+              .map_err(|err| {
+                Error::with_cause(
+                  ErrorCode::InternalServerError,
+                  "Gagal mengambil order".to_string(),
+                  err
+                )
+              })?;
+            let total_price = get_order_query.unwrap().total_price;
+            let now = DateTime::<FixedOffset>
+              ::from(Utc::now())
+              .with_hour(0)
+              .unwrap()
+              .with_minute(0)
+              .unwrap()
+              .with_second(0)
+              .unwrap()
+              .with_nanosecond(0)
+              .unwrap();
+
+            let _create_report_query = ctx.db
+              .reports()
+              .upsert(
+                prisma::reports::date::equals(now),
+                prisma::reports::create(
+                  vec![
+                    prisma::reports::date::set(now),
+                    prisma::reports::income::set(total_price.clone())
+                  ]
+                ),
+                vec![prisma::reports::income::increment(total_price)]
+              )
+              .exec().await?;
+
             ctx.db
               .orders()
               .update(

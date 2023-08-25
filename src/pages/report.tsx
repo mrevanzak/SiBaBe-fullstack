@@ -32,7 +32,7 @@ export default function ReportPage() {
     ];
     const monthIndex = new Date().getMonth();
 
-    return month.slice(0, monthIndex).map((month, index) => {
+    return month.slice(0, monthIndex + 1).map((month, index) => {
       return {
         month,
         income: data[index]?.income ?? 0,
@@ -54,7 +54,7 @@ export default function ReportPage() {
         withCloseButton={false}
         padding={0}
         radius={50}
-        size={982}
+        size={500}
       >
         <AddProduction setOpened={setOpenAddProduction} />
       </Modal>

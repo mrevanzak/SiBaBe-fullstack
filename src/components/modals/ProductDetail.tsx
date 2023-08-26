@@ -144,7 +144,7 @@ export default function ProductDetailModal({
             />
             <p className='font-secondary'>Rating dan Ulasan</p>
             <Separator width={136} color='#D6AD60' />
-            {product.reviews &&
+            {product.reviews.length > 0 ? (
               product.reviews.map((review, i) => (
                 <div key={i} className='my-7'>
                   <div className='mb-4 flex justify-between'>
@@ -168,7 +168,12 @@ export default function ProductDetailModal({
                     <Separator width='100%' color='#B3B3B3' className='my-6' />
                   )}
                 </div>
-              ))}
+              ))
+            ) : (
+              <p className='mt-7 font-secondary text-sm'>
+                Belum ada ulasan untuk produk ini
+              </p>
+            )}
           </div>
         </div>
       )}

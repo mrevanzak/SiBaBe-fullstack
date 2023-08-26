@@ -19,51 +19,54 @@ pub(crate) fn private_route() -> RouterBuilder<PrivateCtx> {
     t(|ctx: PrivateCtx, input: AddReviewArgs| async move {
       ctx.role.admin_unauthorized()?;
 
-      let create_review_query = ctx.db
-        .feedbacks()
-        .create(
-          input.feedback,
-          input.rating,
-          prisma::products::id::equals(input.product_id.clone()),
-          vec![]
-        )
-        .exec().await
-        .map_err(|err| {
-          Error::with_cause(ErrorCode::InternalServerError, "Gagal membuat review".to_string(), err)
-        })?;
+      ctx.db
+        ._transaction()
+        .run(|client| async move {
+          let create_review_query = client
+            .feedbacks()
+            .create(
+              input.feedback,
+              input.rating,
+              prisma::products::id::equals(input.product_id.clone()),
+              vec![]
+            )
+            .exec().await?;
 
-      let _create_feedback_order_query = ctx.db
-        .feedback_orders()
-        .create(
-          input.name,
-          prisma::orders::id::equals(input.order_id.clone()),
-          prisma::feedbacks::id::equals(create_review_query.id),
-          vec![]
-        )
-        .exec().await
-        .map_err(|err| {
-          Error::with_cause(ErrorCode::InternalServerError, "Gagal membuat review".to_string(), err)
-        })?;
+          let _create_feedback_order_query = client
+            .feedback_orders()
+            .create(
+              input.name,
+              prisma::orders::id::equals(input.order_id.clone()),
+              prisma::feedbacks::id::equals(create_review_query.id),
+              vec![]
+            )
+            .exec().await?;
 
-      let get_order_query = ctx.db
-        .orders()
-        .find_first(vec![prisma::orders::id::equals(input.order_id)])
-        .select(prisma::orders::select!({ cart_id }))
-        .exec().await
-        .map_err(|err| {
-          Error::with_cause(ErrorCode::InternalServerError, "Gagal membuat review".to_string(), err)
-        })?;
+          let get_order_query = client
+            .orders()
+            .find_first(vec![prisma::orders::id::equals(input.order_id)])
+            .select(prisma::orders::select!({ cart_id }))
+            .exec().await?;
 
-      let _update_product_cart_query = ctx.db
-        .product_carts()
-        .update(
-          prisma::product_carts::product_id_cart_id(
-            input.product_id,
-            get_order_query.unwrap().cart_id
-          ),
-          vec![prisma::product_carts::is_reviewed::set(true)]
-        )
-        .exec().await
+          client
+            .product_carts()
+            .update(
+              prisma::product_carts::product_id_cart_id(
+                input.product_id,
+                get_order_query.unwrap().cart_id
+              ),
+              vec![prisma::product_carts::is_reviewed::set(true)]
+            )
+            .exec().await
+            .map_err(|err| {
+              Error::with_cause(
+                ErrorCode::InternalServerError,
+                "Gagal membuat review".to_string(),
+                err
+              )
+            })
+            .map(|_| ())
+        }).await
         .map_err(|err| {
           Error::with_cause(ErrorCode::InternalServerError, "Gagal membuat review".to_string(), err)
         })?;

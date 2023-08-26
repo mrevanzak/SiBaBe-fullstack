@@ -7,60 +7,25 @@ use crate::prisma;
 use super::{ Ctx, PublicRouter, AdminRouter, AdminCtx };
 
 pub(crate) fn public_route() -> RouterBuilder<Ctx> {
+  prisma::products::include!(Product {
+    feedback: select {
+      feedback
+      rating
+      feedback_orders: select {
+        username
+      }
+    }
+  });
+
   PublicRouter::new().query("get", |t| {
-    #[derive(Debug, Serialize, Deserialize, Type)]
-    struct Product {
-      #[serde(flatten)]
-      data: prisma::products::Data,
-      reviews: Vec<Reviews>,
-    }
-
-    #[derive(Debug, Serialize, Deserialize, Type)]
-    struct Reviews {
-      #[serde(flatten)]
-      data: prisma::feedbacks::Data,
-      username: String,
-    }
-
     t(|ctx, _: ()| async move {
       let products_query = ctx.db
         .products()
         .find_many(vec![prisma::products::deleted_at::equals(None)])
+        .include(Product::include())
         .exec().await?;
-      let mut products: Vec<Product> = Vec::new();
 
-      for product in products_query.iter() {
-        let product_id = &product.id;
-        let reviews_query = ctx.db
-          .feedbacks()
-          .find_many(
-            vec![
-              prisma::feedbacks::product::is(
-                vec![prisma::products::id::equals(product_id.to_string())]
-              )
-            ]
-          )
-          .exec().await?;
-        let mut reviews: Vec<Reviews> = Vec::new();
-
-        for review in reviews_query.iter() {
-          let feedback_orders = ctx.db
-            .feedback_orders()
-            .find_first(vec![])
-            .exec().await?;
-          let username = feedback_orders.unwrap().username;
-
-          reviews.push(Reviews {
-            data: review.clone(),
-            username,
-          });
-        }
-        products.push(Product {
-          data: product.clone(),
-          reviews,
-        });
-      }
-      Ok(products)
+      Ok(products_query)
     })
   })
 }

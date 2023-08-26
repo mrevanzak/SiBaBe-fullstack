@@ -144,14 +144,14 @@ export default function ProductDetailModal({
             />
             <p className='font-secondary'>Rating dan Ulasan</p>
             <Separator width={136} color='#D6AD60' />
-            {product.reviews.length > 0 ? (
-              product.reviews.map((review, i) => (
+            {product.feedback.length > 0 ? (
+              product.feedback.map((review, i) => (
                 <div key={i} className='my-7'>
                   <div className='mb-4 flex justify-between'>
                     <div className='flex items-center gap-3'>
                       <RiUser3Line className='text-2xl' />
                       <p className='ml-2 font-secondary text-sm'>
-                        {review.username}
+                        {review.feedback_orders[0].username}
                       </p>
                     </div>
                     <div className='flex items-center'>
@@ -164,7 +164,7 @@ export default function ProductDetailModal({
                     </div>
                   </div>
                   <p className='font-secondary text-xs'>{review.feedback}</p>
-                  {i !== product.reviews.length - 1 && (
+                  {i !== product.feedback.length - 1 && (
                     <Separator width='100%' color='#B3B3B3' className='my-6' />
                   )}
                 </div>

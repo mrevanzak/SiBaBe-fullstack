@@ -26,10 +26,6 @@ export type Procedures = {
 
 export type Products = { id: string; name: string; description: string; price: number; stock: number; image: string; created_at: string | null; updated_at: string | null; deleted_at: string | null }
 
-export type Product = ({ id: string; name: string; description: string; price: number; stock: number; image: string; created_at: string | null; updated_at: string | null; deleted_at: string | null }) & { reviews: Reviews[] }
-
-export type UpdateProductArgs = { id: string; name: string; description: string; price: number; stock: number }
-
 export type ConfirmArgs = { id: string; confirm: boolean }
 
 export type PaymentMethod = "ITS_BANK" | "COD"
@@ -40,10 +36,6 @@ export type Customers = { id: string; created_at: string | null; updated_at: str
 
 export type UpdateCartArgs = { product_id: string; quantity: number }
 
-export type Reviews = ({ id: string; created_at: string | null; updated_at: string | null; deleted_at: string | null; feedback: string; rating: number; product_id: string }) & { username: string }
-
-export type AddProductArgs = { name: string; description: string; price: number; stock: number; image: string }
-
 export type OrderWithCart = { id: string; created_at: string | null; updated_at: string | null; deleted_at: string | null; total_product: number; total_price: number; status: OrderStatus; address: string; courier: string; payment_method: PaymentMethod; payment_proof: string | null; validated_by: string | null; cart_id: string; customer_id: string; cart: { product_carts: ({ is_reviewed: boolean; product: Products; quantity: number; total_price: number })[] } }
 
 export type ProductCart = { product_id: string; cart_id: string; quantity: number; total_price: number; is_reviewed: boolean; product: Products }
@@ -52,9 +44,15 @@ export type OrderStatus = "pending" | "payment" | "validated" | "rejected" | "co
 
 export type AddAddressArgs = { address: string; phone: string }
 
+export type UpdateProductArgs = { id: string; name: string; description: string; price: number; stock: number }
+
 export type AddReviewArgs = { feedback: string; rating: number; product_id: string; order_id: string; name: string }
 
+export type Product = { id: string; name: string; description: string; price: number; stock: number; image: string; created_at: string | null; updated_at: string | null; deleted_at: string | null; feedback: ({ feedback: string; rating: number; feedback_orders: ({ username: string })[] })[] }
+
 export type ProductCarts = { product_id: string; cart_id: string; quantity: number; total_price: number; is_reviewed: boolean }
+
+export type AddProductArgs = { name: string; description: string; price: number; stock: number; image: string }
 
 export type Cart = { id: string; total_price: number; product_carts: ProductCart[] }
 
@@ -63,7 +61,5 @@ export type Reports = { date: string; income: number; expense: number }
 export type CreateReportArgs = { date: string; total_cost: number }
 
 export type CheckoutArgs = { courier: string; address: string; payment_method: PaymentMethod }
-
-export type Feedbacks = { id: string; created_at: string | null; updated_at: string | null; deleted_at: string | null; feedback: string; rating: number; product_id: string }
 
 export type PaymentConfirmArgs = { id: string; payment_proof: string }

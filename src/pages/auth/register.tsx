@@ -32,7 +32,7 @@ export default function LoginPage() {
                         footerActionLink: 'text-blue-400 hover:text-blue-300',
                       },
                     }}
-                    signInUrl='/auth/login'
+                    routing='hash'
                   />
                 </div>
                 <p className='text-xs text-gray-500'>

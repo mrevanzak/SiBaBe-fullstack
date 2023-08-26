@@ -60,12 +60,8 @@ export default function ReportPage() {
       </Modal>
       <main>
         <div className='layout min-h-main mb-12 flex flex-col space-y-5'>
-          <h2 className='text-center font-secondary'>Classification By</h2>
-          <Separator width='30%' height={2} className='mx-auto' />
-          <div className='mx-auto w-24'>
-            <p className='mb-3 text-center font-secondary'>Month</p>
-            <Separator width='100%' height={2} className='mx-auto' />
-          </div>
+          <h2 className='text-center font-secondary'>Laporan Tahunan</h2>
+          <Separator width='25%' height={2} className='mx-auto' />
           <div className='relative'>
             <LineChart
               className='mt-6'

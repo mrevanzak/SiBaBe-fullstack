@@ -58,11 +58,8 @@ const queryClient = new QueryClient({
   mutationCache: new MutationCache({
     onError: (err) => {
       if (err instanceof RSPCError) {
-        if (err.code === 401) {
-          useJwtStore.getState().setExpired(true);
-          return;
-        }
-        return toast.error(err.message);
+        if (err.code === 401) useJwtStore.getState().setExpired(true);
+        return toast.error('Something went wrong, please try again');
       }
       toast.error('Something went wrong, please try again later.');
     },

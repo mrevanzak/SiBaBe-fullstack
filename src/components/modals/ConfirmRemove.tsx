@@ -16,10 +16,12 @@ export default function ConfirmRemoveModal({
   product,
   setOpened,
 }: ConfirmRemoveProps) {
+  const queryClient = rspc.useContext().queryClient;
   const { mutate } = rspc.useMutation(['products.delete'], {
     meta: { message: 'Berhasil menghapus produk' },
     onSuccess: () => {
       setOpened(false);
+      queryClient.invalidateQueries(['products.get']);
     },
   });
 

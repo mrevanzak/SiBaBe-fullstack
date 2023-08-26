@@ -48,7 +48,6 @@ const queryClient = new QueryClient({
       if (err instanceof RSPCError) {
         if (err.code === 401) {
           useJwtStore.getState().setExpired(true);
-          return;
         }
         return toast.error(err.message);
       }

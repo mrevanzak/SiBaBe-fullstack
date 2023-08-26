@@ -1,3 +1,4 @@
+use prisma_client_rust::chrono::{ DateTime, FixedOffset, Utc };
 use rspc::{ RouterBuilder, Type, Error, ErrorCode };
 use serde::{ Serialize, Deserialize };
 
@@ -24,7 +25,7 @@ pub(crate) fn public_route() -> RouterBuilder<Ctx> {
     t(|ctx, _: ()| async move {
       let products_query = ctx.db
         .products()
-        .find_many(vec![])
+        .find_many(vec![prisma::products::deleted_at::equals(None)])
         .exec().await?;
       let mut products: Vec<Product> = Vec::new();
 
@@ -117,7 +118,10 @@ pub(crate) fn admin_route() -> RouterBuilder<AdminCtx> {
       t(|ctx, id: String| async move {
         let delete_product = ctx.db
           .products()
-          .delete(prisma::products::id::equals(id))
+          .update(
+            prisma::products::id::equals(id),
+            vec![prisma::products::deleted_at::set(Some(DateTime::<FixedOffset>::from(Utc::now())))]
+          )
           .exec().await?;
         Ok(delete_product)
       })

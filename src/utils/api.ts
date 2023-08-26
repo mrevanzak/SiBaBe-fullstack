@@ -7,7 +7,7 @@ export type Procedures = {
         { key: "orders.get", input: never, result: Orders[] } | 
         { key: "orders.show", input: string, result: OrderWithCart | null } | 
         { key: "products.get", input: never, result: Product[] } | 
-        { key: "reports.get", input: never, result: Reports[] } | 
+        { key: "reports.get", input: never, result: Report[] } | 
         { key: "users.get", input: never, result: Customers | null },
     mutations: 
         { key: "carts.remove", input: string, result: null } | 
@@ -46,6 +46,8 @@ export type AddAddressArgs = { address: string; phone: string }
 
 export type UpdateProductArgs = { id: string; name: string; description: string; price: number; stock: number }
 
+export type CreateReportArgs = { date: string; total_cost: number }
+
 export type AddReviewArgs = { feedback: string; rating: number; product_id: string; order_id: string; name: string }
 
 export type Product = { id: string; name: string; description: string; price: number; stock: number; image: string; created_at: string | null; updated_at: string | null; deleted_at: string | null; feedback: ({ feedback: string; rating: number; feedback_orders: ({ username: string })[] })[] }
@@ -56,9 +58,9 @@ export type AddProductArgs = { name: string; description: string; price: number;
 
 export type Cart = { id: string; total_price: number; product_carts: ProductCart[] }
 
-export type Reports = { date: string; income: number; expense: number }
+export type Report = { expense: number; income: number }
 
-export type CreateReportArgs = { date: string; total_cost: number }
+export type Reports = { date: string; income: number; expense: number }
 
 export type CheckoutArgs = { courier: string; address: string; payment_method: PaymentMethod }
 

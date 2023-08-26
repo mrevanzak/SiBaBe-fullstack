@@ -1,4 +1,8 @@
-use prisma_client_rust::{ chrono::{ self, Datelike, DateTime, FixedOffset, Utc, Timelike }, and };
+use prisma_client_rust::{
+  chrono::{ self, Datelike, DateTime, FixedOffset, Utc, Timelike },
+  and,
+  Direction,
+};
 use rspc::{ RouterBuilder, Error, ErrorCode, Type };
 use serde::{ Serialize, Deserialize };
 
@@ -9,6 +13,11 @@ use super::{ AdminCtx, AdminRouter };
 pub(crate) fn admin_route() -> RouterBuilder<AdminCtx> {
   AdminRouter::new()
     .query("get", |t| {
+      #[derive(Clone, Serialize, Deserialize, Type)]
+      struct Report {
+        expense: i32,
+        income: i32,
+      }
       t(|ctx: AdminCtx, _: ()| async move {
         let current_year = chrono::Utc::now().year();
 
@@ -30,6 +39,7 @@ pub(crate) fn admin_route() -> RouterBuilder<AdminCtx> {
               )
             ]
           )
+          .order_by(prisma::reports::date::order(Direction::Asc))
           .exec().await
           .map_err(|err| {
             Error::with_cause(
@@ -39,7 +49,15 @@ pub(crate) fn admin_route() -> RouterBuilder<AdminCtx> {
             )
           })?;
 
-        Ok(get_report_query)
+        let reports_by_month = get_report_query
+          .into_iter()
+          .fold(vec![Report { expense: 0, income: 0 }; 12], |mut acc, report| {
+            let month = (report.date.month() as usize) - 1;
+            acc[month].expense += report.expense;
+            acc[month].income += report.income;
+            acc
+          });
+        Ok(reports_by_month)
       })
     })
     .mutation("create", |t| {

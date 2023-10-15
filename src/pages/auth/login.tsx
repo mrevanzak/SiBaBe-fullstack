@@ -1,5 +1,6 @@
-import { SignIn } from '@clerk/nextjs';
+import { SignIn, useUser } from '@clerk/nextjs';
 import * as React from 'react';
+import { ImSpinner2 } from 'react-icons/im';
 
 import Layout from '@/components/layout/Layout';
 import Seo from '@/components/Seo';
@@ -7,6 +8,8 @@ import Seo from '@/components/Seo';
 import Logo from '~/svg/pancake.svg';
 
 export default function LoginPage() {
+  const { isLoaded } = useUser();
+
   return (
     <Layout>
       {/* <Seo templateTitle='Home' /> */}
@@ -19,29 +22,36 @@ export default function LoginPage() {
           </div>
           <div className='flex w-1/2 flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24'>
             <div className='mx-auto w-full max-w-sm lg:w-96'>
-              <div className='mt-8 space-y-6'>
-                <div className='mt-6'>
-                  <SignIn
-                    appearance={{
-                      variables: {
-                        colorPrimary: '#D6AD60',
-                      },
-                      elements: {
-                        formButtonPrimary:
-                          'bg-primary-500 text-white border border-primary-600 hover:bg-primary-600 hover:text-white active:bg-primary-700 disabled:bg-primary-700',
-                        footerActionLink: 'text-blue-400 hover:text-blue-300',
-                      },
-                    }}
-                    routing='hash'
-                  />
+              {!isLoaded ? (
+                <div className='space-y-3'>
+                  <ImSpinner2 className='mx-auto animate-spin text-4xl' />
+                  <p className='text-center'>Loading...</p>
                 </div>
-                <p className='text-xs text-gray-500'>
-                  Dilindungi dan bagian dari{' '}
-                  <span className='text-blue-400'>Privacy Policy</span> dan{' '}
-                  <span className='text-blue-400'>Terms of Service</span>{' '}
-                  SiBaBe.
-                </p>
-              </div>
+              ) : (
+                <div className='mt-8 space-y-6'>
+                  <div className='mt-6'>
+                    <SignIn
+                      appearance={{
+                        variables: {
+                          colorPrimary: '#D6AD60',
+                        },
+                        elements: {
+                          formButtonPrimary:
+                            'bg-primary-500 text-white border border-primary-600 hover:bg-primary-600 hover:text-white active:bg-primary-700 disabled:bg-primary-700',
+                          footerActionLink: 'text-blue-400 hover:text-blue-300',
+                        },
+                      }}
+                      routing='hash'
+                    />
+                  </div>
+                  <p className='text-xs text-gray-500'>
+                    Dilindungi dan bagian dari{' '}
+                    <span className='text-blue-400'>Privacy Policy</span> dan{' '}
+                    <span className='text-blue-400'>Terms of Service</span>{' '}
+                    SiBaBe.
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </div>

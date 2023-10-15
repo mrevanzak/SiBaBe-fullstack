@@ -1,6 +1,7 @@
 import { ClerkProvider } from '@clerk/nextjs';
 import { MantineProvider } from '@mantine/core';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { Analytics } from '@vercel/analytics/react';
 import { AppProps } from 'next/app';
 import { ToastContainer } from 'react-toastify';
 
@@ -28,6 +29,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         >
           <Component {...pageProps} />
           <ToastContainer position='top-center' />
+          <Analytics />
         </MantineProvider>
         <ReactQueryDevtools initialIsOpen={false} />
       </ClerkProvider>

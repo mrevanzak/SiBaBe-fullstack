@@ -107,13 +107,13 @@ async fn users_handler(
           .create(id, username, name, email.to_string(), vec![])
           .exec().await;
         match user {
-          Ok(_) => println!("User created"),
+          Ok(user) => println!("User created: {}", user.id),
           Err(_) => println!("User not created"),
         }
       } else if payload.r#type == "user.updated" {
         let user = db.customers().delete(prisma::customers::id::equals(id.clone())).exec().await;
         match user {
-          Ok(_) => println!("User deleted"),
+          Ok(user) => println!("User deleted: {}", user.id),
           Err(_) => println!("User not deleted"),
         }
 
@@ -127,7 +127,7 @@ async fn users_handler(
             .exec().await;
 
           match admin {
-            Ok(_) => println!("User promoted to admin"),
+            Ok(user) => println!("User {} promoted to admin", user.id),
             Err(_) => println!("User failed to be promoted to admin"),
           }
         }
@@ -139,7 +139,7 @@ async fn users_handler(
     Data::Deleted { id, .. } => {
       let user = db.customers().delete(prisma::customers::id::equals(id)).exec().await;
       match user {
-        Ok(_) => println!("User deleted"),
+        Ok(user) => println!("User deleted: {}", user.id),
         Err(_) => println!("User not deleted"),
       }
       Ok(StatusCode::OK)

@@ -67,7 +67,10 @@ pub(crate) fn get_user(token: Option<HeaderValue>) -> Option<Role> {
           }
         None => Role::Customer(token.claims.sub),
       }
-    Err(_) => Role::None,
+    Err(_) => {
+      println!("Error decoding token");
+      Role::None
+    }
   };
 
   Some(role)
